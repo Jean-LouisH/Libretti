@@ -2,17 +2,17 @@
 *                      This file is part of:
 *                          Libretti
 *
-* Mixer
+* File
 *
-* Applies effects to the note wave streams before sending to the audio device.
+* Handles input/output for scripting and file formats.
 *
 * Copyright (c) 2017-2018 Jean-Louis Haywood. All rights reserved.
 * License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE
 */
 
-#ifndef Mixer_h
-#define Mixer_h
+#ifndef File_h
+#define File_h
 
 
 
-#endif /*Mixer_h*/
+#endif /*File_h*/

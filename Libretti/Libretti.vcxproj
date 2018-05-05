@@ -19,7 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Audio.h" />
+    <ClInclude Include="include\Callback.h" />
+    <ClInclude Include="include\Compiler.h" />
+    <ClInclude Include="include\Constants.h" />
+    <ClInclude Include="include\File.h" />
     <ClInclude Include="include\Libretti.h" />
+    <ClInclude Include="include\Mixer.h" />
+    <ClInclude Include="include\Notes.h" />
+    <ClInclude Include="include\NoteWaves.h" />
+    <ClInclude Include="include\Runtime.h" />
+    <ClInclude Include="include\Timing.h" />
+    <ClInclude Include="include\Tracks.h" />
+    <ClInclude Include="include\WaveformGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Libretti.c" />

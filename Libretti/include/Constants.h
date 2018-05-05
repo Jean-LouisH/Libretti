@@ -1,0 +1,22 @@
+/**
+*                      This file is part of:
+*                          Libretti
+*
+* Constants
+*
+* Copyright (c) 2017-2018 Jean-Louis Haywood. All rights reserved.
+* License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE
+*/
+
+#ifndef Contants_h
+#define Contants_h
+
+#define MAX_TRACKS 32
+
+#define CHANNELS 6	//front-left/front-right/center/low-freq/rear-left/rear-right
+#define MAX_FPS 60
+#define SAMPLE_FREQUENCY 44100
+#define SAMPLES_PER_FRAME (SAMPLE_FREQUENCY / MAX_FPS)
+#define SAMPLE_SIZE(SAMPLES_PER_FRAME) (SAMPLES_PER_FRAME > 1024 ? 2048 : 1024)	
+
+#endif /*Contants_h*/	

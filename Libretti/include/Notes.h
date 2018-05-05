@@ -2,17 +2,17 @@
 *                      This file is part of:
 *                          Libretti
 *
-* Mixer
+* Notes
 *
-* Applies effects to the note wave streams before sending to the audio device.
+* The smallest unit of immediate sounds and channel data.
 *
 * Copyright (c) 2017-2018 Jean-Louis Haywood. All rights reserved.
 * License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE
 */
 
-#ifndef Mixer_h
-#define Mixer_h
+#ifndef Notes_h
+#define Notes_h
 
 
 
-#endif /*Mixer_h*/
+#endif /*Notes_h*/

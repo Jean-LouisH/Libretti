@@ -2,17 +2,17 @@
 *                      This file is part of:
 *                          Libretti
 *
-* Mixer
+* Audio
 *
-* Applies effects to the note wave streams before sending to the audio device.
+* Defines entire songs or sound effects in memory.
 *
 * Copyright (c) 2017-2018 Jean-Louis Haywood. All rights reserved.
 * License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE
 */
 
-#ifndef Mixer_h
-#define Mixer_h
+#ifndef Audio_h
+#define Audio_h
 
 
 
-#endif /*Mixer_h*/
+#endif /*Audio_h*/

@@ -2,17 +2,17 @@
 *                      This file is part of:
 *                          Libretti
 *
-* Mixer
+* Runtime
 *
-* Applies effects to the note wave streams before sending to the audio device.
+* Play runtime data for track position, playing, pausing, etc.
 *
 * Copyright (c) 2017-2018 Jean-Louis Haywood. All rights reserved.
 * License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE
 */
 
-#ifndef Mixer_h
-#define Mixer_h
+#ifndef Runtime_h
+#define Runtime_h
 
 
 
-#endif /*Mixer_h*/
+#endif /*Runtime_h*/

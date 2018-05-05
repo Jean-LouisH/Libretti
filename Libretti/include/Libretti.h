@@ -8,10 +8,14 @@
 * procedures by default for simplicity.
 *
 * Copyright (c) 2017-2018 Jean-Louis Haywood. All rights reserved.
+* License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE
 */
 
+#ifndef Libretti_h
+#define Libretti_h
+
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -20,3 +24,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+#endif /*Libretti_h*/

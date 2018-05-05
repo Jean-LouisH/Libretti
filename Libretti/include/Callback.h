@@ -2,17 +2,17 @@
 *                      This file is part of:
 *                          Libretti
 *
-* Mixer
+* Callback
 *
-* Applies effects to the note wave streams before sending to the audio device.
+* Handles the audio thread and communicates with the main thread.
 *
 * Copyright (c) 2017-2018 Jean-Louis Haywood. All rights reserved.
 * License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE
 */
 
-#ifndef Mixer_h
-#define Mixer_h
+#ifndef Callback_h
+#define Callback_h
 
 
 
-#endif /*Mixer_h*/
+#endif /*Callback_h*/
