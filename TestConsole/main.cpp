@@ -1,8 +1,35 @@
 #include <Libretti.h>
+#include <SDL.h>
+#include <string>
 
-int main()
+#include "ConsoleMenu.hpp"
+
+#define MS_PER_S 1000.0
+
+int main(int argc, char* argv[])
 {
-	int b = 0;
-	b = test();
+	std::string fileName;
+	const double fps = 60;
+	double cycleStart = 0.0;
+	double cycleEnd = 0.0;
+	double deltaSeconds = 0.0;
+	double frameTime = 0.0;
+	bool isRunning = true;
+
+	menu(&fileName);
+
+	do
+	{
+		cycleStart = SDL_GetTicks();
+		test();
+		cycleEnd = SDL_GetTicks();
+		deltaSeconds = (cycleEnd - cycleStart) / MS_PER_S;
+		double frameDelay = (MS_PER_S / fps) - (deltaSeconds * MS_PER_S);
+		if (frameDelay > 0)
+			SDL_Delay(frameDelay);
+		frameTime = SDL_GetTicks() - cycleStart;
+	} while (isRunning);
+
+	SDL_Quit();
 	return 0;
 }
