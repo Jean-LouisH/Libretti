@@ -18,6 +18,12 @@
     <ClCompile Include="Libretti.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Callback.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="File.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Libretti.h">
