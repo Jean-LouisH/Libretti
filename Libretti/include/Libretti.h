@@ -14,6 +14,15 @@
 #ifndef Libretti_h
 #define Libretti_h
 
+#include "Callback.h"
+#include "Compiler.h"
+#include "File.h"
+#include "Mixer.h"
+#include "Notes.h"
+#include "NoteWaves.h"
+#include "Runtime.h"
+#include "WaveformGenerator.h"
+
 #ifdef __cplusplus
 extern "C"
 {

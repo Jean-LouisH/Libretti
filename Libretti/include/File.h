@@ -13,6 +13,6 @@
 #ifndef File_h
 #define File_h
 
-
+char* loadScriptFile(char* filename);
 
 #endif /*File_h*/
