@@ -13,6 +13,15 @@
 #ifndef NoteWaves_h
 #define NoteWaves_h
 
+#include "SDL_stdinc.h"
+#include "Constants.h"
+#include "Notes.h"
 
+typedef struct
+{
+	Sint16 streams[MAX_TRACKS][SAMPLE_SIZE(SAMPLES_PER_FRAME)];
+	Note metaData[MAX_TRACKS];
+	unsigned char count;
+}lb_NoteWaves;
 
 #endif /*NoteWaves_h*/

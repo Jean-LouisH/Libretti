@@ -13,6 +13,9 @@
 #ifndef Tracks_h
 #define Tracks_h
 
-
+typedef struct
+{
+	int a;
+}lb_Track;
 
 #endif /*Tracks_h*/

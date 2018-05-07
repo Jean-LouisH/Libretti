@@ -13,6 +13,11 @@
 #ifndef Audio_h
 #define Audio_h
 
+#include "Tracks.h"
 
+typedef struct
+{
+	lb_Track* tracks;
+}lb_Audio;
 
 #endif /*Audio_h*/

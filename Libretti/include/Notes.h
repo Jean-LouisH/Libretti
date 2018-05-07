@@ -19,7 +19,7 @@ typedef struct
 	double frequency;
 	unsigned char panning;
 	unsigned char timbre;
-}Voice;
+}Note;
 
 enum panning
 {
@@ -33,7 +33,7 @@ enum Timbre
 	SAWTOOTH_WAVE,
 	PULSE_10,
 	PULSE_25,
-	NOISE
+	NOISE,
 	SAMPLE
 };
 
