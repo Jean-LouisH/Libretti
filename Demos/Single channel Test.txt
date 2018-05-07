@@ -1,0 +1,7 @@
+[Name: Channel Test][KeySig: C Major][TimeSig: 4/4][Tempo: 110][Dynamic: mf]
+
+{
+[Channel: Mono][Timbre: Sine Wave][Octave: 5]
+
+~ A4 ~
+}

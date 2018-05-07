@@ -1,0 +1,13 @@
+[Name: Mary had a little lamb][KeySig: G Major][TimeSig: 4/4][Tempo: Presto][Dynamic: mf]
+
+{
+[Channel: Mono][Timbre: Square Wave][Octave: 5] 
+
+| ~ B1 A1 G1 A1 ~ | B1 B1 B2* | A1 A1 A2* | B1 +D1 D2 | ~ -B1 A1 G1 A1 ~ |  B1 B1 B1 B1 | A1 A1 B1 A1 | G2 R2 |
+}
+
+{
+[Channel: Mono][Timbre: Triangle Wave][Octave: 4] 
+
+| ~ G2 D2 | G2 D2 | C2 D2 | G2 D2 | G2 D2 | G2 D2 | C2 D2 | G2 R2 ~ | 
+}

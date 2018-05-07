@@ -1,0 +1,31 @@
+[Name: Multichannel Test][KeySig: C Major][TimeSig: 4/4][Tempo: 110][Dynamic: mf]
+
+{
+[Channel: Left][Timbre: Square Wave][Octave: 5]
+
+~ C4 ~
+}
+
+{
+[Channel: Left][Timbre: Sine Wave][Octave: 5]
+
+~ E4 ~
+}
+
+{
+[Channel: Right][Timbre: Triangle Wave][Octave: 5]
+
+~ G4 ~
+}
+
+{
+[Channel: Right][Timbre: Sawtooth Wave][Octave: 6]
+
+~ C4 ~
+}
+
+{
+[Channel: Mono][Timbre: Noise][Octave: 6]
+
+~ A4 ~
+}
