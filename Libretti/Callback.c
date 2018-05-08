@@ -14,10 +14,4 @@ void runCallback(void* userdata, Uint8* stream, int byteLength)
 	{
 		callbackStream[i] = 0;
 	}
-
-	//if (!callbackData->pCode->voiceBuilds.empty())
-	//{
-	//	Libretti::updateNoteWaves(callbackData->pCode, callbackData->noteWaves);
-	//	Mixer::interleaveNoteWaves(*callbackData->noteWaves, callbackStream);
-	//}
 }
