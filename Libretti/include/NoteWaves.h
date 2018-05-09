@@ -20,7 +20,7 @@
 typedef struct
 {
 	Sint16 streams[MAX_TRACKS][SAMPLE_SIZE(SAMPLES_PER_FRAME)];
-	Note metaData[MAX_TRACKS];
+	lb_Note metaData[MAX_TRACKS];
 	unsigned char count;
 }lb_NoteWaves;
 

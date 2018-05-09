@@ -13,7 +13,7 @@
 #ifndef Timing_h
 #define Timing_h
 
-enum durationStates
+enum articulation
 {
 	NORMAL,
 	SLUR,

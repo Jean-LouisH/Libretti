@@ -19,13 +19,17 @@ typedef struct
 	double frequency;
 	unsigned char panning;
 	unsigned char timbre;
-}Note;
+	unsigned char effects;
+	unsigned char duration;
+	unsigned char articulation;
+}lb_Note;
 
 enum panning
 {
+
 };
 
-enum Timbre
+enum timbre
 {
 	SQUARE_WAVE,
 	SINE_WAVE,
@@ -37,9 +41,14 @@ enum Timbre
 	SAMPLE
 };
 
+enum effects
+{
+
+};
+
 /*from Pianississimo to Fortississimo.
 * Out of signed 16 bit audio amplitude values.*/
-enum Dynamics
+enum dynamics
 {
 	PPP = 64,
 	PP = 128,
