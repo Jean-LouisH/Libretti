@@ -62,13 +62,13 @@ void lb_load(lb_Runtime* runtime, lb_Audio* audio, char* filename)
 void lb_play(lb_Runtime* runtime)
 {
 	runtime->playStates |= IS_PLAYING;
-	SDL_PauseAudioDevice(runtime->device, 1);
+	SDL_PauseAudioDevice(runtime->device, 0);
 }
 
 void lb_pause(lb_Runtime* runtime)
 {
 	runtime->playStates &= ~IS_PLAYING;
-	SDL_PauseAudioDevice(runtime->device, 0);
+	SDL_PauseAudioDevice(runtime->device, 1);
 }
 
 void lb_reset(lb_Runtime* runtime)
