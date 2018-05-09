@@ -13,9 +13,12 @@
 #ifndef Tracks_h
 #define Tracks_h
 
+#include "Events.h"
+
 typedef struct
 {
-	int a;
+	lb_NoteEvent* notes;
+	unsigned int noteCount;
 }lb_Track;
 
 #endif /*Tracks_h*/

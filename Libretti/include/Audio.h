@@ -13,11 +13,24 @@
 #ifndef Audio_h
 #define Audio_h
 
+#include "Constants.h"
+#include "Events.h"
 #include "Tracks.h"
 
 typedef struct
 {
-	lb_Track* tracks;
+	lb_Track tracks[MAX_TRACKS];
+	lb_TempoEvent* tempos;
+	lb_LyricsEvent* lyricsLines;
+	unsigned char trackCount;
+	unsigned char tempoEventCount;
+	unsigned char lyricsLineCount;
+	double timeLength;
+	double loopTargetTime;
+	char* name;
+	char* artist;
+	unsigned char keySignature;		
+	unsigned char timeSignature[2]; //[0] = numerator, [1] = denominator
 }lb_Audio;
 
 #endif /*Audio_h*/
