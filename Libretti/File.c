@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char* loadScriptFile(char* filename)
+char* loadScriptFromFile(char* filename)
 {
 	FILE* inputFile = fopen(filename, "rb");
 	unsigned int filesize;
@@ -10,9 +10,9 @@ char* loadScriptFile(char* filename)
 	fseek(inputFile, 0, SEEK_END);
 	filesize = ftell(inputFile);
 	rewind(inputFile);
-	char* script = calloc(filesize, sizeof script);
+	char* script = calloc(filesize + 1, sizeof *script);
 	if (script != NULL)
-		fread(script, sizeof script, filesize, inputFile);
+		fread(script, sizeof *script, filesize, inputFile);
 	fclose(inputFile);
 	return script;
 }
