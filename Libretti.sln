@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestConsole", "TestConsole\TestConsole.vcxproj", "{558E425D-645C-4427-9105-208409DAF7C0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{26DE1A79-5450-4468-A853-73907DED2BD5} = {26DE1A79-5450-4468-A853-73907DED2BD5}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Libretti", "Libretti\Libretti.vcxproj", "{26DE1A79-5450-4468-A853-73907DED2BD5}"
 EndProject

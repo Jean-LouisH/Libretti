@@ -23,6 +23,7 @@
     <ClInclude Include="include\Callback.h" />
     <ClInclude Include="include\Compiler.h" />
     <ClInclude Include="include\Constants.h" />
+    <ClInclude Include="include\Events.h" />
     <ClInclude Include="include\File.h" />
     <ClInclude Include="include\Libretti.h" />
     <ClInclude Include="include\Mixer.h" />
@@ -35,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Callback.c" />
+    <ClCompile Include="Compiler.c" />
     <ClCompile Include="File.c" />
     <ClCompile Include="Libretti.c" />
   </ItemGroup>

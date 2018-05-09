@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 	do
 	{
 		cycleStart = SDL_GetTicks();
-		test();
+		lb_libraryCompilationTest();
 		cycleEnd = SDL_GetTicks();
 		deltaSeconds = (cycleEnd - cycleStart) / MS_PER_S;
 		double frameDelay = (MS_PER_S / fps) - (deltaSeconds * MS_PER_S);
