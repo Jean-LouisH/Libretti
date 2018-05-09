@@ -13,6 +13,8 @@
 #ifndef Compiler_h
 #define Compiler_h
 
+#include "Audio.h"
 
+void compileAudioFromScript(lb_Audio* audio, char* script);
 
 #endif /*Compiler_h*/
