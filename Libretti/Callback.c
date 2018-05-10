@@ -1,5 +1,7 @@
 #include "include/Callback.h" 
 
+#include "include/Libretti.h"
+
 void runCallback(void* userdata, Uint8* stream, int byteLength)
 {
 	/*Converts the 8-bit native stream to 16-bits and references
@@ -13,5 +15,10 @@ void runCallback(void* userdata, Uint8* stream, int byteLength)
 	for (int i = 0; i < doubleByteLength; i++)
 	{
 		callbackStream[i] = 0;
+	}
+
+	if (callbackData->audio->trackCount > 0)
+	{
+		lb_updateNoteWavesFromAudio(callbackData->noteWaves, callbackData->audio);
 	}
 }
