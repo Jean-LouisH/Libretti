@@ -27,6 +27,12 @@
     <ClCompile Include="Compiler.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mixer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveformGenerator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Libretti.h">
@@ -69,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CallbackData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
