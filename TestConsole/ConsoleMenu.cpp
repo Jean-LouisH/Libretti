@@ -4,7 +4,7 @@
 void menu(std::string* fileName)
 {
 	system("cls");
-	std::cout << "\n\t\t\tLibretti Audio Player\n\n";
+	std::cout << "\n\t\t\tLibretti Console Test\n\n";
 #ifdef _DEBUG
 	std::string demos[] = {
 		{ "../Demos/Also sprach zarathustra.txt" },
