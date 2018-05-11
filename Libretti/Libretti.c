@@ -15,10 +15,45 @@ int lb_libraryCompilationTest()
 	return a;
 }
 
-void lb_initLibretti(Libretti* libretti)
+Libretti* lb_createLibretti()
 {
-	lb_initCallbackData(&libretti->callbackData, &libretti->audio, &libretti->noteWaves);
-	lb_initAudioRuntime(&libretti->runtime, &libretti->callbackData);
+	Libretti* libretti = malloc(sizeof *libretti);
+	libretti->audio = lb_createAudio();
+	libretti->noteWaves = lb_createNoteWaves();
+	libretti->callbackData = lb_createCallbackData();
+	libretti->runtime = lb_createRuntime();
+	if (libretti != NULL)
+	{
+		if (libretti->audio != NULL &&
+			libretti->callbackData != NULL &&
+			libretti->noteWaves != NULL &&
+			libretti->runtime != NULL)
+		{
+			lb_initCallbackData(libretti->callbackData, libretti->audio, libretti->noteWaves);
+			lb_initAudioRuntime(libretti->runtime, libretti->callbackData);
+		}
+	}
+	return libretti;
+}
+
+lb_Audio* lb_createAudio()
+{
+	return calloc(1, sizeof(lb_Audio));
+}
+
+lb_NoteWaves* lb_createNoteWaves()
+{
+	return calloc(1, sizeof(lb_NoteWaves));
+}
+
+lb_CallbackData* lb_createCallbackData()
+{
+	return calloc(1, sizeof(lb_CallbackData));
+}
+
+lb_Runtime* lb_createRuntime()
+{
+	return calloc(1, sizeof(lb_Runtime));
 }
 
 void lb_initCallbackData(lb_CallbackData* callbackData, lb_Audio* audio, lb_NoteWaves* noteWaves)
@@ -54,6 +89,8 @@ void lb_initAudioRuntime(lb_Runtime* runtime, lb_CallbackData* callbackData)
 			NULL);
 
 		runtime->device = device;
+		runtime->playStates = 0;
+		lb_reset(runtime);
 		lb_play(runtime);
 	}
 }
@@ -65,12 +102,12 @@ void lb_compileAudioFromScriptFile(lb_Audio* audio, char* filename)
 	free(script);
 }
 
-void lb_updateNotesFromAudio(lb_Note* notes, unsigned char* noteCount, lb_Audio* audio)
+void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio)
 {
 
 }
 
-void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio)
+void lb_updateNotesFromAudio(lb_Note* notes, unsigned char* noteCount, lb_Audio* audio)
 {
 
 }
@@ -117,7 +154,28 @@ void lb_stop(lb_Runtime* runtime)
 	lb_pause(runtime);
 }
 
+void lb_freeRuntime(lb_Runtime* runtime)
+{
+	free(runtime);
+}
+
+void lb_freeCallbackData(lb_CallbackData* callbackData)
+{
+	free(callbackData);
+}
+
+void lb_freeNoteWaves(lb_NoteWaves* noteWaves)
+{
+	free(noteWaves);
+}
+
+void lb_freeAudio(lb_Audio* audio)
+{
+	free(audio);
+}
+
 void lb_freeLibretti(Libretti* libretti)
 {
-	SDL_CloseAudioDevice(libretti->runtime.device);
+	SDL_CloseAudioDevice(libretti->runtime->device);
+	free(libretti);
 }

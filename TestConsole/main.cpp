@@ -16,15 +16,13 @@ int main(int argc, char* argv[])
 	double frameTime = 0.0;
 	bool isRunning = true;
 
-	Libretti libretti;
-
-	lb_initLibretti(&libretti);
+	Libretti* libretti = lb_createLibretti();
 	menu(&fileName);
 
 	do
 	{
 		cycleStart = SDL_GetTicks();
-		lb_incrementPlayTime(&libretti.runtime, frameTime / MS_PER_S);
+		lb_incrementPlayTime(libretti->runtime, frameTime / MS_PER_S);
 		cycleEnd = SDL_GetTicks();
 		deltaSeconds = (cycleEnd - cycleStart) / MS_PER_S;
 		double frameDelay = (MS_PER_S / fps) - (deltaSeconds * MS_PER_S);
@@ -33,7 +31,7 @@ int main(int argc, char* argv[])
 		frameTime = SDL_GetTicks() - cycleStart;
 	} while (isRunning);
 
-	lb_freeLibretti(&libretti);
+	lb_freeLibretti(libretti);
 	SDL_Quit();
 	return 0;
 }
