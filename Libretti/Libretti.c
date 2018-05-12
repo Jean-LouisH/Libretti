@@ -18,12 +18,13 @@ int lb_libraryCompilationTest()
 Libretti* lb_createLibretti()
 {
 	Libretti* libretti = malloc(sizeof *libretti);
-	libretti->audio = lb_createAudio();
-	libretti->noteWaves = lb_createNoteWaves();
-	libretti->callbackData = lb_createCallbackData();
-	libretti->runtime = lb_createRuntime();
 	if (libretti != NULL)
 	{
+		libretti->audio = lb_createAudio();
+		libretti->noteWaves = lb_createNoteWaves();
+		libretti->callbackData = lb_createCallbackData();
+		libretti->runtime = lb_createRuntime();
+
 		if (libretti->audio != NULL &&
 			libretti->callbackData != NULL &&
 			libretti->noteWaves != NULL &&
@@ -98,8 +99,11 @@ void lb_initAudioRuntime(lb_Runtime* runtime, lb_CallbackData* callbackData)
 void lb_compileAudioFromScriptFile(lb_Audio* audio, char* filename)
 {
 	char* script = loadScriptFromFile(filename);
-	compileAudioFromScript(audio, script);
-	free(script);
+	if (script != NULL)
+	{
+		compileAudioFromScript(audio, script);
+		free(script);
+	}
 }
 
 void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio)
@@ -156,6 +160,7 @@ void lb_stop(lb_Runtime* runtime)
 
 void lb_freeRuntime(lb_Runtime* runtime)
 {
+	SDL_CloseAudioDevice(runtime->device);
 	free(runtime);
 }
 
@@ -171,11 +176,20 @@ void lb_freeNoteWaves(lb_NoteWaves* noteWaves)
 
 void lb_freeAudio(lb_Audio* audio)
 {
+	if (audio->tracks->notes != NULL)
+		free(audio->tracks->notes);
+	if (audio->tempos != NULL)
+		free(audio->tempos);
+	if (audio->lyricsLines != NULL)
+		free(audio->lyricsLines);
 	free(audio);
 }
 
 void lb_freeLibretti(Libretti* libretti)
 {
-	SDL_CloseAudioDevice(libretti->runtime->device);
+	lb_freeRuntime(libretti->runtime);
+	lb_freeCallbackData(libretti->callbackData);
+	lb_freeNoteWaves(libretti->noteWaves);
+	lb_freeAudio(libretti->audio);
 	free(libretti);
 }
