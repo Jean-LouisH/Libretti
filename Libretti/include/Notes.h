@@ -38,6 +38,7 @@ enum timbre
 	PULSE_10,
 	PULSE_25,
 	NOISE,
+	METALLIC,
 	SAMPLE
 };
 
