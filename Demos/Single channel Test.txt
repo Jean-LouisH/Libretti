@@ -1,7 +1,7 @@
-[Name: Channel Test][KeySig: C Major][TimeSig: 4/4][Tempo: 110][Dynamic: mf]
+[name: channel test][key sig: c major][time sig: 4/4][tempo: 110][dynamic: mf]
 
 {
-[Channel: Mono][Timbre: Sine Wave][Octave: 5]
+[panning: mono][timbre: sine wave][octave: 5]
 
 ~ A4 ~
 }
