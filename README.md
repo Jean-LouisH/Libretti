@@ -1,8 +1,8 @@
 # Libretti
 
-Libretti is a prototype synthesizer that plays through stereo channels with a number of simple waveform timbres. It uses an interpreter to read text files that are written with a custom scripting language:
+Libretti is a core synthesizer library for integration with applications, specifically games. It reads and writes its own binary file format for audio data, but it can also compile that data from text files that are written with Libretti's scripting language:
 
-Libretti language Specifications
+Libretti scripting language Specifications
 
 Reference: https://en.wikipedia.org/wiki/List_of_musical_symbols
 
@@ -11,54 +11,74 @@ Reference: https://en.wikipedia.org/wiki/List_of_musical_symbols
 * "N" denotes numerical (whole and fractional) durations in this document only.
 * "R" is a rest note.
 
-* Notes: "A", "B", "C", "D", "E", "F", "G", "R"
-* Accidentals: "#", "b", "n"
-* Bar Line: "|"
-* Duration: "/4", "/2", "1", "2" ,"3", "4", etc.
-* Staccato: "XN*"
-* Dotted: "XN."
-* Slur/Tie: "~X" ... "Y~"
-* Higher Octave: "+X"
-* Lower Octave: "-X"
-* Header tag: "[keyword: attribute]"
-* Voice scope: "{main headers, notes & inline headers}"
+Notes: "A", "B", "C", "D", "E", "F", "G", "R"
+Accidentals: "#", "b", "n"
+Bar Line: "|"
+Duration: "/4", "/2", "1", "2" ,"3", "4", etc.
+Staccato: "XN*"
+Dotted: "XN."
+Slur/Tie: "~X" ... "Y~"
+Higher Octave: "+X"
+Lower Octave: "-X"
+Tuplets: _XN YN ZN_
+Crescendo: << XN YN... ZN <<
+Diminuendo: >> XN YN... ZN >>
+Accent: XN>
+Header tag: "[keyword: attribute]"
+Voice scope: "{main headers, notes & inline headers}"
 
-* Headers: "Name", "KeySig", "TimeSig", "Tempo", "Channel", "Timbre", "Octave", "Dynamic", "RepeatBar", "End"
-* Time Signatures: "1/4", "2/4", "3/4", "4/4", etc
-* Key Signatures: "A Major", "A Minor", "B Major", "C Major", "C Minor", etc
-* Tempo: "Largo" (50 bpm), "Adagio" (70 bpm), "Adante" (90 bpm), "Moderato" (110 bpm), "Allegro" (140 bpm), "Presto" (180 bpm), or type the bpm value directly.
-* Channel: "Left", "Right", "Mono"
-* Timbre: "Square Wave", "Sine Wave", "Triangle Wave", "Sawtooth Wave", "Pulse 10%", "Pulse 25%"
-* Octave: "1", "2", "3", "4", "5", "6", "7", "8", etc
-* Dynamic: "ppp", "pp", "p", "mp", "mf", "f", "ff", "fff"
+-----------------------------------------------------
+Headers;
 
-* After and before every bar, there should be a space. This helps with the syncrhonization algorithm.
+name:
+author:
+lyric:
+
+time sig: "1/4", "2/4", "3/4", "4/4", etc
+key sig: "a major", "a minor", "b major", "c major", "c minor", etc
+tempo: "largo" (50 bpm), "adagio" (70 bpm), "adante" (90 bpm), "moderato" (110 bpm), "allegro" (140 bpm), "presto" (180 bpm), or type the bpm value directly.
+timbre: "square wave", "sine wave", "triangle wave", "sawtooth wave", "pulse 10%", "pulse 25%"
+octave: "1", "2", "3", "4", "5", "6", "7", "8", etc
+dynamic: "ppp", "pp", "p", "mp", "mf", "f", "ff", "fff"
+
+loop: "none", "[value]", "infinity"
+segment:
+end:
+
+cue: [cue list is made at top of script with macro = value pairing]
+panning: "far left", "left", "mono", "right", "far right", [floating point value -1.0 to +1.0]
+reverb: "none", "standard", [room_size=percentage, pre-delay=ms, damping=percentage]
+echo: "none", "standard", [delay=integer_value, decay=floating_point_value]
+eq: "none" [[frequency_value]: [level]]
+vibrato: "none", "standard"
+flanging: "none", "standard"
+crossfading: "none", [ms]
+pitch_blend: "none", [percentage]
+----------------------------------------------------
+
+
 
 ==============
 Example:
 
-"[Name: Mary had a little lamb]
-[KeySig: G Major]
-[TimeSig: 4/4]
-[Tempo: Presto]
-[Dynamic: mf]
+"[name: Mary had a little lamb][author: Sarah Josepha Hale][key sig: g major][time sig: 4/4][tempo: presto][dynamic: mf][reverb: standard][vibrato: standard]
 
 {
-[Channel: Mono]
-[Timbre: Square Wave]
-[Octave: 5] 
+[panning: mono][timbre: square wave][octave: 5] 
 
-| ~ B1 A1 G1 A1 ~ | B1 B1 B2* | A1 A1 A2* | B1 +D1 D2 |
- ~ -B1 A1 G1 A1 ~ |  B1 B1 B1 B1 | A1 A1 B1 A1 | G2 R2 |
+| [loop: infinity] ~ B1 A1 G1 A1 ~ | B1> B1> B2* [cue: 2] | A1> A1> A2* [cue: 12]| B1> +D1> _D1 E1 D1_ |
+~ -B1 A1 G1 A1 ~ |  << B1 B1 B1 B1 << | >> A1 A1 B1 A1 | [echo: standard] G2 >> R2 |
 }
 
 {
-[Channel: Mono]
-[Timbre: Triangle Wave]
-[Octave: 4] 
+[panning: mono][timbre: triangle wave][octave: 4] 
 
-| ~ G2 D2 | G2 D2 | C2 D2 | G2 D2 | G2 D2 |
- G2 D2 | C2 D2 | G2 R2 ~ | 
+| ~ G2 D2 | G2 D2 | C2 D2 | G2 D2 | G2 D2 | G2 D2 | C2 D2 | G2 R2 ~ | 
+}
+
+{
+| [lyric: mary had a ] | [lyric: little lamb] | | | [lyric: mary had a ] | [lyric: little lamb, its] |  
+[lyric: fleece were white as snow] |
 }
 "
 
