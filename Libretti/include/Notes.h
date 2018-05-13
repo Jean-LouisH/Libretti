@@ -19,14 +19,18 @@ typedef struct
 	double frequency;
 	unsigned char panning;
 	unsigned char timbre;
-	unsigned char effects;
 	unsigned char duration;
 	unsigned char articulation;
+	char cue;
 }lb_Note;
 
 enum panning
 {
-
+	FAR_LEFT = -128,
+	LEFT = -64,
+	MONO = 0,
+	RIGHT = 64,
+	FAR_RIGHT = 127
 };
 
 enum timbre
@@ -40,11 +44,6 @@ enum timbre
 	NOISE,
 	METALLIC,
 	SAMPLE
-};
-
-enum effects
-{
-
 };
 
 /*from Pianississimo to Fortississimo.
