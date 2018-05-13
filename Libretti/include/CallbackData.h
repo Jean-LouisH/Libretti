@@ -22,6 +22,7 @@ typedef struct
 {
 	lb_Audio* audio;
 	lb_NoteWaves* noteWaves;
+	lb_Runtime* runtime;
 }lb_CallbackData;
 
 #endif /*CallbackData_h*/

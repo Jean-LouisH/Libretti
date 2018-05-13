@@ -30,8 +30,8 @@ Libretti* lb_createLibretti()
 			libretti->noteWaves != NULL &&
 			libretti->runtime != NULL)
 		{
-			lb_initCallbackData(libretti->callbackData, libretti->audio, libretti->noteWaves);
-			lb_initAudioRuntime(libretti->runtime, libretti->callbackData);
+			lb_initCallbackData(libretti->callbackData, libretti->audio, libretti->noteWaves, libretti->runtime);
+			lb_initAudioCallback(libretti->runtime, libretti->callbackData);
 		}
 	}
 	return libretti;
@@ -57,13 +57,14 @@ lb_Runtime* lb_createRuntime()
 	return calloc(1, sizeof(lb_Runtime));
 }
 
-void lb_initCallbackData(lb_CallbackData* callbackData, lb_Audio* audio, lb_NoteWaves* noteWaves)
+void lb_initCallbackData(lb_CallbackData* callbackData, lb_Audio* audio, lb_NoteWaves* noteWaves, lb_Runtime* runtime)
 {
 	callbackData->audio = audio;
 	callbackData->noteWaves = noteWaves;
+	callbackData->runtime = runtime;
 }
 
-void lb_initAudioRuntime(lb_Runtime* runtime, lb_CallbackData* callbackData)
+void lb_initAudioCallback(lb_CallbackData* callbackData)
 {
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
@@ -89,10 +90,10 @@ void lb_initAudioRuntime(lb_Runtime* runtime, lb_CallbackData* callbackData)
 			&obtained,
 			NULL);
 
-		runtime->device = device;
-		runtime->playStates = 0;
-		lb_reset(runtime);
-		lb_play(runtime);
+		callbackData->runtime->device = device;
+		callbackData->runtime->playStates = 0;
+		lb_reset(callbackData->runtime);
+		lb_play(callbackData->runtime);
 	}
 }
 

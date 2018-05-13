@@ -39,8 +39,8 @@ extern "C"
 	lb_NoteWaves* lb_createNoteWaves();
 	lb_CallbackData* lb_createCallbackData();
 	lb_Runtime* lb_createRuntime();
-	void lb_initCallbackData(lb_CallbackData* callbackData, lb_Audio* audio, lb_NoteWaves* noteWaves);
-	void lb_initAudioRuntime(lb_Runtime* runtime, lb_CallbackData* callbackData);
+	void lb_initCallbackData(lb_CallbackData* callbackData, lb_Audio* audio, lb_NoteWaves* noteWaves, lb_Runtime* runtime);
+	void lb_initAudioCallback(lb_CallbackData* callbackData);
 	void lb_compileAudioFromScriptFile(lb_Audio* audio, char* filename);
 	void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio);
 	void lb_updateNotesFromAudio(lb_Note* notes, unsigned char* noteCount, lb_Audio* audio);
