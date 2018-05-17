@@ -2,12 +2,14 @@
 
 void compileAudioFromScript(lb_Audio* audio, char* script)
 {
-
+	validateScript(script);
 }
 
-void validateScript(char* script)
+int validateScript(char* script)
 {
+	int compilationStatus = ALL_OK;
 
+	return compilationStatus;
 }
 
 void allocateMemory(lb_Audio* audio, char* script)

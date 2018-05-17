@@ -15,8 +15,27 @@
 
 #include "Audio.h"
 
+enum compilationStatuses
+{
+	ALL_OK,
+	NO_TRACK_SCOPE_DETECTED,
+	NO_TIME_SIG_PROVIDED,
+	UNCLOSED_TRACK_SCOPE,
+	UNEXPECTED_HEADER_NAME,
+	UNEXPECTED_HEADER_VALUE,
+	UNKNOWN_SYMBOL,
+	BEATS_DO_NOT_MATCH_TIME_SIG,
+	BARS_COUNTS_DO_NOT_MATCH,
+	OCTAVE_SHIFTS_OUT_OF_RANGE,
+	UNCLOSED_HEADER_TAG,
+	UNCLOSED_TUPLET,
+	UNCLOSED_SLUR,
+	UNCLOSED_CRESCENDO,
+	UNCLOSED_DIMINUENDO
+};
+
 void compileAudioFromScript(lb_Audio* audio, char* script);
-void validateScript(char* script);
+int validateScript(char* script);
 void allocateMemory(lb_Audio* audio, char* script);
 void buildAudioData(lb_Audio* audio, char* script);
 void tuneByKeySignature(lb_Audio* audio, char* noteChar);
