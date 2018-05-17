@@ -1,6 +1,7 @@
 #include "include/Libretti.h"
 
 #include <SDL.h>
+#include "include/ScriptValidator.h"
 #include "include/Compiler.h"
 #include "include/Callback.h"
 #include "include/File.h"
@@ -11,7 +12,7 @@ int lb_libraryCompilationTest()
 {
 	int a = 0;
 	a++;
-	char* q = loadScriptFromFile("../Demos/Single channel Test.txt");
+	char* q = loadScriptFromFile("../Demos/Mary had a little lamb (feature test).txt");
 	return a;
 }
 
@@ -31,7 +32,7 @@ Libretti* lb_createLibretti()
 			libretti->runtime != NULL)
 		{
 			lb_initCallbackData(libretti->callbackData, libretti->audio, libretti->noteWaves, libretti->runtime);
-			lb_initAudioCallback(libretti->runtime, libretti->callbackData);
+			lb_initAudioCallback(libretti->callbackData);
 		}
 	}
 	return libretti;
@@ -95,6 +96,13 @@ void lb_initAudioCallback(lb_CallbackData* callbackData)
 		lb_reset(callbackData->runtime);
 		lb_play(callbackData->runtime);
 	}
+}
+
+int lb_validateScriptFile(char* filename)
+{
+	char* script = loadScriptFromFile(filename);
+	validateScript(script);
+	free(script);
 }
 
 void lb_compileAudioFromScriptFile(lb_Audio* audio, char* filename)

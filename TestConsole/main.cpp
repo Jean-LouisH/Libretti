@@ -18,6 +18,7 @@ int main(int argc, char* argv[])
 
 	Libretti* libretti = lb_createLibretti();
 	menu(&fileName);
+	//lb_validateScriptFile((char*)"../Demos/Mary had a little lamb (feature test).txt");
 
 	do
 	{
