@@ -49,7 +49,7 @@ eq: "none" [[frequency_value]: [level]]
 vibrato: "none", "standard"
 flanging: "none", "standard"
 crossfading: "none", [ms]
-pitch_blend: "none", [percentage]
+pitch blend: "none", [percentage]
 ----------------------------------------------------
 
 
