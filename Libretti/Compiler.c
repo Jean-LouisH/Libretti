@@ -1,15 +1,9 @@
 #include "include/Compiler.h"
+#include "include/ScriptValidator.h"
 
 void compileAudioFromScript(lb_Audio* audio, char* script)
 {
 	validateScript(script);
-}
-
-int validateScript(char* script)
-{
-	int compilationStatus = ALL_OK;
-
-	return compilationStatus;
 }
 
 void allocateMemory(lb_Audio* audio, char* script)
