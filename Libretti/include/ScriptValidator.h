@@ -14,7 +14,7 @@
 #ifndef ScriptValidator_h
 #define ScriptValidator_h
 
-enum compilationStatuses
+enum validationStatuses
 {
 	ALL_OK											= 0,
 	NO_TRACK_SCOPE_DETECTED							= 1 << 0,
