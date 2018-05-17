@@ -112,8 +112,8 @@ unsigned char validateSymbol(char symbol, unsigned char parseState)
 	else if (parseState == READING_NOTES)
 	{
 
-		if ((symbol > 'A' && symbol < 'G') ||
-			(symbol > '1' && symbol < '9'))
+		if ((symbol >= 'A' && symbol <= 'G') ||
+			(symbol >= '1' && symbol <= '9'))
 		{
 			valid = 1;
 		}
