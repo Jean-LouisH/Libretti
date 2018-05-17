@@ -15,6 +15,7 @@
 
 #include "Audio.h"
 #include "NoteWaves.h"
+#include "Runtime.h"
 
 /** SDL's audio callback in this case relies on pointers
 * for data sharing with the main thread.*/
