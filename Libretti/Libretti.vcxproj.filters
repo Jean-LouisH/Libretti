@@ -39,6 +39,9 @@
     <ClCompile Include="ScriptValidator.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Strings.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Libretti.h">
@@ -90,6 +93,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ScriptValidator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Strings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
