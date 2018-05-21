@@ -1,4 +1,4 @@
-[name: Mary had a little lamb][author: Sarah Josepha Hale][key sig: g major][time sig: 4/4][tempo: presto][dynamic: mf][reverb: standard][vibrato: standard]
+[name: Mary had a little lamb][author: Sarah Josepha Hale][key sig: G major][time sig: 4/4][tempo: presto][dynamic: mf][reverb: standard][vibrato: standard]
 
 {
 [panning: mono][timbre: square wave][octave: 5] 
@@ -15,5 +15,5 @@
 
 {
 | [lyric: mary had a ] | [lyric: little lamb] | | | [lyric: mary had a ] | [lyric: little lamb, its] |  
-[lyric: fleece were white as snow] |
+[lyric: fleece were white as] | [lyric: snow] |
 }
