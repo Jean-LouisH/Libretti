@@ -2,6 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+unsigned char exists(char* filename)
+{
+	FILE* inputFile = fopen(filename, "rb");
+	fclose(inputFile);
+	return (unsigned char)inputFile;
+}
+
 char* loadScriptFromFile(char* filename)
 {
 	FILE* inputFile = fopen(filename, "rb");
