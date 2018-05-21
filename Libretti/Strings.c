@@ -1,12 +1,17 @@
 #include "include/Strings.h"
+#include <string.h>
 #include <stdlib.h>
 
-lb_String newString(int capacity)
+lb_String newString(const char* initialString)
 {
 	lb_String string;
-	string.data = calloc(capacity, sizeof(char));
-	string.length = 0;
-	string.capacity = capacity;
+	string.length = strlen(initialString);
+	if (string.length < 1)
+		string.capacity = 1;
+	else
+		string.capacity = string.length;
+	string.data = calloc(string.capacity, sizeof(char));
+	strcpy(string.data, initialString);
 	return string;
 }
 
@@ -16,7 +21,8 @@ void append(lb_String* string, char symbol)
 	{
 		int newCapacity = string->capacity * 2;
 		string->data = realloc(string->data, newCapacity * sizeof(char));
-		string->capacity = newCapacity;
+		if (string->data != NULL)
+			string->capacity = newCapacity;
 	}
 
 	/*in case allocation fails, check again.*/
@@ -32,4 +38,10 @@ void clear(lb_String* string)
 {
 	string->data[0] = 0;
 	string->length = 0;
+}
+
+void freeString(lb_String* string)
+{
+	clear(string);
+	free(string->data);
 }

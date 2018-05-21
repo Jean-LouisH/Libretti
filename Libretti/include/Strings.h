@@ -15,6 +15,7 @@ typedef struct
 	int capacity;
 }lb_String;
 
-lb_String newString(int capacity);
+lb_String newString(const char* initialString);
 void append(lb_String* string, char symbol);
 void clear(lb_String* string);
+void freeString(lb_String* string);
