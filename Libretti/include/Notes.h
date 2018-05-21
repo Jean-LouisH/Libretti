@@ -22,6 +22,7 @@ typedef struct
 	unsigned char duration;
 	unsigned char articulation;
 	char cue;
+	char* sample;
 }lb_Note;
 
 enum panning
