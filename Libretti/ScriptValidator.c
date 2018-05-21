@@ -1,5 +1,6 @@
 #include "include/ScriptValidator.h"
 #include "include/Constants.h"
+#include "include/Strings.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -19,21 +20,19 @@ int validateScript(char* script)
 	unsigned char octave = 0;
 	unsigned char parseState = READING_NOTHING;
 	unsigned char previousParseState = 0;
-	char header[16] = "";
-	char value[16] = "";
+	lb_String header = newString(16);
+	lb_String value = newString(16);
+	lb_String debug = newString(2);
 
 	do
 	{
+		append(&debug, script[readPosition]);
 		if (!validateSymbol(script[readPosition], parseState))
 		{
 			validationStatuses |= INVALID_USE_OF_SYMBOL;
 		}
 		else
 		{
-			if (parseState == IGNORING_FIRST_SPACE_IN_VALUE)
-				if (script[readPosition] != ' ')
-					parseState = READING_VALUE;
-
 			switch (script[readPosition])
 			{
 			case '{': 
@@ -46,30 +45,40 @@ int validateScript(char* script)
 				parseState = READING_HEADER;
 				unclosedHeaders++;
 				break;
+			case ' ':
+				if (parseState == IGNORING_FIRST_SPACE_IN_VALUE)
+					parseState = READING_VALUE;
+				else if (parseState == READING_HEADER)
+					append(&header, script[readPosition]);
+				else if (parseState == READING_VALUE)
+					append(&value, script[readPosition]);
+				break;
 			case ':':
 				parseState = IGNORING_FIRST_SPACE_IN_VALUE;
-				if (header != "name" ||
-					header != "author" ||
-					header != "lyric" ||
-					header != "time sig" ||
-					header != "key sig" ||
-					header != "tempo" ||
-					header != "timbre" ||
-					header != "octave" ||
-					header != "dynamic" ||
-					header != "loop" ||
-					header != "segment" ||
-					header != "end" ||
-					header != "cue" ||
-					header != "panning" ||
-					header != "reverb" ||
-					header != "echo" ||
-					header != "eq" ||
-					header != "vibrato" ||
-					header != "flanging" ||
-					header != "crossfading" ||
-					header != "pitch blend")
+				if (strcmp(header.data, "name") != 0 &&
+					strcmp(header.data, "author") != 0 &&
+					strcmp(header.data, "lyric") != 0 &&
+					strcmp(header.data, "time sig") != 0 &&
+					strcmp(header.data, "key sig") != 0 &&
+					strcmp(header.data, "tempo") != 0 &&
+					strcmp(header.data, "timbre") != 0 &&
+					strcmp(header.data, "octave") != 0 &&
+					strcmp(header.data, "dynamic") != 0 &&
+					strcmp(header.data, "loop") != 0 &&
+					strcmp(header.data, "segment") != 0 &&
+					strcmp(header.data, "end") != 0 &&
+					strcmp(header.data, "cue") != 0 &&
+					strcmp(header.data, "panning") != 0 &&
+					strcmp(header.data, "reverb") != 0 &&
+					strcmp(header.data, "echo") != 0 &&
+					strcmp(header.data, "eq") != 0 &&
+					strcmp(header.data, "vibrato") != 0 &&
+					strcmp(header.data, "flanging") != 0 &&
+					strcmp(header.data, "crossfading") != 0 &&
+					strcmp(header.data, "pitch blend") != 0)
+				{
 					validationStatuses |= UNEXPECTED_HEADER_NAME;
+				}
 				break;
 			case ']':
 				parseState = previousParseState;
@@ -81,24 +90,23 @@ int validateScript(char* script)
 				if (octave < 1 || octave > 7)
 					validationStatuses |= OCTAVE_SHIFTS_OUT_OF_RANGE;
 				break;
-
-				readPosition++;
+			default:
+				if (parseState == READING_HEADER)
+				{
+					append(&header, script[readPosition]);
+				}
+				else if (parseState == READING_VALUE)
+				{
+					append(&value, script[readPosition]);
+				}
 			}
 		}
-
-		if (parseState == READING_HEADER)
-		{
-			
-		}
-		else if (parseState == READING_VALUE)
-		{
-			
-		}
-		else if (parseState == READING_NOTHING ||
+		
+		if (parseState == READING_NOTHING || 
 			parseState == READING_NOTES)
 		{
-			header[0] = NULL;
-			value[0] = NULL;
+			clear(&header);
+			clear(&value);
 		}
 
 		readPosition++;
