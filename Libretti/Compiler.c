@@ -3,7 +3,10 @@
 
 void compileAudioFromScript(lb_Audio* audio, char* script)
 {
-	validateScript(script);
+	if (validateScript(script) == ALL_OK)
+	{
+
+	}
 }
 
 void allocateMemory(lb_Audio* audio, char* script)
