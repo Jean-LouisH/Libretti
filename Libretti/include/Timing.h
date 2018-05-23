@@ -13,13 +13,6 @@
 #ifndef Timing_h
 #define Timing_h
 
-enum articulation
-{
-	NORMAL,
-	SLUR,
-	STACCATO
-};
-
 enum beatsPerMinute
 {
 	LARGO = 50,

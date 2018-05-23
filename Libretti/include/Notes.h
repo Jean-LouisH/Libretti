@@ -27,11 +27,11 @@ typedef struct
 
 enum panning
 {
-	FAR_LEFT = -128,
-	LEFT = -64,
-	MONO = 0,
-	RIGHT = 64,
-	FAR_RIGHT = 127
+	REAR_LEFT = -128,
+	FRONT_LEFT = -64,
+	CENTRE = 0,
+	FRONT_RIGHT = 64,
+	REAR_RIGHT = 127
 };
 
 enum timbre
@@ -157,5 +157,13 @@ enum keyFrequencies
 	B7 = 3951,
 	C8 = 4186
 };
+
+enum articulation
+{
+	NORMAL,
+	SLUR,
+	STACCATO
+};
+
 
 #endif /*Notes_h*/
