@@ -20,11 +20,11 @@
 typedef struct
 {
 	lb_Track tracks[MAX_TRACKS];
-	lb_TempoEvent* tempos;
-	lb_LyricsEvent* lyricsLines;
+	lb_TempoEvent* tempoEvents;
+	lb_LyricsEvent* lyricsEvents;
 	unsigned char trackCount;
 	unsigned char tempoEventCount;
-	unsigned char lyricsLineCount;
+	unsigned char lyricsEventCount;
 	double timeLength;
 	double loopTargetTime;
 	char* name;

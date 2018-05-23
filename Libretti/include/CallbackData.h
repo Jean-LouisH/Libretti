@@ -4,7 +4,7 @@
 *
 * Callback data
 *
-* Contains the audio and note wave memory locations for callback.
+* Contains the audio, note wave, and runtime memory locations for callback.
 *
 * Copyright (c) 2017-2018 Jean-Louis Haywood. All rights reserved.
 * License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE

@@ -13,7 +13,7 @@
 
 #define MAX_TRACKS 24
 
-#define CHANNELS 6	//front-left/front-right/center/low-freq/rear-left/rear-right
+#define CHANNELS 6	//front-left, front-right, center, low-freq, rear-left, rear-right
 #define MAX_FPS 60
 #define SAMPLE_FREQUENCY 44100
 #define SAMPLES_PER_FRAME (SAMPLE_FREQUENCY / MAX_FPS)

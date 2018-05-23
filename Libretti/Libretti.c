@@ -187,10 +187,10 @@ void lb_freeAudio(lb_Audio* audio)
 {
 	if (audio->tracks->notes != NULL)
 		free(audio->tracks->notes);
-	if (audio->tempos != NULL)
-		free(audio->tempos);
-	if (audio->lyricsLines != NULL)
-		free(audio->lyricsLines);
+	if (audio->tempoEvents != NULL)
+		free(audio->tempoEvents);
+	if (audio->lyricsEvents != NULL)
+		free(audio->lyricsEvents);
 	free(audio);
 }
 
