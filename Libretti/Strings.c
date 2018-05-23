@@ -19,7 +19,7 @@ void append(lb_String* string, char symbol)
 {
 	if (string->length >= string->capacity)
 	{
-		int newCapacity = string->capacity * 2;
+		int newCapacity = string->capacity + 8;
 		string->data = realloc(string->data, newCapacity * sizeof(char));
 		if (string->data != NULL)
 			string->capacity = newCapacity;
