@@ -1,14 +1,14 @@
-[name: Mary had a little lamb][author: Sarah Josepha Hale][key sig: G major][time sig: 4/4][tempo: presto][dynamic: mf]
+[name: Mary had a little lamb][artist: Sarah Josepha Hale][key sig: G major][time sig: 4/4][tempo: presto][dynamic: mf]
 
 {
 [panning: mono][timbre: square wave][octave: 5] 
 
-| B1 A1 G1 A1 | B1 B1 B2 | A1 A1 A2 | B1 +D1 D2 |
+B1 A1 G1 A1 | B1 B1 B2 | A1 A1 A2 | B1 +D1 D2 |
 -B1 A1 G1 A1 |  B1 B1 B1 B1 | A1 A1 B1 A1 | G2 R2 |
 }
 
 {
 [panning: mono][timbre: triangle wave][octave: 4] 
 
-| G2 D2 | G2 D2 | C2 D2 | G2 D2 | G2 D2 | G2 D2 | C2 D2 | G2 R2 | 
+G2 D2 | G2 D2 | C2 D2 | G2 D2 | G2 D2 | G2 D2 | C2 D2 | G2 R2 | 
 }

@@ -3,5 +3,5 @@
 {
 [panning: mono][timbre: sine wave][octave: 5]
 
-~ A4 ~
+~ A4 ~ |
 }
