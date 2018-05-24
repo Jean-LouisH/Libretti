@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 int validateScript(char* script)
 {
@@ -15,8 +16,7 @@ int validateScript(char* script)
 	int unclosedTrackScopes = 0;
 	unsigned char timeSigLower = 0;
 	unsigned char timeSigUpper = 0;
-	unsigned int totalBeats = 0;
-	unsigned int totalBars = 0;
+	double beatsInABar = 0;
 	unsigned int previousBarCount = 0;
 	unsigned int currentBarCount = 0;
 	unsigned char octave = 0;
@@ -48,7 +48,7 @@ int validateScript(char* script)
 			switch (script[readPosition])
 			{
 			case '{':
-				parseState = READING_NOTES;
+				parseState = READING_TRACK_SCOPE;
 				trackScopeCount++;
 				unclosedTrackScopes++;
 				break;
@@ -104,9 +104,14 @@ int validateScript(char* script)
 					append(&header, script[readPosition]);
 				else if (parseState == READING_VALUE)
 					append(&value, script[readPosition]);
+				else if (parseState == READING_NOTE_DURATION)
+					parseState = READING_TRACK_SCOPE;
 				break;
 			case '|':
-				totalBars++;
+				if (beatsInABar != 0)
+					if (round(beatsInABar) != timeSigUpper)
+							validationStatuses |= BEATS_DO_NOT_MATCH_TIME_SIG;
+				beatsInABar = 0;
 				currentBarCount++;
 				break;
 			case ':':
@@ -315,22 +320,44 @@ int validateScript(char* script)
 				{
 					append(&value, script[readPosition]);
 				}
-				else if (parseState == READING_NOTES)
-				{
-					char substring[1];
-					substring[0] = script[readPosition];
-					if (substring[0] >= '1' && substring[0] <= '9')
-						totalBeats += atoi(substring);
-				}
 				else if (parseState == IGNORING_FIRST_SPACE_IN_VALUE)
 				{
 					validationStatuses |= EXPECTED_SPACE_BETWEEN_HEADER_AND_VALUE;
+				}
+				else if (parseState == READING_TRACK_SCOPE)
+				{
+					if ((script[readPosition] >= 'A' && script[readPosition] <= 'G') ||
+						script[readPosition] == 'R')
+						parseState = READING_NOTE_FREQUENCY;
+				}
+				else if (parseState == READING_NOTE_FREQUENCY)
+				{
+					if (script[readPosition] == '#' || script[readPosition] == 'b' ||
+						script[readPosition] == 'n')
+					{
+						parseState = READING_NOTE_ACCIDENTAL;
+					}
+					else if (script[readPosition] >= '1' && script[readPosition] <= '9')
+					{
+						parseState = READING_NOTE_DURATION;
+						char substring[1];
+						substring[0] = script[readPosition];
+						double durationValue = atoi(substring);
+						if (tupletIsUnclosed)
+							durationValue = (durationValue * 2) / 3;
+						beatsInABar += durationValue;
+					}
+				}
+				else if (parseState == READING_NOTE_ACCIDENTAL)
+				{
+					if (script[readPosition] >= '1' && script[readPosition] <= '9')
+						parseState = READING_NOTE_DURATION;
 				}
 			}
 		}
 
 		if (parseState == READING_NOTHING ||
-			parseState == READING_NOTES)
+			parseState == READING_TRACK_SCOPE)
 		{
 			clear(&header);
 			clear(&value);
@@ -338,10 +365,6 @@ int validateScript(char* script)
 
 		readPosition++;
 	} while (script[readPosition] != NULL);
-
-	if (timeSigUpper > 0 && totalBars > 0)
-		if ((totalBeats / totalBars) > timeSigUpper)
-			validationStatuses |= BEATS_DO_NOT_MATCH_TIME_SIG;
 
 	if (timeSigLower == 0 || timeSigUpper == 0)
 		validationStatuses |= INVALID_TIME_SIG_PROVIDED;
@@ -353,9 +376,13 @@ int validateScript(char* script)
 
 	if (unclosedTrackScopes > 0)
 		validationStatuses |= UNCLOSED_TRACK_SCOPE;
+	else if (unclosedTrackScopes < 0)
+		validationStatuses |= EXTRA_TRACK_SCOPE_CLOSED_BRACKET;
 
 	if (unclosedHeaders > 0)
 		validationStatuses |= UNCLOSED_HEADER_TAG;
+	else if (unclosedHeaders < 0)
+		validationStatuses |= EXTRA_HEADER_TAG_CLOSED_BRACKET;
 
 	printCompilationStatuses(validationStatuses);
 
@@ -377,11 +404,9 @@ unsigned char validateSymbol(char symbol, unsigned char parseState)
 			symbol == '\r')
 			valid = 1;
 	}
-	else if (parseState == READING_NOTES)
+	else if (parseState == READING_TRACK_SCOPE)
 	{
-
-		if ((symbol >= 'A' && symbol <= 'G') ||
-			(symbol >= '1' && symbol <= '9'))
+		if (symbol >= 'A' && symbol <= 'G')
 		{
 			valid = 1;
 		}
@@ -393,10 +418,7 @@ unsigned char validateSymbol(char symbol, unsigned char parseState)
 			case ' ':
 			case '\n':
 			case '\r':
-			case '#': case 'b':	case 'n':
 			case '|':
-			case '*':
-			case '.':
 			case '~':
 			case '+':
 			case '-':
@@ -405,6 +427,44 @@ unsigned char validateSymbol(char symbol, unsigned char parseState)
 			case '>':
 			case 'R':
 			case '}':
+				valid = 1;
+			}
+		}
+	}
+	else if (parseState == READING_NOTE_FREQUENCY)
+	{
+		if (symbol >= '1' && symbol <= '9')
+		{
+			valid = 1;
+		}
+		else
+		{
+			switch (symbol)
+			{
+			case '#': case 'b':	case 'n':
+				valid = 1;
+			}
+		}
+	}
+	else if (parseState == READING_NOTE_ACCIDENTAL)
+	{
+		if (symbol >= '1' && symbol <= '9')
+			valid = 1;
+	}
+	else if (parseState == READING_NOTE_DURATION)
+	{
+		if (symbol >= '0' && symbol <= '9')
+		{
+			valid = 1;
+		}
+		else
+		{
+			switch (symbol)
+			{
+			case '*':
+			case '.':
+			case '>':
+			case ' ':
 				valid = 1;
 			}
 		}
@@ -472,5 +532,9 @@ void printCompilationStatuses(int validationStatuses)
 			printf("Code %d: \tUNCLOSED_CRESCENDO.\n", UNCLOSED_CRESCENDO);
 		if (validationStatuses & UNCLOSED_DIMINUENDO)
 			printf("Code %d: \tUNCLOSED_DIMINUENDO.\n", UNCLOSED_DIMINUENDO);
+		if (validationStatuses & EXTRA_HEADER_TAG_CLOSED_BRACKET)
+			printf("Code %d: \tEXTRA_HEADER_TAG_CLOSED_BRACKET.\n", EXTRA_HEADER_TAG_CLOSED_BRACKET);
+		if (validationStatuses & EXTRA_TRACK_SCOPE_CLOSED_BRACKET)
+			printf("Code %d: \tEXTRA_TRACK_SCOPE_CLOSED_BRACKET.\n", EXTRA_TRACK_SCOPE_CLOSED_BRACKET);
 	}
 }
