@@ -5,22 +5,27 @@
 unsigned char exists(char* filename)
 {
 	FILE* inputFile = fopen(filename, "rb");
-	fclose(inputFile);
+	if (inputFile != NULL)
+		fclose(inputFile);
 	return (unsigned char)inputFile;
 }
 
 char* loadScriptFromFile(char* filename)
 {
 	FILE* inputFile = fopen(filename, "rb");
-	fseek(inputFile, 0, SEEK_END);
-	unsigned int filesize = ftell(inputFile);
-	rewind(inputFile);
-	char* script = malloc(sizeof *script * (filesize + 1));
-	if (script != NULL)
+	char* script = 0;
+	if (inputFile != NULL)
 	{
-		fread(script, sizeof *script, filesize, inputFile);
-		script[filesize] = NULL;
+		fseek(inputFile, 0, SEEK_END);
+		unsigned int filesize = ftell(inputFile);
+		rewind(inputFile);
+		script = malloc(sizeof *script * (filesize + 1));
+		if (script != NULL)
+		{
+			fread(script, sizeof *script, filesize, inputFile);
+			script[filesize] = NULL;
+		}
+		fclose(inputFile);
 	}
-	fclose(inputFile);
 	return script;
 }
