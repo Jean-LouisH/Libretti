@@ -86,9 +86,6 @@
     <ClInclude Include="include\Events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CallbackData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\UserControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -96,6 +93,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Strings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CallbackList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

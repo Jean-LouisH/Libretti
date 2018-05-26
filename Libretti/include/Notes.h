@@ -23,6 +23,7 @@ typedef struct
 	unsigned char articulation;
 	char cue;
 	char* sample;
+	unsigned int sampleSize;
 }lb_Note;
 
 enum panning

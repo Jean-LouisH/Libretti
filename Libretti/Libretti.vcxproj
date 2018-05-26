@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClInclude Include="include\Audio.h" />
     <ClInclude Include="include\Callback.h" />
-    <ClInclude Include="include\CallbackData.h" />
+    <ClInclude Include="include\CallbackList.h" />
     <ClInclude Include="include\Compiler.h" />
     <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Events.h" />
