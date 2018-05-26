@@ -6,6 +6,7 @@
 #include "include/Callback.h"
 #include "include/File.h"
 #include "include/Mixer.h"
+#include "include/CallbackList.h"
 #include "include/WaveformGenerator.h"
 
 int lb_libraryCompilationTest()
@@ -16,31 +17,24 @@ int lb_libraryCompilationTest()
 	return a;
 }
 
-Libretti* lb_createLibretti()
+Libretti* lb_createLibretti(const char* filename)
 {
-	Libretti* libretti = malloc(sizeof *libretti);
+	Libretti* libretti = calloc(1, sizeof *libretti);
 	if (libretti != NULL)
 	{
-		libretti->audio = lb_createAudio();
+		libretti->audio = lb_createAudio(filename);
 		libretti->noteWaves = lb_createNoteWaves();
-		libretti->callbackData = lb_createCallbackData();
 		libretti->runtime = lb_createRuntime();
-
-		if (libretti->audio != NULL &&
-			libretti->callbackData != NULL &&
-			libretti->noteWaves != NULL &&
-			libretti->runtime != NULL)
-		{
-			lb_initCallbackData(libretti->callbackData, libretti->audio, libretti->noteWaves, libretti->runtime);
-			lb_initAudioCallback(libretti->callbackData);
-		}
 	}
 	return libretti;
 }
 
-lb_Audio* lb_createAudio()
+lb_Audio* lb_createAudio(const char* filename)
 {
-	return calloc(1, sizeof(lb_Audio));
+	lb_Audio* audio = calloc(1, sizeof(lb_Audio));
+	if (audio != NULL)
+		lb_compileAudioFromScriptFile(audio, filename);
+	return audio;
 }
 
 lb_NoteWaves* lb_createNoteWaves()
@@ -48,64 +42,41 @@ lb_NoteWaves* lb_createNoteWaves()
 	return calloc(1, sizeof(lb_NoteWaves));
 }
 
-lb_CallbackData* lb_createCallbackData()
-{
-	return calloc(1, sizeof(lb_CallbackData));
-}
-
 lb_Runtime* lb_createRuntime()
 {
 	return calloc(1, sizeof(lb_Runtime));
 }
 
-void lb_initCallbackData(lb_CallbackData* callbackData, lb_Audio* audio, lb_NoteWaves* noteWaves, lb_Runtime* runtime)
+void lb_addLibrettiToCallback(Libretti* libretti)
 {
-	callbackData->audio = audio;
-	callbackData->noteWaves = noteWaves;
-	callbackData->runtime = runtime;
-}
+	static CallbackList* callbackList;
 
-void lb_initAudioCallback(lb_CallbackData* callbackData)
-{
-	if (SDL_Init(SDL_INIT_AUDIO) < 0)
+	if (callbackList == NULL)
 	{
-		SDL_Log("SDL_Init failed: %s", SDL_GetError());
+		callbackList = calloc(1, sizeof(CallbackList));
+		initAudioCallback(callbackList);
 	}
-	else
+	
+	//Checks for allocation after calloc()
+	if (callbackList != NULL)
 	{
-		SDL_AudioSpec desired;
-		SDL_AudioSpec obtained;
-
-		SDL_memset(&desired, 0, sizeof(desired));
-		desired.freq = SAMPLE_FREQUENCY;
-		desired.format = AUDIO_S16SYS;
-		desired.channels = CHANNELS;
-		desired.samples = SAMPLE_SIZE;
-		desired.callback = (SDL_AudioCallback)runCallback;
-		desired.userdata = callbackData;
-
-		SDL_AudioDeviceID device = SDL_OpenAudioDevice(
-			NULL,
-			0,
-			&desired,
-			&obtained,
-			NULL);
-
-		callbackData->runtime->device = device;
-		callbackData->runtime->playStates = 0;
-		lb_reset(callbackData->runtime);
-		lb_play(callbackData->runtime);
+		libretti->runtime->device = callbackList->device;
+		libretti->runtime->playStates = 0;
+		lb_reset(libretti->runtime);
+		lb_play(libretti->runtime);
+		callbackList->librettiList[callbackList->size] = libretti;
+		callbackList->size++;
 	}
 }
 
-int lb_validateScriptFile(char* filename)
+int lb_validateScriptFile(const char* filename)
 {
 	char* script = loadScriptFromFile(filename);
 	validateScript(script);
 	free(script);
 }
 
-void lb_compileAudioFromScriptFile(lb_Audio* audio, char* filename)
+void lb_compileAudioFromScriptFile(lb_Audio* audio, const char* filename)
 {
 	char* script = loadScriptFromFile(filename);
 	if (script != NULL)
@@ -173,11 +144,6 @@ void lb_freeRuntime(lb_Runtime* runtime)
 	free(runtime);
 }
 
-void lb_freeCallbackData(lb_CallbackData* callbackData)
-{
-	free(callbackData);
-}
-
 void lb_freeNoteWaves(lb_NoteWaves* noteWaves)
 {
 	free(noteWaves);
@@ -197,7 +163,6 @@ void lb_freeAudio(lb_Audio* audio)
 void lb_freeLibretti(Libretti* libretti)
 {
 	lb_freeRuntime(libretti->runtime);
-	lb_freeCallbackData(libretti->callbackData);
 	lb_freeNoteWaves(libretti->noteWaves);
 	lb_freeAudio(libretti->audio);
 	free(libretti);
