@@ -15,7 +15,6 @@
 #define Libretti_h
 
 #include "Audio.h"
-#include "CallbackData.h"
 #include "Notes.h"
 #include "NoteWaves.h"
 #include "Runtime.h"
@@ -29,20 +28,17 @@ extern "C"
 	{
 		lb_Audio* audio;
 		lb_NoteWaves* noteWaves;
-		lb_CallbackData* callbackData;
 		lb_Runtime* runtime;
 	}Libretti;
 
 	int lb_libraryCompilationTest();
-	Libretti* lb_createLibretti();
-	lb_Audio* lb_createAudio();
+	Libretti* lb_createLibretti(const char* filename);
+	lb_Audio* lb_createAudio(const char* filename);
 	lb_NoteWaves* lb_createNoteWaves();
-	lb_CallbackData* lb_createCallbackData();
 	lb_Runtime* lb_createRuntime();
-	void lb_initCallbackData(lb_CallbackData* callbackData, lb_Audio* audio, lb_NoteWaves* noteWaves, lb_Runtime* runtime);
-	void lb_initAudioCallback(lb_CallbackData* callbackData);
-	int lb_validateScriptFile(char* filename);
-	void lb_compileAudioFromScriptFile(lb_Audio* audio, char* filename);
+	void lb_addLibrettiToCallback(Libretti* libretti);
+	int lb_validateScriptFile(const char* filename);
+	void lb_compileAudioFromScriptFile(lb_Audio* audio, const char* filename);
 	void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio);
 	void lb_updateNotesFromAudio(lb_Note* notes, unsigned char* noteCount, lb_Audio* audio);
 	void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* notes, unsigned char* noteCount);
@@ -53,7 +49,6 @@ extern "C"
 	void lb_reset(lb_Runtime* runtime);
 	void lb_stop(lb_Runtime* runtime);
 	void lb_freeRuntime(lb_Runtime* runtime);
-	void lb_freeCallbackData(lb_CallbackData* callbackData);
 	void lb_freeNoteWaves(lb_NoteWaves* noteWaves);
 	void lb_freeAudio(lb_Audio* audio);
 	void lb_freeLibretti(Libretti* libretti);
