@@ -7,6 +7,10 @@ void compileAudioFromScript(lb_Audio* audio, char* script)
 	{
 
 	}
+	else
+	{
+		printf("\nCompilation Failed.");
+	}
 }
 
 void allocateMemory(lb_Audio* audio, char* script)
