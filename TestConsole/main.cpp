@@ -16,9 +16,8 @@ int main(int argc, char* argv[])
 	double frameTime = 0.0;
 	bool isRunning = true;
 
-	Libretti* libretti = lb_createLibretti();
 	menu(&fileName);
-	//lb_validateScriptFile((char*)"../Demos/Mary had a little lamb (feature test).txt");
+	Libretti* libretti = lb_createLibretti(fileName.c_str());
 
 	do
 	{
