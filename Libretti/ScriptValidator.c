@@ -223,13 +223,14 @@ int validateScript(char* script)
 					if (strcmp(value.data, "square wave") != 0 &&
 						strcmp(value.data, "sine wave") != 0 &&
 						strcmp(value.data, "triangle wave") != 0 &&
+						strcmp(value.data, "sawtooth wave") != 0 &&
 						strcmp(value.data, "pulse 10") != 0 &&
 						strcmp(value.data, "pulse 25") != 0 &&
 						strcmp(value.data, "noise") != 0 &&
 						strcmp(value.data, "metallic") != 0)
 					{
 						lb_String filename = newString("Samples/");
-						lb_String extension = newString(".bin");
+						lb_String extension = newString(".pcm");
 						strcat(filename.data, value.data);
 						strcat(filename.data, extension.data);
 						if (!exists(filename.data))
