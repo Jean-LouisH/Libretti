@@ -50,9 +50,16 @@ void runCallback(void* userdata, Uint8* stream, int byteLength)
 	for (int i = 0; i < callbackList->size; i++)
 	{
 		Libretti* libretti = callbackList->librettiList[i];
-		if (libretti->audio->trackCount > 0)
+
+		if (libretti != NULL &&
+			libretti->audio != NULL &&
+			libretti->noteWaves != NULL &&
+			libretti->runtime != NULL)
 		{
-			lb_updateNoteWavesFromAudio(libretti->noteWaves, libretti->audio);
+			if (libretti->audio->trackCount > 0)
+			{
+				lb_updateNoteWavesFromAudio(libretti->noteWaves, libretti->audio);
+			}
 		}
 	}
 }

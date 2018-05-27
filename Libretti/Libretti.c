@@ -9,6 +9,8 @@
 #include "include/CallbackList.h"
 #include "include/WaveformGenerator.h"
 
+CallbackList* callbackList;
+
 int lb_libraryCompilationTest()
 {
 	int a = 0;
@@ -49,8 +51,6 @@ lb_Runtime* lb_createRuntime()
 
 void lb_addLibrettiToCallback(Libretti* libretti)
 {
-	static CallbackList* callbackList;
-
 	if (callbackList == NULL)
 	{
 		callbackList = calloc(1, sizeof(CallbackList));
@@ -67,6 +67,14 @@ void lb_addLibrettiToCallback(Libretti* libretti)
 		callbackList->librettiList[callbackList->size] = libretti;
 		callbackList->size++;
 	}
+}
+
+Libretti* lb_createAndAddLibrettiToCallback(const char* filename)
+{
+	Libretti* libretti = lb_createLibretti(filename);
+	if (libretti != NULL)
+		lb_addLibrettiToCallback(libretti);
+	return libretti;
 }
 
 int lb_validateScriptFile(const char* filename)
@@ -101,41 +109,74 @@ void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* notes, unsign
 
 }
 
-void lb_incrementPlayTime(lb_Runtime* runtime, double timeSeconds)
+void lb_incrementPlayTime(Libretti* libretti, double timeSeconds)
 {
-	if (runtime->playStates & IS_PLAYING)
+	if (libretti->runtime->playStates & IS_PLAYING)
 	{
-		runtime->currentPlayTime += timeSeconds;
+		libretti->runtime->currentPlayTime += timeSeconds;
 	}
 }
 
-void lb_load(lb_Runtime* runtime, lb_Audio* audio, char* filename)
+void lb_incrementAllPlayTimes(double timeSeconds)
 {
-	lb_compileAudioFromScriptFile(audio, filename);
-	lb_play(runtime);
+	for (int i = 0; i < callbackList->size; i++)
+	{
+		Libretti* libretti = callbackList->librettiList[i];
+		libretti->runtime->currentPlayTime += timeSeconds;
+	}
 }
 
-void lb_play(lb_Runtime* runtime)
+void lb_load(Libretti* libretti, char* filename)
 {
-	runtime->playStates |= IS_PLAYING;
-	SDL_PauseAudioDevice(runtime->device, 0);
+	lb_compileAudioFromScriptFile(libretti->audio, filename);
+	lb_play(libretti->runtime);
 }
 
-void lb_pause(lb_Runtime* runtime)
+void lb_play(Libretti* libretti)
 {
-	runtime->playStates &= ~IS_PLAYING;
-	SDL_PauseAudioDevice(runtime->device, 1);
+	libretti->runtime->playStates |= IS_PLAYING;
+	SDL_PauseAudioDevice(libretti->runtime->device, 0);
 }
 
-void lb_reset(lb_Runtime* runtime)
+void lb_pause(Libretti* libretti)
 {
-	runtime->currentPlayTime = 0.0;
+	libretti->runtime->playStates &= ~IS_PLAYING;
+	SDL_PauseAudioDevice(libretti->runtime->device, 1);
 }
 
-void lb_stop(lb_Runtime* runtime)
+void lb_reset(Libretti* libretti)
 {
-	lb_reset(runtime);
-	lb_pause(runtime);
+	libretti->runtime->currentPlayTime = 0.0;
+}
+
+void lb_stop(Libretti* libretti)
+{
+	lb_reset(libretti->runtime);
+	lb_pause(libretti->runtime);
+}
+
+void lb_playAll()
+{
+	for (int i = 0; i < callbackList->librettiList; i++)
+		lb_play(callbackList->librettiList[i]);
+}
+
+void lb_pauseAll()
+{
+	for (int i = 0; i < callbackList->librettiList; i++)
+		lb_pause(callbackList->librettiList[i]);
+}
+
+void lb_resetAll()
+{
+	for (int i = 0; i < callbackList->librettiList; i++)
+		lb_reset(callbackList->librettiList[i]);
+}
+
+void lb_stopAll()
+{
+	for (int i = 0; i < callbackList->librettiList; i++)
+		lb_stop(callbackList->librettiList[i]);
 }
 
 void lb_freeRuntime(lb_Runtime* runtime)
@@ -165,5 +206,8 @@ void lb_freeLibretti(Libretti* libretti)
 	lb_freeRuntime(libretti->runtime);
 	lb_freeNoteWaves(libretti->noteWaves);
 	lb_freeAudio(libretti->audio);
+	libretti->runtime = NULL;
+	libretti->noteWaves = NULL;
+	libretti->audio = NULL;
 	free(libretti);
 }

@@ -17,12 +17,12 @@ int main(int argc, char* argv[])
 	bool isRunning = true;
 
 	menu(&fileName);
-	Libretti* libretti = lb_createLibretti(fileName.c_str());
+	Libretti* libretti = lb_createAndAddLibrettiToCallback(fileName.c_str());
 
 	do
 	{
 		cycleStart = SDL_GetTicks();
-		lb_incrementPlayTime(libretti->runtime, frameTime / MS_PER_S);
+		lb_incrementAllPlayTimes(frameTime / MS_PER_S);
 		cycleEnd = SDL_GetTicks();
 		deltaSeconds = (cycleEnd - cycleStart) / MS_PER_S;
 		double frameDelay = (MS_PER_S / fps) - (deltaSeconds * MS_PER_S);
