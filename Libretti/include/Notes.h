@@ -13,6 +13,8 @@
 #ifndef Notes_h
 #define Notes_h
 
+#include "Effects.h"
+
 typedef struct
 {
 	double amplitude;
@@ -24,6 +26,7 @@ typedef struct
 	char cue;
 	char* sample;
 	unsigned int sampleSize;
+	lb_Effects effects;
 }lb_Note;
 
 enum panning

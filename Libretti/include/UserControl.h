@@ -13,6 +13,8 @@
 #ifndef UserControl_h
 #define UserControl_h
 
+#include "Effects.h"
+
 enum userControlCodes
 {
 	PAN_OUTPUT				= 1 << 0,
@@ -32,6 +34,7 @@ typedef struct
 {
 	double outputVolume;
 	double outputPanning; //-1.0 to 1.0
+	lb_Effects effects;
 	unsigned int controlSwitches;
 }lb_UserControl;
 
