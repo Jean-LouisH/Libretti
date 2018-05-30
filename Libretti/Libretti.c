@@ -94,19 +94,22 @@ void lb_compileAudioFromScriptFile(lb_Audio* audio, const char* filename)
 	}
 }
 
-void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio)
+void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio, lb_Runtime* runtime)
+{
+	lb_Note* currentNotes = malloc(sizeof *currentNotes);
+	lb_updateNotesFromAudio(currentNotes, audio, runtime);
+	lb_updateNoteWavesFromNotes(noteWaves, currentNotes, audio->trackCount);
+	free(currentNotes);
+}
+
+void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime* runtime)
 {
 
 }
 
-void lb_updateNotesFromAudio(lb_Note* notes, unsigned char* noteCount, lb_Audio* audio)
+void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, unsigned char* trackCount)
 {
-
-}
-
-void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* notes, unsigned char* noteCount)
-{
-
+	generateNoteWaves(noteWaves, currentNotes, trackCount);
 }
 
 void lb_incrementPlayTime(Libretti* libretti, double timeSeconds)

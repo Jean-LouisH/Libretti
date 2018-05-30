@@ -58,7 +58,7 @@ void runCallback(void* userdata, Uint8* stream, int byteLength)
 		{
 			if (libretti->audio->trackCount > 0)
 			{
-				lb_updateNoteWavesFromAudio(libretti->noteWaves, libretti->audio);
+				lb_updateNoteWavesFromAudio(libretti->noteWaves, libretti->audio, libretti->runtime);
 			}
 		}
 	}
