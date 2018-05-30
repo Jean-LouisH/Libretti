@@ -13,6 +13,9 @@
 #ifndef WaveformGenerator_h
 #define WaveformGenerator_h
 
+#include "Notes.h"
+#include "NoteWaves.h"
 
+void generateNoteWaves(lb_NoteWaves* noteWaves, lb_Note* currentNotes, unsigned char* trackCount);
 
 #endif /*WaveformGenerator_h*/
