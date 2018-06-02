@@ -14,6 +14,8 @@
 #ifndef Libretti_h
 #define Libretti_h
 
+#include <stdint.h>
+
 #include "Audio.h"
 #include "Notes.h"
 #include "NoteWaves.h"
@@ -42,7 +44,7 @@ extern "C"
 	void lb_compileAudioFromScriptFile(lb_Audio* audio, const char* filename);
 	void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio, lb_Runtime* runtime);
 	void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime* runtime);
-	void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, unsigned char* trackCount);
+	void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, uint8_t* trackCount);
 	void lb_incrementPlayTime(Libretti* libretti, double timeSeconds);
 	void lb_incrementAllPlayTimes(double timeSeconds);
 	void lb_load(Libretti* libretti, char* filename);

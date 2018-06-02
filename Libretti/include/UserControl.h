@@ -13,6 +13,7 @@
 #ifndef UserControl_h
 #define UserControl_h
 
+#include <stdint.h>
 #include "Effects.h"
 
 enum userControlCodes
@@ -35,7 +36,7 @@ typedef struct
 	double outputVolume;
 	double outputPanning; //-1.0 to 1.0
 	lb_Effects effects;
-	unsigned int controlSwitches;
+	uint32_t controlSwitches;
 }lb_UserControl;
 
 #endif /*UserControl_h*/

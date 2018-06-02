@@ -14,13 +14,14 @@
 #define CallbackList_h
 
 #include "Libretti.h"
+#include <stdint.h>
 #include <SDL_audio.h>
 
 typedef struct
 {
 	Libretti** librettiList;
 	SDL_AudioDeviceID device;
-	unsigned char size;
+	uint8_t size;
 }CallbackList;
 
 #endif /*CallbackList_h*/

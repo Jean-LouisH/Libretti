@@ -80,8 +80,9 @@ Libretti* lb_createAndAddLibrettiToCallback(const char* filename)
 int lb_validateScriptFile(const char* filename)
 {
 	char* script = loadScriptFromFile(filename);
-	validateScript(script);
+	int validationStatuses = validateScript(script);
 	free(script);
+	return validationStatuses;
 }
 
 void lb_compileAudioFromScriptFile(lb_Audio* audio, const char* filename)
@@ -107,7 +108,7 @@ void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime*
 
 }
 
-void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, unsigned char* trackCount)
+void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, uint8_t* trackCount)
 {
 	generateNoteWaves(noteWaves, currentNotes, trackCount);
 }
@@ -138,13 +139,13 @@ void lb_load(Libretti* libretti, char* filename)
 void lb_play(Libretti* libretti)
 {
 	libretti->runtime->playStates |= IS_PLAYING;
-	SDL_PauseAudioDevice(libretti->runtime->device, 0);
+	SDL_PauseAudioDevice(libretti->runtime->device, false);
 }
 
 void lb_pause(Libretti* libretti)
 {
 	libretti->runtime->playStates &= ~IS_PLAYING;
-	SDL_PauseAudioDevice(libretti->runtime->device, 1);
+	SDL_PauseAudioDevice(libretti->runtime->device, true);
 }
 
 void lb_reset(Libretti* libretti)

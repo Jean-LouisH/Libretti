@@ -14,6 +14,9 @@
 #ifndef ScriptValidator_h
 #define ScriptValidator_h
 
+#include <stdbool.h>
+#include <stdint.h>
+
 enum validationStatuses
 {
 	ALL_OK											= 0,
@@ -56,7 +59,7 @@ enum parseStates
 };
 
 int validateScript(char* script);
-unsigned char validateSymbol(char symbol, unsigned char parseState);
+bool validateSymbol(char symbol, uint8_t parseState);
 void printCompilationStatuses(int validationStatuses);
 
 #endif /*ScriptValidator_h*/

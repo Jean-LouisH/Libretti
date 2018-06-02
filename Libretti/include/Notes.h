@@ -13,19 +13,20 @@
 #ifndef Notes_h
 #define Notes_h
 
+#include <stdint.h>
 #include "Effects.h"
 
 typedef struct
 {
 	double amplitude;
 	double frequency;
-	unsigned char panning;
-	unsigned char timbre;
-	unsigned char duration;
-	unsigned char articulation;
-	char cue;
+	uint8_t panning;
+	uint8_t timbre;
+	uint8_t duration;
+	uint8_t articulation;
+	uint16_t cue;
 	char* sample;
-	unsigned int sampleSize;
+	uint32_t sampleSize;
 	lb_Effects effects;
 }lb_Note;
 

@@ -2,6 +2,8 @@
 #include "include/Constants.h"
 #include "include/Strings.h"
 #include "include/File.h"
+#include <stdint.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,21 +16,21 @@ int validateScript(char* script)
 	int trackScopeCount = 0;
 	int unclosedHeaders = 0;
 	int unclosedTrackScopes = 0;
-	unsigned char timeSigLower = 0;
-	unsigned char timeSigUpper = 0;
+	uint8_t timeSigLower = 0;
+	uint8_t timeSigUpper = 0;
 	double beatsInABar = 0;
 	unsigned int previousBarCount = 0;
 	unsigned int currentBarCount = 0;
-	unsigned char octave = 0;
-	unsigned char tempo = 0;
-	unsigned char parseState = READING_NOTHING;
-	unsigned char previousParseState = 0;
+	uint8_t octave = 0;
+	uint8_t tempo = 0;
+	uint8_t parseState = READING_NOTHING;
+	uint8_t previousParseState = 0;
 
-	unsigned char tupletIsUnclosed = 0;
-	unsigned char slurIsUnclosed = 0;
+	bool tupletIsUnclosed = false;
+	bool slurIsUnclosed = false;
 
-	unsigned char isReadingCrescendo = 0;
-	unsigned char isReadingDiminuendo = 0;
+	bool isReadingCrescendo = false;
+	bool isReadingDiminuendo = false;
 	int unclosedCrescendos = 0;
 	int unclosedDiminuendos = 0;
 
@@ -66,7 +68,7 @@ int validateScript(char* script)
 			case '<':
 				if (!isReadingCrescendo)
 				{
-					isReadingCrescendo = 1;
+					isReadingCrescendo = true;
 				}
 				else
 				{
@@ -74,13 +76,13 @@ int validateScript(char* script)
 						unclosedCrescendos--;
 					else
 						unclosedCrescendos++;
-					isReadingCrescendo = 0;
+					isReadingCrescendo = false;
 				}
 				break;
 			case '>':
 				if (!isReadingDiminuendo)
 				{
-					isReadingDiminuendo = 1;
+					isReadingDiminuendo = true;
 				}
 				else
 				{
@@ -88,15 +90,15 @@ int validateScript(char* script)
 						unclosedDiminuendos--;
 					else
 						unclosedDiminuendos++;
-					isReadingDiminuendo = 0;
+					isReadingDiminuendo = false;
 				}
 				break;
 			case ' ':
 				if (isReadingCrescendo)
-					isReadingCrescendo = 0;
+					isReadingCrescendo = false;
 
 				if (isReadingDiminuendo)
-					isReadingDiminuendo = 0;
+					isReadingDiminuendo = false;
 
 				if (parseState == IGNORING_FIRST_SPACE_IN_VALUE)
 					parseState = READING_VALUE;
@@ -394,22 +396,22 @@ int validateScript(char* script)
 	return validationStatuses;
 }
 
-unsigned char validateSymbol(char symbol, unsigned char parseState)
+bool validateSymbol(char symbol, uint8_t parseState)
 {
-	unsigned char valid = 0;
+	bool valid = false;
 
 	if (parseState == READING_NOTHING)
 	{
 		if (symbol == '[' || symbol == '{' ||
 			symbol == ' ' || symbol == '\n' ||
 			symbol == '\r')
-			valid = 1;
+			valid = true;
 	}
 	else if (parseState == READING_TRACK_SCOPE)
 	{
 		if (symbol >= 'A' && symbol <= 'G')
 		{
-			valid = 1;
+			valid = true;
 		}
 		else
 		{
@@ -428,7 +430,7 @@ unsigned char validateSymbol(char symbol, unsigned char parseState)
 			case '>':
 			case 'R':
 			case '}':
-				valid = 1;
+				valid = true;
 			}
 		}
 	}
@@ -436,27 +438,27 @@ unsigned char validateSymbol(char symbol, unsigned char parseState)
 	{
 		if (symbol >= '1' && symbol <= '9')
 		{
-			valid = 1;
+			valid = true;
 		}
 		else
 		{
 			switch (symbol)
 			{
 			case '#': case 'b':	case 'n':
-				valid = 1;
+				valid = true;
 			}
 		}
 	}
 	else if (parseState == READING_NOTE_ACCIDENTAL)
 	{
 		if (symbol >= '1' && symbol <= '9')
-			valid = 1;
+			valid = true;
 	}
 	else if (parseState == READING_NOTE_DURATION)
 	{
 		if (symbol >= '0' && symbol <= '9')
 		{
-			valid = 1;
+			valid = true;
 		}
 		else
 		{
@@ -466,13 +468,13 @@ unsigned char validateSymbol(char symbol, unsigned char parseState)
 			case '.':
 			case '>':
 			case ' ':
-				valid = 1;
+				valid = true;
 			}
 		}
 	}
 	else
 	{
-		valid = 1;
+		valid = true;
 	}
 
 	return valid;

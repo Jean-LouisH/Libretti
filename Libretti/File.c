@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned char exists(char* filename)
+bool exists(char* filename)
 {
 	FILE* inputFile = fopen(filename, "rb");
 	if (inputFile != NULL)
 		fclose(inputFile);
-	return (unsigned char)inputFile;
+	return (bool)inputFile;
 }
 
 char* loadScriptFromFile(char* filename)

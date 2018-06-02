@@ -29,14 +29,14 @@ void append(lb_String* string, char symbol)
 	if (string->length < string->capacity)
 	{
 		string->data[string->length] = symbol;
-		string->data[string->length + 1] = 0;
+		string->data[string->length + 1] = NULL;
 		string->length++;
 	}
 }
 
 void clear(lb_String* string)
 {
-	string->data[0] = 0;
+	string->data[0] = NULL;
 	string->length = 0;
 }
 

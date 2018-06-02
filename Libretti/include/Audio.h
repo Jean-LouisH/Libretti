@@ -16,21 +16,22 @@
 #include "Constants.h"
 #include "Events.h"
 #include "Tracks.h"
+#include <stdint.h>
 
 typedef struct
 {
 	lb_Track tracks[MAX_TRACKS];
 	lb_TempoEvent* tempoEvents;
 	lb_LyricsEvent* lyricsEvents;
-	unsigned char trackCount;
-	unsigned char tempoEventCount;
-	unsigned char lyricsEventCount;
+	uint8_t trackCount;
+	uint8_t tempoEventCount;
+	uint8_t lyricsEventCount;
 	double timeLength;
 	double loopTargetTime;
 	char* name;
 	char* artist;
-	unsigned char keySignature;		
-	unsigned char timeSignature[2]; //[0] = numerator, [1] = denominator
+	uint8_t keySignature;
+	uint8_t timeSignature[2]; //[0] = numerator, [1] = denominator
 }lb_Audio;
 
 #endif /*Audio_h*/
