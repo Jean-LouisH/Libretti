@@ -9,7 +9,7 @@
 #include "include/CallbackList.h"
 #include "include/WaveformGenerator.h"
 
-CallbackList* callbackList;
+static CallbackList* callbackList;
 
 int lb_libraryCompilationTest()
 {
@@ -21,7 +21,7 @@ int lb_libraryCompilationTest()
 
 Libretti* lb_createLibretti(const char* filename)
 {
-	Libretti* libretti = calloc(1, sizeof *libretti);
+	Libretti* libretti = malloc(sizeof *libretti);
 	if (libretti != NULL)
 	{
 		libretti->audio = lb_createAudio(filename);
