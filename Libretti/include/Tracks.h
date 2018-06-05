@@ -18,7 +18,7 @@
 
 typedef struct
 {
-	lb_NoteEvent* notes;
+	lb_NoteEvent* noteEvents;
 	uint32_t noteCount;
 }lb_Track;
 

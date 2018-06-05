@@ -1,11 +1,15 @@
 #include "include/Compiler.h"
 #include "include/ScriptValidator.h"
+#include "include/Strings.h"
+#include <stdlib.h>
+#include <stdbool.h>
 
 void compileAudioFromScript(lb_Audio* audio, char* script)
 {
 	if (validateScript(script) == ALL_OK)
 	{
-
+		allocateMemory(audio, script);
+		buildAudioData(audio, script);
 	}
 	else
 	{
@@ -15,7 +19,57 @@ void compileAudioFromScript(lb_Audio* audio, char* script)
 
 void allocateMemory(lb_Audio* audio, char* script)
 {
+	int readPosition = 0;
+	int currentTrack = -1;
+	int noteCount = 0;
+	int tempoEventCount = 0;
+	int lyricsEventCount = 0;
+	char symbol = NULL;
+	bool isReadingHeader = false;
+	lb_String header = newString("");
 
+	do
+	{
+		symbol = script[readPosition];
+
+		switch (symbol)
+		{
+		case '{':
+			currentTrack++;
+			noteCount = 0;
+			break;
+		case '[':
+			isReadingHeader = true;
+			break;
+		case ':':
+			if (strcmp(header.data, "tempo") == 0)
+				tempoEventCount++;
+			else if (strcmp(header.data, "lyric") == 0)
+				lyricsEventCount++;
+			isReadingHeader = false;
+			clear(&header);
+			break;
+		case '}':
+			audio->tracks[currentTrack].noteEvents = malloc(sizeof(lb_NoteEvent) * noteCount);
+			audio->tracks[currentTrack].noteCount = noteCount;
+			break;
+		default:
+			if (symbol >= 'A' && symbol <= 'G' ||
+				symbol == 'R')
+				noteCount++;
+			else if (isReadingHeader)
+				append(&header, symbol);
+		}
+
+		readPosition++;
+	} while (symbol != NULL);
+
+	audio->tempoEvents = malloc(sizeof(lb_TempoEvent) * tempoEventCount);
+	audio->tempoEventCount = tempoEventCount;
+	audio->lyricsEvents = malloc(sizeof(lb_LyricsEvent) * lyricsEventCount);
+	audio->lyricsEventCount = lyricsEventCount;
+	audio->trackCount = currentTrack + 1;
+	freeString(&header);
 }
 
 void buildAudioData(lb_Audio* audio, char* script)

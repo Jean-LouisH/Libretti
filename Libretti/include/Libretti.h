@@ -33,7 +33,6 @@ extern "C"
 		lb_Runtime* runtime;
 	}Libretti;
 
-	int lb_libraryCompilationTest();
 	Libretti* lb_createLibretti(const char* filename);
 	lb_Audio* lb_createAudio(const char* filename);
 	lb_NoteWaves* lb_createNoteWaves();
