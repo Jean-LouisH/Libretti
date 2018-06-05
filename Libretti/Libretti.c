@@ -11,14 +11,6 @@
 
 static CallbackList* callbackList;
 
-int lb_libraryCompilationTest()
-{
-	int a = 0;
-	a++;
-	char* q = loadScriptFromFile("../Demos/Mary had a little lamb (feature test).txt");
-	return a;
-}
-
 Libretti* lb_createLibretti(const char* filename)
 {
 	Libretti* libretti = malloc(sizeof *libretti);
@@ -196,8 +188,8 @@ void lb_freeNoteWaves(lb_NoteWaves* noteWaves)
 
 void lb_freeAudio(lb_Audio* audio)
 {
-	if (audio->tracks->notes != NULL)
-		free(audio->tracks->notes);
+	if (audio->tracks->noteEvents != NULL)
+		free(audio->tracks->noteEvents);
 	if (audio->tempoEvents != NULL)
 		free(audio->tempoEvents);
 	if (audio->lyricsEvents != NULL)
