@@ -54,8 +54,8 @@ void lb_addLibrettiToCallback(Libretti* libretti)
 	{
 		libretti->runtime->device = callbackList->device;
 		libretti->runtime->playStates = 0;
-		lb_reset(libretti->runtime);
-		lb_play(libretti->runtime);
+		lb_reset(libretti);
+		lb_play(libretti);
 		callbackList->librettiList[callbackList->size] = libretti;
 		callbackList->size++;
 	}
