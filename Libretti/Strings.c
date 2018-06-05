@@ -38,6 +38,7 @@ void clear(lb_String* string)
 {
 	string->data[0] = NULL;
 	string->length = 0;
+	string->capacity = 0;
 }
 
 void freeString(lb_String* string)
