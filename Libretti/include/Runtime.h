@@ -14,6 +14,7 @@
 #define Runtime_h
 
 #include <stdint.h>
+#include "UserControl.h"
 #include <SDL_audio.h>
 
 enum states
@@ -27,6 +28,7 @@ typedef struct
 	double currentPlayTime;
 	SDL_AudioDeviceID device;
 	uint8_t playStates;
+	lb_UserControl userControl;
 }lb_Runtime;
 
 #endif /*Runtime_h*/
