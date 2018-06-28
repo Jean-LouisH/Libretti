@@ -24,8 +24,7 @@ int main(int argc, char* argv[])
 		cycleStart = SDL_GetTicks();
 		lb_incrementAllPlayTimes(frameTime / MS_PER_S);
 		cycleEnd = SDL_GetTicks();
-		deltaSeconds = (cycleEnd - cycleStart) / MS_PER_S;
-		double frameDelay = (MS_PER_S / fps) - (deltaSeconds * MS_PER_S);
+		double frameDelay = (MS_PER_S / fps) - (cycleEnd - cycleStart);
 		if (frameDelay > 0)
 			SDL_Delay(frameDelay);
 		frameTime = SDL_GetTicks() - cycleStart;
