@@ -100,7 +100,7 @@ void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime*
 
 }
 
-void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, uint8_t* trackCount)
+void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, uint8_t trackCount)
 {
 	generateNoteWaves(noteWaves, currentNotes, trackCount);
 }
