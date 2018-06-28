@@ -26,6 +26,7 @@ void allocateMemory(lb_Audio* audio, char* script)
 	int lyricsEventCount = 0;
 	char symbol = NULL;
 	bool isReadingHeader = false;
+	bool isReadingValue = false;
 	lb_String header = newString("");
 
 	do
@@ -47,18 +48,25 @@ void allocateMemory(lb_Audio* audio, char* script)
 			else if (strcmp(header.data, "lyric") == 0)
 				lyricsEventCount++;
 			isReadingHeader = false;
+			isReadingValue = true;
 			clear(&header);
 			break;
 		case '}':
 			audio->tracks[currentTrack].noteEvents = malloc(sizeof(lb_NoteEvent) * noteCount);
 			audio->tracks[currentTrack].noteCount = noteCount;
 			break;
+		case ']':
+			isReadingValue = false;
+			break;
 		default:
-			if (symbol >= 'A' && symbol <= 'G' ||
-				symbol == 'R')
-				noteCount++;
-			else if (isReadingHeader)
-				append(&header, symbol);
+			if (!isReadingValue)
+			{
+				if (isReadingHeader)
+					append(&header, symbol);
+				else if (symbol >= 'A' && symbol <= 'G' ||
+					symbol == 'R')
+					noteCount++;
+			}
 		}
 
 		readPosition++;
