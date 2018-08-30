@@ -101,5 +101,8 @@
     <ClInclude Include="include\Effects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\ScriptParseStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -16,6 +16,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "ScriptParseStates.h"
 
 enum validationStatuses
 {
@@ -44,18 +45,6 @@ enum validationStatuses
 	UNCLOSED_DIMINUENDO								= 1 << 21,
 	EXTRA_HEADER_TAG_CLOSED_BRACKET					= 1 << 22,
 	EXTRA_TRACK_SCOPE_CLOSED_BRACKET				= 1 << 23	
-};
-
-enum parseStates
-{
-	READING_NOTHING,
-	READING_HEADER,
-	IGNORING_FIRST_SPACE_IN_VALUE,
-	READING_VALUE,
-	READING_TRACK_SCOPE,
-	READING_NOTE_FREQUENCY,
-	READING_NOTE_ACCIDENTAL,
-	READING_NOTE_DURATION
 };
 
 int validateScript(char* script);
