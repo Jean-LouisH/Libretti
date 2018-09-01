@@ -93,8 +93,8 @@ void buildAudioData(lb_Audio* audio, char* script)
 	uint8_t timeSigUpper = 0;
 	uint8_t octave = 0;
 	uint8_t tempo = 0;
-	bool tupletIsUnclosed = false;
-	bool slurIsUnclosed = false;
+	bool tupletIsOpened = false;
+	bool slurIsOpened = false;
 	bool isReadingCrescendo = false;
 	bool isReadingDiminuendo = false;
 
@@ -115,22 +115,16 @@ void buildAudioData(lb_Audio* audio, char* script)
 			parseState = READING_HEADER;
 			break;
 		case '_':
-			tupletIsUnclosed = !tupletIsUnclosed;
+			tupletIsOpened = !tupletIsOpened;
 			break;
 		case '~':
-			slurIsUnclosed = !slurIsUnclosed;
+			slurIsOpened = !slurIsOpened;
 			break;
 		case '<':
-			if (!isReadingCrescendo)
-				isReadingCrescendo = true;
-			else
-				isReadingCrescendo = false;
+			isReadingCrescendo = !isReadingCrescendo;
 			break;
 		case '>':
-			if (!isReadingDiminuendo)
-				isReadingDiminuendo = true;
-			else
-				isReadingDiminuendo = false;
+			isReadingDiminuendo = !isReadingDiminuendo;
 			break;
 		case ' ':
 			if (isReadingCrescendo)
@@ -339,7 +333,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 					char substring[1];
 					substring[0] = script[readPosition];
 					double durationValue = atoi(substring);
-					if (tupletIsUnclosed)
+					if (tupletIsOpened)
 						durationValue = (durationValue * 2) / 3;
 
 				}
