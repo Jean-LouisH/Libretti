@@ -175,6 +175,11 @@ void lb_stopAll()
 		lb_stop(callbackList->librettiList[i]);
 }
 
+void lb_exportAudioToWAV(lb_Audio* audio, const char* name)
+{
+
+}
+
 void lb_freeRuntime(lb_Runtime* runtime)
 {
 	SDL_CloseAudioDevice(runtime->device);

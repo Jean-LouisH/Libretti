@@ -55,6 +55,7 @@ extern "C"
 	void lb_pauseAll();
 	void lb_resetAll();
 	void lb_stopAll();
+	void lb_exportAudioToWAV(lb_Audio* audio, const char* name);
 	void lb_freeRuntime(lb_Runtime* runtime);
 	void lb_freeNoteWaves(lb_NoteWaves* noteWaves);
 	void lb_freeAudio(lb_Audio* audio);
