@@ -28,8 +28,8 @@ typedef struct
 	uint8_t lyricsEventCount;
 	double timeLength;
 	double loopTargetTime;
-	char* name;
-	char* artist;
+	char name[64];
+	char artist[32];
 	uint8_t keySignature;
 	uint8_t timeSignature[2]; //[0] = numerator, [1] = denominator
 }lb_Audio;
