@@ -2,6 +2,7 @@
 #include "include/ScriptParseStates.h"
 #include "include/ScriptValidator.h"
 #include "include/Strings.h"
+#include "include/Timing.h"
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -89,10 +90,15 @@ void buildAudioData(lb_Audio* audio, char* script)
 	int currentTempoEvent = 0;
 	int currentLyricsEvent = 0;
 
+	double currentTime = 0.0;
+
 	uint8_t timeSigLower = 0;
 	uint8_t timeSigUpper = 0;
 	uint8_t octave = 0;
 	uint8_t tempo = 0;
+	uint8_t dynamic = 0;
+	uint8_t panning = 0;
+	uint8_t timbre = 0;
 	bool tupletIsOpened = false;
 	bool slurIsOpened = false;
 	bool isReadingCrescendo = false;
@@ -146,7 +152,80 @@ void buildAudioData(lb_Audio* audio, char* script)
 			parseState = IGNORING_FIRST_SPACE_IN_VALUE;
 			break;
 		case ']':
-			if (strcmp(header.data, "time sig") == 0)
+			if (strcmp(header.data, "name") == 0)
+			{
+				int valueReadPosition = 0;
+				while (value.data[valueReadPosition] != 0)
+				{
+					audio->name[valueReadPosition] = value.data[valueReadPosition];
+					valueReadPosition++;
+				}
+			}
+			else if (strcmp(header.data, "artist") == 0)
+			{
+				int valueReadPosition = 0;
+				while (value.data[valueReadPosition] != 0)
+				{
+					audio->artist[valueReadPosition] = value.data[valueReadPosition];
+					valueReadPosition++;
+				}
+			}
+			else if (strcmp(header.data, "key sig") == 0)
+			{
+				if (strcmp(value.data, "C major") != 0)
+					audio->keySignature = C_MAJOR;
+				else if (strcmp(value.data, "G major") != 0)
+					audio->keySignature = G_MAJOR;
+				else if (strcmp(value.data, "D major") != 0)
+					audio->keySignature = D_MAJOR;
+				else if (strcmp(value.data, "A major") != 0)
+					audio->keySignature = A_MAJOR;
+				else if (strcmp(value.data, "E major") != 0)
+					audio->keySignature = E_MAJOR;
+				else if (strcmp(value.data, "B major") != 0)
+					audio->keySignature = B_MAJOR;
+				else if (strcmp(value.data, "Fs major") != 0)
+					audio->keySignature = Fs_MAJOR;
+				else if (strcmp(value.data, "Gb major") != 0)
+					audio->keySignature = Gb_MAJOR;
+				else if (strcmp(value.data, "Db major") != 0)
+					audio->keySignature = Db_MAJOR;
+				else if (strcmp(value.data, "Ab major") != 0)
+					audio->keySignature = Ab_MAJOR;
+				else if (strcmp(value.data, "Eb major") != 0)
+					audio->keySignature = Eb_MAJOR;
+				else if (strcmp(value.data, "Bb major") != 0)
+					audio->keySignature = Bb_MAJOR;
+				else if (strcmp(value.data, "F major") != 0)
+					audio->keySignature = F_MAJOR;
+				else if (strcmp(value.data, "A minor") != 0)
+					audio->keySignature = A_MINOR;
+				else if (strcmp(value.data, "E minor") != 0)
+					audio->keySignature = E_MINOR;
+				else if (strcmp(value.data, "B minor") != 0)
+					audio->keySignature = B_MINOR;
+				else if (strcmp(value.data, "Fs minor") != 0)
+					audio->keySignature = Fs_MINOR;
+				else if (strcmp(value.data, "Cs minor") != 0)
+					audio->keySignature = Cs_MINOR;
+				else if (strcmp(value.data, "Gs minor") != 0)
+					audio->keySignature = Gs_MINOR;
+				else if (strcmp(value.data, "Ds minor") != 0)
+					audio->keySignature = Ds_MINOR;
+				else if (strcmp(value.data, "Eb minor") != 0)
+					audio->keySignature = Eb_MINOR;
+				else if (strcmp(value.data, "Bb minor") != 0)
+					audio->keySignature = Bb_MINOR;
+				else if (strcmp(value.data, "F minor") != 0)
+					audio->keySignature = F_MINOR;
+				else if (strcmp(value.data, "C minor") != 0)
+					audio->keySignature = C_MINOR;
+				else if (strcmp(value.data, "G minor") != 0)
+					audio->keySignature = G_MINOR;
+				else if (strcmp(value.data, "D minor") != 0)
+					audio->keySignature = D_MINOR;
+			}
+			else if (strcmp(header.data, "time sig") == 0)
 			{
 				int valueReadPosition = 0;
 				lb_String upper = newString("");
@@ -170,56 +249,79 @@ void buildAudioData(lb_Audio* audio, char* script)
 				timeSigUpper = atoi(upper.data);
 				timeSigLower = atoi(lower.data);
 
+				audio->timeSignature[0] = timeSigUpper;
+				audio->timeSignature[1] = timeSigLower;
+
 				//freeString(&upper);
 				//freeString(&lower);
-			}
-			else if (strcmp(header.data, "key sig") == 0)
-			{
-
-				if (strcmp(value.data, "C major") != 0 &&
-					strcmp(value.data, "G major") != 0 &&
-					strcmp(value.data, "D major") != 0 &&
-					strcmp(value.data, "A major") != 0 &&
-					strcmp(value.data, "E major") != 0 &&
-					strcmp(value.data, "B major") != 0 &&
-					strcmp(value.data, "Fs major") != 0 &&
-					strcmp(value.data, "Gb major") != 0 &&
-					strcmp(value.data, "Db major") != 0 &&
-					strcmp(value.data, "Ab major") != 0 &&
-					strcmp(value.data, "Eb major") != 0 &&
-					strcmp(value.data, "Bb major") != 0 &&
-					strcmp(value.data, "F major") != 0 &&
-					strcmp(value.data, "A minor") != 0 &&
-					strcmp(value.data, "E minor") != 0 &&
-					strcmp(value.data, "B minor") != 0 &&
-					strcmp(value.data, "Fs minor") != 0 &&
-					strcmp(value.data, "Cs minor") != 0 &&
-					strcmp(value.data, "Gs minor") != 0 &&
-					strcmp(value.data, "Ds minor") != 0 &&
-					strcmp(value.data, "Eb minor") != 0 &&
-					strcmp(value.data, "Bb minor") != 0 &&
-					strcmp(value.data, "F minor") != 0 &&
-					strcmp(value.data, "C minor") != 0 &&
-					strcmp(value.data, "G minor") != 0 &&
-					strcmp(value.data, "D minor") != 0)
-				{
-
-				}
 			}
 			else if (strcmp(header.data, "tempo") == 0)
 			{
 				tempo = atoi(value.data);
 				if (tempo == 0)
 				{
-					if (strcmp(value.data, "largo") != 0 &&
-						strcmp(value.data, "adagio") != 0 &&
-						strcmp(value.data, "adante") != 0 &&
-						strcmp(value.data, "moderato") != 0 &&
-						strcmp(value.data, "allegro") != 0 &&
-						strcmp(value.data, "presto") != 0)
-					{
+					if (strcmp(value.data, "largo") != 0)
+						tempo = LARGO;
+					else if (strcmp(value.data, "adagio") != 0)
+						tempo = ADAGIO;
+					else if (strcmp(value.data, "adante") != 0)
+						tempo = ADANTE;
+					else if (strcmp(value.data, "moderato") != 0)
+						tempo = MODERATO;
+					else if (strcmp(value.data, "allegro") != 0)
+						tempo = ALLEGRO;
+					else if (strcmp(value.data, "presto") != 0)
+						tempo = PRESTO;
+				}
+				audio->tempoEvents[currentTempoEvent].tempo = tempo;
+				audio->tempoEvents[currentTempoEvent].startTime = currentTime;
+			}
+			else if (strcmp(header.data, "dynamic") == 0)
+			{
+				if (strcmp(value.data, "ppp") != 0)
+					dynamic = PPP;
+				else if (strcmp(value.data, "pp") != 0)
+					dynamic = PP;
+				else if (strcmp(value.data, "p") != 0)
+					dynamic = P;
+				else if (strcmp(value.data, "mp") != 0)
+					dynamic = MP;
+				else if (strcmp(value.data, "mf") != 0)
+					dynamic = MF;
+				else if (strcmp(value.data, "f") != 0)
+					dynamic = F;
+				else if (strcmp(value.data, "ff") != 0)
+					dynamic = FF;
+				else if (strcmp(value.data, "fff") != 0)
+					dynamic = FFF;
+			}
+			else if (strcmp(header.data, "reverb") == 0)
+			{
 
-					}
+			}
+			else if (strcmp(header.data, "vibrato") == 0)
+			{
+
+			}
+			else if (strcmp(header.data, "panning") == 0)
+			{
+				float panningValue = atof(value.data);
+				if (panningValue == 0)
+				{
+					if (strcmp(value.data, "far left") != 0)
+						panning = REAR_LEFT;
+					else if (strcmp(value.data, "left") != 0)
+						panning = FRONT_LEFT;
+					else if (strcmp(value.data, "mono") != 0)
+						panning = CENTRE;
+					else if (strcmp(value.data, "right") != 0)
+						panning = FRONT_RIGHT;
+					else if (strcmp(value.data, "far right") != 0)
+						panning = REAR_RIGHT;
+				}
+				else
+				{
+					panning = (panningValue + 1.0) * 127;
 				}
 			}
 			else if (strcmp(header.data, "timbre") == 0)
@@ -257,42 +359,9 @@ void buildAudioData(lb_Audio* audio, char* script)
 					}
 				}
 			}
-			else if (strcmp(header.data, "dynamic") == 0)
-			{
-				if (strcmp(value.data, "ppp") != 0 &&
-					strcmp(value.data, "pp") != 0 &&
-					strcmp(value.data, "p") != 0 &&
-					strcmp(value.data, "mp") != 0 &&
-					strcmp(value.data, "mf") != 0 &&
-					strcmp(value.data, "f") != 0 &&
-					strcmp(value.data, "ff") != 0 &&
-					strcmp(value.data, "fff") != 0)
-				{
-
-				}
-			}
 			else if (strcmp(header.data, "octave") == 0)
 			{
 				octave = atoi(value.data);
-			}
-			else if (strcmp(header.data, "panning") == 0)
-			{
-				float panning = atof(value.data);
-				if (panning == 0)
-				{
-					if (strcmp(value.data, "far left") != 0 &&
-						strcmp(value.data, "left") != 0 &&
-						strcmp(value.data, "mono") != 0 &&
-						strcmp(value.data, "right") != 0 &&
-						strcmp(value.data, "far right") != 0)
-					{
-
-					}
-				}
-				else if (panning < -1.0 && panning > 1.0)
-				{
-
-				}
 			}
 			parseState = previousParseState;
 			break;
