@@ -2,7 +2,7 @@
 #include "include/CallbackList.h"
 #include <SDL.h>
 
-void initAudioCallback(CallbackList* callbackList)
+void initAudioPlayback(CallbackList* callbackList)
 {
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
@@ -18,7 +18,7 @@ void initAudioCallback(CallbackList* callbackList)
 		desired.format = AUDIO_S16SYS;
 		desired.channels = CHANNELS;
 		desired.samples = SAMPLE_SIZE;
-		desired.callback = (SDL_AudioCallback)runCallback;
+		desired.callback = (SDL_AudioCallback)runCallbackPlay;
 		desired.userdata = callbackList;
 
 		SDL_AudioDeviceID device = SDL_OpenAudioDevice(
@@ -32,7 +32,35 @@ void initAudioCallback(CallbackList* callbackList)
 	}
 }
 
-void runCallback(void* userdata, Uint8* stream, int byteLength)
+void initAudioCapture()
+{
+	if (SDL_Init(SDL_INIT_AUDIO) < 0)
+	{
+		SDL_Log("SDL_Init failed: %s", SDL_GetError());
+	}
+	else
+	{
+		SDL_AudioSpec desired;
+		SDL_AudioSpec obtained;
+
+		SDL_memset(&desired, 0, sizeof(desired));
+		desired.freq = SAMPLE_FREQUENCY;
+		desired.format = AUDIO_S16SYS;
+		desired.channels = 1;
+		desired.samples = 1024;
+		desired.callback = (SDL_AudioCallback)runCallbackPlay;
+//		desired.userdata = ;
+
+		SDL_AudioDeviceID device = SDL_OpenAudioDevice(
+			NULL,
+			1,
+			&desired,
+			&obtained,
+			NULL);
+	}
+}
+
+void runCallbackPlay(void* userdata, Uint8* stream, int byteLength)
 {
 	/*Converts the 8-bit native stream to 16-bits and references
 	a double-byte length that points to the stream samples as a collection
@@ -62,4 +90,9 @@ void runCallback(void* userdata, Uint8* stream, int byteLength)
 			}
 		}
 	}
+}
+
+void runCallbackCapture(void* userdata, Uint8* stream, int byteLength)
+{
+
 }

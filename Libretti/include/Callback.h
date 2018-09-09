@@ -16,7 +16,9 @@
 #include <SDL_stdinc.h>
 #include "CallbackList.h"
 
-void initAudioCallback(CallbackList* callbackList);
-void runCallback(void* userdata, Uint8* stream, int byteLength);
+void initAudioPlayback(CallbackList* callbackList);
+void initAudioCapture();
+void runCallbackPlay(void* userdata, Uint8* stream, int byteLength);
+void runCallbackCapture(void* userdata, Uint8* stream, int byteLength);
 
 #endif /*Callback_h*/

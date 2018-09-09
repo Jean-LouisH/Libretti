@@ -46,7 +46,7 @@ void lb_addLibrettiToCallback(Libretti* libretti)
 	if (callbackList == NULL)
 	{
 		callbackList = calloc(1, sizeof(CallbackList));
-		initAudioCallback(callbackList);
+		initAudioPlayback(callbackList);
 	}
 	
 	//Checks for allocation after calloc()
