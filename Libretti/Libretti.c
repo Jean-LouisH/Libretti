@@ -71,7 +71,7 @@ Libretti* lb_createAndAddLibrettiToCallback(const char* filename)
 
 int lb_validateScriptFile(const char* filename)
 {
-	char* script = loadScriptFromFile(filename);
+	char* script = loadBinaryFromFile(filename);
 	int validationStatuses = validateScript(script);
 	free(script);
 	return validationStatuses;
@@ -79,7 +79,7 @@ int lb_validateScriptFile(const char* filename)
 
 void lb_compileAudioFromScriptFile(lb_Audio* audio, const char* filename)
 {
-	char* script = loadScriptFromFile(filename);
+	char* script = loadBinaryFromFile(filename);
 	if (script != NULL)
 	{
 		compileAudioFromScript(audio, script);

@@ -10,7 +10,7 @@ bool exists(char* filename)
 	return (bool)inputFile;
 }
 
-char* loadScriptFromFile(char* filename)
+char* loadBinaryFromFile(char* filename)
 {
 	FILE* inputFile = fopen(filename, "rb");
 	char* script = 0;

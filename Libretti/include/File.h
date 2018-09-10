@@ -16,6 +16,6 @@
 #include <stdbool.h>
 
 bool exists(char* filename);
-char* loadScriptFromFile(char* filename);
+char* loadBinaryFromFile(char* filename);
 
 #endif /*File_h*/
