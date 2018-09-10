@@ -1,4 +1,5 @@
 #include "include/Compiler.h"
+#include "include/File.h"
 #include "include/ScriptParseStates.h"
 #include "include/ScriptValidator.h"
 #include "include/Strings.h"
@@ -99,6 +100,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 	uint8_t dynamic = 0;
 	uint8_t panning = 0;
 	uint8_t timbre = 0;
+	char* sample = NULL;
 	bool tupletIsOpened = false;
 	bool slurIsOpened = false;
 	bool isReadingCrescendo = false;
@@ -172,57 +174,57 @@ void buildAudioData(lb_Audio* audio, char* script)
 			}
 			else if (strcmp(header.data, "key sig") == 0)
 			{
-				if (strcmp(value.data, "C major") != 0)
+				if (strcmp(value.data, "C major") == 0)
 					audio->keySignature = C_MAJOR;
-				else if (strcmp(value.data, "G major") != 0)
+				else if (strcmp(value.data, "G major") == 0)
 					audio->keySignature = G_MAJOR;
-				else if (strcmp(value.data, "D major") != 0)
+				else if (strcmp(value.data, "D major") == 0)
 					audio->keySignature = D_MAJOR;
-				else if (strcmp(value.data, "A major") != 0)
+				else if (strcmp(value.data, "A major") == 0)
 					audio->keySignature = A_MAJOR;
-				else if (strcmp(value.data, "E major") != 0)
+				else if (strcmp(value.data, "E major") == 0)
 					audio->keySignature = E_MAJOR;
-				else if (strcmp(value.data, "B major") != 0)
+				else if (strcmp(value.data, "B major") == 0)
 					audio->keySignature = B_MAJOR;
-				else if (strcmp(value.data, "Fs major") != 0)
+				else if (strcmp(value.data, "Fs major") == 0)
 					audio->keySignature = Fs_MAJOR;
-				else if (strcmp(value.data, "Gb major") != 0)
+				else if (strcmp(value.data, "Gb major") == 0)
 					audio->keySignature = Gb_MAJOR;
-				else if (strcmp(value.data, "Db major") != 0)
+				else if (strcmp(value.data, "Db major") == 0)
 					audio->keySignature = Db_MAJOR;
-				else if (strcmp(value.data, "Ab major") != 0)
+				else if (strcmp(value.data, "Ab major") == 0)
 					audio->keySignature = Ab_MAJOR;
-				else if (strcmp(value.data, "Eb major") != 0)
+				else if (strcmp(value.data, "Eb major") == 0)
 					audio->keySignature = Eb_MAJOR;
-				else if (strcmp(value.data, "Bb major") != 0)
+				else if (strcmp(value.data, "Bb major") == 0)
 					audio->keySignature = Bb_MAJOR;
-				else if (strcmp(value.data, "F major") != 0)
+				else if (strcmp(value.data, "F major") == 0)
 					audio->keySignature = F_MAJOR;
-				else if (strcmp(value.data, "A minor") != 0)
+				else if (strcmp(value.data, "A minor") == 0)
 					audio->keySignature = A_MINOR;
-				else if (strcmp(value.data, "E minor") != 0)
+				else if (strcmp(value.data, "E minor") == 0)
 					audio->keySignature = E_MINOR;
-				else if (strcmp(value.data, "B minor") != 0)
+				else if (strcmp(value.data, "B minor") == 0)
 					audio->keySignature = B_MINOR;
-				else if (strcmp(value.data, "Fs minor") != 0)
+				else if (strcmp(value.data, "Fs minor") == 0)
 					audio->keySignature = Fs_MINOR;
-				else if (strcmp(value.data, "Cs minor") != 0)
+				else if (strcmp(value.data, "Cs minor") == 0)
 					audio->keySignature = Cs_MINOR;
-				else if (strcmp(value.data, "Gs minor") != 0)
+				else if (strcmp(value.data, "Gs minor") == 0)
 					audio->keySignature = Gs_MINOR;
-				else if (strcmp(value.data, "Ds minor") != 0)
+				else if (strcmp(value.data, "Ds minor") == 0)
 					audio->keySignature = Ds_MINOR;
-				else if (strcmp(value.data, "Eb minor") != 0)
+				else if (strcmp(value.data, "Eb minor") == 0)
 					audio->keySignature = Eb_MINOR;
-				else if (strcmp(value.data, "Bb minor") != 0)
+				else if (strcmp(value.data, "Bb minor") == 0)
 					audio->keySignature = Bb_MINOR;
-				else if (strcmp(value.data, "F minor") != 0)
+				else if (strcmp(value.data, "F minor") == 0)
 					audio->keySignature = F_MINOR;
-				else if (strcmp(value.data, "C minor") != 0)
+				else if (strcmp(value.data, "C minor") == 0)
 					audio->keySignature = C_MINOR;
-				else if (strcmp(value.data, "G minor") != 0)
+				else if (strcmp(value.data, "G minor") == 0)
 					audio->keySignature = G_MINOR;
-				else if (strcmp(value.data, "D minor") != 0)
+				else if (strcmp(value.data, "D minor") == 0)
 					audio->keySignature = D_MINOR;
 			}
 			else if (strcmp(header.data, "time sig") == 0)
@@ -251,26 +253,23 @@ void buildAudioData(lb_Audio* audio, char* script)
 
 				audio->timeSignature[0] = timeSigUpper;
 				audio->timeSignature[1] = timeSigLower;
-
-				//freeString(&upper);
-				//freeString(&lower);
 			}
 			else if (strcmp(header.data, "tempo") == 0)
 			{
 				tempo = atoi(value.data);
 				if (tempo == 0)
 				{
-					if (strcmp(value.data, "largo") != 0)
+					if (strcmp(value.data, "largo") == 0)
 						tempo = LARGO;
-					else if (strcmp(value.data, "adagio") != 0)
+					else if (strcmp(value.data, "adagio") == 0)
 						tempo = ADAGIO;
-					else if (strcmp(value.data, "adante") != 0)
+					else if (strcmp(value.data, "adante") == 0)
 						tempo = ADANTE;
-					else if (strcmp(value.data, "moderato") != 0)
+					else if (strcmp(value.data, "moderato") == 0)
 						tempo = MODERATO;
-					else if (strcmp(value.data, "allegro") != 0)
+					else if (strcmp(value.data, "allegro") == 0)
 						tempo = ALLEGRO;
-					else if (strcmp(value.data, "presto") != 0)
+					else if (strcmp(value.data, "presto") == 0)
 						tempo = PRESTO;
 				}
 				audio->tempoEvents[currentTempoEvent].tempo = tempo;
@@ -278,21 +277,21 @@ void buildAudioData(lb_Audio* audio, char* script)
 			}
 			else if (strcmp(header.data, "dynamic") == 0)
 			{
-				if (strcmp(value.data, "ppp") != 0)
+				if (strcmp(value.data, "ppp") == 0)
 					dynamic = PPP;
-				else if (strcmp(value.data, "pp") != 0)
+				else if (strcmp(value.data, "pp") == 0)
 					dynamic = PP;
-				else if (strcmp(value.data, "p") != 0)
+				else if (strcmp(value.data, "p") == 0)
 					dynamic = P;
-				else if (strcmp(value.data, "mp") != 0)
+				else if (strcmp(value.data, "mp") == 0)
 					dynamic = MP;
-				else if (strcmp(value.data, "mf") != 0)
+				else if (strcmp(value.data, "mf") == 0)
 					dynamic = MF;
-				else if (strcmp(value.data, "f") != 0)
+				else if (strcmp(value.data, "f") == 0)
 					dynamic = F;
-				else if (strcmp(value.data, "ff") != 0)
+				else if (strcmp(value.data, "ff") == 0)
 					dynamic = FF;
-				else if (strcmp(value.data, "fff") != 0)
+				else if (strcmp(value.data, "fff") == 0)
 					dynamic = FFF;
 			}
 			else if (strcmp(header.data, "reverb") == 0)
@@ -308,15 +307,15 @@ void buildAudioData(lb_Audio* audio, char* script)
 				float panningValue = atof(value.data);
 				if (panningValue == 0)
 				{
-					if (strcmp(value.data, "far left") != 0)
+					if (strcmp(value.data, "far left") == 0)
 						panning = REAR_LEFT;
-					else if (strcmp(value.data, "left") != 0)
+					else if (strcmp(value.data, "left") == 0)
 						panning = FRONT_LEFT;
-					else if (strcmp(value.data, "mono") != 0)
+					else if (strcmp(value.data, "mono") == 0)
 						panning = CENTRE;
-					else if (strcmp(value.data, "right") != 0)
+					else if (strcmp(value.data, "right") == 0)
 						panning = FRONT_RIGHT;
-					else if (strcmp(value.data, "far right") != 0)
+					else if (strcmp(value.data, "far right") == 0)
 						panning = REAR_RIGHT;
 				}
 				else
@@ -326,25 +325,34 @@ void buildAudioData(lb_Audio* audio, char* script)
 			}
 			else if (strcmp(header.data, "timbre") == 0)
 			{
-				if (strcmp(value.data, "square wave") != 0 &&
-					strcmp(value.data, "sine wave") != 0 &&
-					strcmp(value.data, "triangle wave") != 0 &&
-					strcmp(value.data, "sawtooth wave") != 0 &&
-					strcmp(value.data, "pulse 10") != 0 &&
-					strcmp(value.data, "pulse 25") != 0 &&
-					strcmp(value.data, "noise") != 0 &&
-					strcmp(value.data, "metallic") != 0)
+				if (strcmp(value.data, "square wave") == 0)
+					timbre = SQUARE_WAVE;
+				else if (strcmp(value.data, "sine wave") == 0)
+					timbre = SINE_WAVE;
+				else if (strcmp(value.data, "triangle wave") == 0)
+					timbre = TRIANGLE_WAVE;
+				else if (strcmp(value.data, "sawtooth wave") == 0)
+					timbre = SAWTOOTH_WAVE;
+				else if (strcmp(value.data, "pulse 10") == 0)
+					timbre = PULSE_10;
+				else if (strcmp(value.data, "pulse 25") == 0)
+					timbre = PULSE_25;
+				else if (strcmp(value.data, "noise") == 0)
+					timbre = NOISE;
+				else if (strcmp(value.data, "metallic") == 0)
+					timbre = METALLIC;
+				else
 				{
+#ifdef _DEBUG
+					lb_String filename = newString("../Libretti/Samples/");
+#else
 					lb_String filename = newString("Samples/");
+#endif
 					lb_String extension = newString(".pcm");
+					timbre = SAMPLE;
 					strcat(filename.data, value.data);
 					strcat(filename.data, extension.data);
-					if (!exists(filename.data))
-					{
-
-					}
-					//freeString(&filename);
-					//freeString(&extension);
+					sample = loadBinaryFromFile(filename.data);
 				}
 			}
 			else if (strcmp(header.data, "loop") == 0)
@@ -363,6 +371,8 @@ void buildAudioData(lb_Audio* audio, char* script)
 			{
 				octave = atoi(value.data);
 			}
+			clear(&header);
+			clear(&value);
 			parseState = previousParseState;
 			break;
 		case '}':
