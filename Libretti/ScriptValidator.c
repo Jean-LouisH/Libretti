@@ -167,9 +167,6 @@ int validateScript(char* script)
 
 					timeSigUpper = atoi(upper.data);
 					timeSigLower = atoi(lower.data);
-
-					//freeString(&upper);
-					//freeString(&lower);
 				}
 				else if (strcmp(header.data, "key sig") == 0)
 				{
@@ -231,7 +228,11 @@ int validateScript(char* script)
 						strcmp(value.data, "noise") != 0 &&
 						strcmp(value.data, "metallic") != 0)
 					{
+#ifdef _DEBUG
+						lb_String filename = newString("../Libretti/Samples/");
+#else
 						lb_String filename = newString("Samples/");
+#endif
 						lb_String extension = newString(".pcm");
 						strcat(filename.data, value.data);
 						strcat(filename.data, extension.data);
@@ -239,8 +240,6 @@ int validateScript(char* script)
 						{
 							validationStatuses |= INVALID_TIMBRE;
 						}
-						//freeString(&filename);
-						//freeString(&extension);
 					}
 				}
 				else if (strcmp(header.data, "loop") == 0)
