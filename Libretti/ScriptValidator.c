@@ -346,7 +346,7 @@ int validateScript(char* script)
 						substring[0] = script[readPosition];
 						double durationValue = atoi(substring);
 						if (tupletIsUnclosed)
-							durationValue = (durationValue * 2) / 3;
+							durationValue = (durationValue * 2.0) / 3.0;
 						beatsInABar += durationValue;
 					}
 				}
