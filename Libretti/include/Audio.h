@@ -28,6 +28,7 @@ typedef struct
 	uint8_t lyricsEventCount;
 	double timeLength;
 	double loopTargetTime;
+	uint8_t loopCount;
 	char name[64];
 	char artist[32];
 	uint8_t keySignature;
