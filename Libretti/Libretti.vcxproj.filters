@@ -104,5 +104,8 @@
     <ClInclude Include="include\ScriptParseStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Binary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Audio.h" />
+    <ClInclude Include="include\Binary.h" />
     <ClInclude Include="include\Callback.h" />
     <ClInclude Include="include\CallbackList.h" />
     <ClInclude Include="include\Compiler.h" />
