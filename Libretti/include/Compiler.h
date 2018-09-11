@@ -14,13 +14,13 @@
 #define Compiler_h
 
 #include "Audio.h"
+#include <stdint.h>
 
 void compileAudioFromScript(lb_Audio* audio, char* script);
 void allocateMemory(lb_Audio* audio, char* script);
 void buildAudioData(lb_Audio* audio, char* script);
-void tuneByKeySignature(lb_Audio* audio, char* noteChar);
-void assignFrequencyFromNoteChar(lb_Note note, char noteChar);
-void tuneByAccidental(lb_Note note, char noteChar);
-void assignDurationValue(lb_Audio* audio, char* script);
+void tuneByKeySignature(uint8_t keySignature, char* noteChar);
+void assignFrequencyFromNoteChar(double* frequency, uint8_t octave, char noteChar);
+void tuneByAccidental(double* frequency, uint8_t octave, char scriptChar, char noteChar);
 
 #endif /*Compiler_h*/

@@ -100,11 +100,15 @@ void buildAudioData(lb_Audio* audio, char* script)
 	uint8_t dynamic = 0;
 	uint8_t panning = 0;
 	uint8_t timbre = 0;
+	double duration = 0.0;
 	char* sample = NULL;
 	bool tupletIsOpened = false;
 	bool slurIsOpened = false;
 	bool isReadingCrescendo = false;
 	bool isReadingDiminuendo = false;
+
+	lb_Note note;
+	char noteToPlay;
 
 	uint8_t parseState = READING_NOTHING;
 	uint8_t previousParseState = 0;
@@ -355,21 +359,45 @@ void buildAudioData(lb_Audio* audio, char* script)
 					sample = loadBinaryFromFile(filename.data);
 				}
 			}
-			else if (strcmp(header.data, "loop") == 0)
-			{
-				int loops = atoi(value.data);
-				if (loops == 0)
-				{
-					if (strcmp(value.data, "none") != 0 &&
-						strcmp(value.data, "infinity") != 0)
-					{
-
-					}
-				}
-			}
 			else if (strcmp(header.data, "octave") == 0)
 			{
 				octave = atoi(value.data);
+			}
+			else if (strcmp(header.data, "loop") == 0)
+			{
+				audio->loopTargetTime = currentTime;
+				audio->loopCount = atoi(value.data);
+				if (strcmp(value.data, "infinity") == 0 || 
+					audio->loopCount > 255)
+					audio->loopCount = 255;
+			}
+			else if (strcmp(header.data, "cue") == 0)
+			{
+
+			}
+			else if (strcmp(header.data, "echo") == 0)
+			{
+
+			}
+			else if (strcmp(header.data, "lyric") == 0)
+			{
+
+			}
+			else if (strcmp(header.data, "eq") == 0)
+			{
+
+			}
+			else if (strcmp(header.data, "flanging") == 0)
+			{
+
+			}
+			else if (strcmp(header.data, "crossfading") == 0)
+			{
+
+			}
+			else if (strcmp(header.data, "pitch blend") == 0)
+			{
+
 			}
 			clear(&header);
 			clear(&value);
@@ -397,52 +425,152 @@ void buildAudioData(lb_Audio* audio, char* script)
 			{
 				if ((script[readPosition] >= 'A' && script[readPosition] <= 'G') ||
 					script[readPosition] == 'R')
+				{
 					parseState = READING_NOTE_FREQUENCY;
-			}
-			else if (parseState == READING_NOTE_FREQUENCY)
-			{
-				if (script[readPosition] == '#' || script[readPosition] == 'b' ||
-					script[readPosition] == 'n')
-				{
-					parseState = READING_NOTE_ACCIDENTAL;
-				}
-				else if (script[readPosition] >= '1' && script[readPosition] <= '9')
-				{
-					parseState = READING_NOTE_DURATION;
-					char substring[1];
-					substring[0] = script[readPosition];
-					double durationValue = atoi(substring);
-					if (tupletIsOpened)
-						durationValue = (durationValue * 2) / 3;
+					noteToPlay = script[readPosition];
+					tuneByKeySignature(audio->keySignature, &noteToPlay);
+					assignFrequencyFromNoteChar(&note.frequency, octave, noteToPlay);
 
+					audio->tracks[currentTrack].noteEvents[currentNote].note = note;
+					audio->tracks[currentTrack].noteEvents[currentNote].startTime = currentTime;
 				}
 			}
-			else if (parseState == READING_NOTE_ACCIDENTAL)
+			else if (parseState == READING_NOTE_FREQUENCY && 
+				(script[readPosition] >= '1' && script[readPosition] <= '9' ||
+				script[readPosition] == '/'))
 			{
-				if (script[readPosition] >= '1' && script[readPosition] <= '9')
-					parseState = READING_NOTE_DURATION;
+				char substring[1];
+
+				if (script[readPosition] == '/')
+				{
+					readPosition++;
+					substring[0] = script[readPosition];
+					duration = atoi(substring);
+					duration = 1.0 / duration;
+				}
+				else
+				{
+					substring[0] = script[readPosition];
+					duration = atoi(substring);
+				}
+
+				readPosition++;
+				if (script[readPosition] == '.')
+				{
+					duration += duration / 2.0;
+				}
+
+				if (tupletIsOpened)
+					duration = (duration * 2.0) / 3.0;
+			}
+			else if (parseState == READING_NOTE_FREQUENCY &&
+				(script[readPosition] == '#' || script[readPosition] == 'b' ||
+					script[readPosition] == 'n'))
+			{
+				parseState = READING_NOTE_ACCIDENTAL;
+				tuneByAccidental(&note.frequency, octave, script[readPosition], noteToPlay);
 			}
 		}
 		readPosition++;
 	} while (script[readPosition] != NULL);
 }
 
-void tuneByKeySignature(lb_Audio* audio, char* noteChar)
+void tuneByKeySignature(uint8_t keySignature, char* noteChar)
 {
-
+	if (keySignature != C_MAJOR && keySignature != A_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'F': 
+				noteChar = 'f'; 
+				break;
+			case 'C':
+				if (keySignature != G_MAJOR)
+					noteChar = 'c';
+				break;
+			case 'G':
+				if (keySignature != G_MAJOR && keySignature != D_MAJOR)
+					noteChar = 'g';
+				break;
+			case 'D':
+				if (keySignature != G_MAJOR && keySignature != D_MAJOR &&
+					keySignature != A_MAJOR)
+					noteChar = 'e';
+				break;
+			case 'A':
+				if (keySignature != G_MAJOR && keySignature != D_MAJOR &&
+					keySignature != A_MAJOR && keySignature != E_MAJOR)
+					noteChar = 'b';
+				break;
+			case 'E':
+				if (keySignature != G_MAJOR && keySignature != D_MAJOR &&
+					keySignature != A_MAJOR && keySignature != E_MAJOR &&
+					keySignature != B_MAJOR)
+					noteChar = 'F';
+				break;
+		}
+	}
 }
 
-void assignFrequencyFromNoteChar(lb_Note note, char noteChar)
+void assignFrequencyFromNoteChar(double* frequency, uint8_t octave, char noteChar)
 {
-
+	switch (noteChar)
+	{
+		case 'A': *frequency = A0 * pow(2, octave); break;
+		case 'B': *frequency = B0 * pow(2, octave); break;
+		case 'C': *frequency = C1 * pow(2, octave - 1); break;
+		case 'D': *frequency = D1 * pow(2, octave - 1); break;
+		case 'E': *frequency = E1 * pow(2, octave - 1); break;
+		case 'F': *frequency = F1 * pow(2, octave - 1); break;
+		case 'G': *frequency = G1 * pow(2, octave - 1); break;
+			/*Flats and sharps char codes.*/
+		case 'b': *frequency = Bf0 * pow(2, octave); break;
+		case 'c': *frequency = Cs1 * pow(2, octave - 1); break;
+		case 'e': *frequency = Ef1 * pow(2, octave - 1); break;
+		case 'f': *frequency = Fs1 * pow(2, octave - 1); break;
+		case 'g': *frequency = Gs1 * pow(2, octave - 1); break;
+			/*Rest value.*/
+		case 'R': *frequency = R; break;
+	}
 }
 
-void tuneByAccidental(lb_Note note, char noteChar)
+void tuneByAccidental(double* frequency, uint8_t octave, char scriptChar, char noteChar)
 {
-
-}
-
-void assignDurationValue(lb_Audio* audio, char* script)
-{
-
+	switch (scriptChar)
+	{
+	case '#':
+		switch (noteChar)
+		{
+			case 'A': *frequency = Bf0 * pow(2, octave); break;
+			case 'B': *frequency = C1 * pow(2, octave - 1); break;
+			case 'C': *frequency = Cs1 * pow(2, octave - 1); break;
+			case 'D': *frequency = Ef1 * pow(2, octave - 1); break;
+			case 'E': *frequency = F1 * pow(2, octave - 1); break;
+			case 'F': *frequency = Fs1 * pow(2, octave - 1); break;
+			case 'G': *frequency = Gs1 * pow(2, octave - 1); break;
+		}
+		break;
+	case 'b':
+		switch (noteChar)
+		{
+			case 'A': *frequency = Gs1 * pow(2, octave - 1); break;
+			case 'B': *frequency = Bf0 * pow(2, octave); break;
+			case 'C': *frequency = B0 * pow(2, octave); break;
+			case 'D': *frequency = Cs1 * pow(2, octave - 1); break;
+			case 'E': *frequency = Ef1 * pow(2, octave - 1); break;
+			case 'F': *frequency = E1 * pow(2, octave - 1); break;
+			case 'G': *frequency = Fs1 * pow(2, octave - 1); break;
+		}
+		break;
+	case 'n':
+		switch (noteChar)
+		{
+			case 'b': *frequency = B0 * pow(2, octave); break;
+			case 'c': *frequency = C1 * pow(2, octave - 1); break;
+			case 'e': *frequency = E1 * pow(2, octave - 1); break;
+			case 'f': *frequency = F1 * pow(2, octave - 1); break;
+			case 'g': *frequency = G1 * pow(2, octave - 1); break;
+		}
+		break;
+	}
 }
