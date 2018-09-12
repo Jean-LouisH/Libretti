@@ -14,8 +14,9 @@
 #define File_h
 
 #include <stdbool.h>
+#include "Binary.h"
 
 bool exists(char* filename);
-char* loadBinaryFromFile(char* filename);
+lb_Binary loadBinaryFromFile(char* filename);
 
 #endif /*File_h*/

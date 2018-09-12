@@ -356,7 +356,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 					timbre = SAMPLE;
 					strcat(filename.data, value.data);
 					strcat(filename.data, extension.data);
-					sample = loadBinaryFromFile(filename.data);
+					sample = loadBinaryFromFile(filename.data).data;
 				}
 			}
 			else if (strcmp(header.data, "octave") == 0)

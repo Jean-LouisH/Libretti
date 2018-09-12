@@ -10,22 +10,24 @@ bool exists(char* filename)
 	return (bool)inputFile;
 }
 
-char* loadBinaryFromFile(char* filename)
+lb_Binary loadBinaryFromFile(char* filename)
 {
 	FILE* inputFile = fopen(filename, "rb");
-	char* script = 0;
+	lb_Binary binary;
+	binary.data = NULL;
+	binary.size = 0;
 	if (inputFile != NULL)
 	{
 		fseek(inputFile, 0, SEEK_END);
-		unsigned int filesize = ftell(inputFile);
+		binary.size = ftell(inputFile);
 		rewind(inputFile);
-		script = malloc(sizeof *script * (filesize + 1));
-		if (script != NULL)
+		binary.data = malloc(sizeof *binary.data * (binary.size + 1));
+		if (binary.data != NULL)
 		{
-			fread(script, sizeof *script, filesize, inputFile);
-			script[filesize] = NULL;
+			fread(binary.data, sizeof *binary.data, binary.size, inputFile);
+			binary.data[binary.size] = NULL;
 		}
 		fclose(inputFile);
 	}
-	return script;
+	return binary;
 }

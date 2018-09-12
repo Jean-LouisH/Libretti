@@ -17,8 +17,8 @@
 
 typedef struct
 {
-	uint8_t data;
-	uint32_t fileSize;
+	uint8_t* data;
+	uint64_t size;
 }lb_Binary;
 
 #endif /*Binary_h*/
