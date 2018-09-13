@@ -4,6 +4,8 @@
 #include "include/ScriptValidator.h"
 #include "include/Strings.h"
 #include "include/Timing.h"
+#include "include/Notes.h"
+#include <math.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -97,17 +99,23 @@ void buildAudioData(lb_Audio* audio, char* script)
 	uint8_t timeSigUpper = 0;
 	uint8_t octave = 0;
 	uint8_t tempo = 0;
-	uint8_t dynamic = 0;
+	uint16_t dynamic = 0;
 	uint8_t panning = 0;
 	uint8_t timbre = 0;
+	uint8_t articulation = NORMAL;
+	uint16_t cue = 0;
 	double duration = 0.0;
 	char* sample = NULL;
+	uint32_t sampleSize = 0;
 	bool tupletIsOpened = false;
 	bool slurIsOpened = false;
 	bool isReadingCrescendo = false;
 	bool isReadingDiminuendo = false;
 
 	lb_Note note;
+	lb_Effects effects;
+	effects.msCrossfading = 0.0;
+	effects.pitchBlendPercentage = 0.0;
 	char noteToPlay;
 
 	uint8_t parseState = READING_NOTHING;
@@ -356,7 +364,10 @@ void buildAudioData(lb_Audio* audio, char* script)
 					timbre = SAMPLE;
 					strcat(filename.data, value.data);
 					strcat(filename.data, extension.data);
-					sample = loadBinaryFromFile(filename.data).data;
+					lb_Binary sampleFile = loadBinaryFromFile(filename.data);
+					sample = sampleFile.data;
+					sampleSize = sampleFile.size;
+
 				}
 			}
 			else if (strcmp(header.data, "octave") == 0)
@@ -431,6 +442,15 @@ void buildAudioData(lb_Audio* audio, char* script)
 					tuneByKeySignature(audio->keySignature, &noteToPlay);
 					assignFrequencyFromNoteChar(&note.frequency, octave, noteToPlay);
 
+					note.amplitude = dynamic;
+					note.articulation = articulation;
+					note.cue = cue;
+					note.panning = panning;
+					note.sample = sample;
+					note.sampleSize = sampleSize;
+					note.timbre = timbre;
+					note.effects = effects;
+
 					audio->tracks[currentTrack].noteEvents[currentNote].note = note;
 					audio->tracks[currentTrack].noteEvents[currentNote].startTime = currentTime;
 				}
@@ -462,6 +482,8 @@ void buildAudioData(lb_Audio* audio, char* script)
 
 				if (tupletIsOpened)
 					duration = (duration * 2.0) / 3.0;
+
+				audio->tracks[currentTrack].noteEvents[currentNote].note.duration = duration;
 			}
 			else if (parseState == READING_NOTE_FREQUENCY &&
 				(script[readPosition] == '#' || script[readPosition] == 'b' ||
