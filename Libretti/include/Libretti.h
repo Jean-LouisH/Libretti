@@ -17,6 +17,7 @@
 #include <stdint.h>
 
 #include "Audio.h"
+#include "Binary.h"
 #include "Notes.h"
 #include "NoteWaves.h"
 #include "Runtime.h"
@@ -55,6 +56,11 @@ extern "C"
 	void lb_pauseAll();
 	void lb_resetAll();
 	void lb_stopAll();
+	lb_Binary_s16* lb_captureAudio();
+	void lb_saveBinaryU8ToFile(lb_Binary_u8* binary, const char* filename);
+	void lb_saveBinaryS16ToFile(lb_Binary_s16* binary, const char* filename);
+	void lb_appendBinaryU8ToFile(lb_Binary_u8* binary, const char* filename);
+	void lb_appendBinaryS16ToFile(lb_Binary_s16* binary, const char* filename);
 	void lb_exportAudioToWAV(lb_Audio* audio, const char* name);
 	void lb_freeRuntime(lb_Runtime* runtime);
 	void lb_freeNoteWaves(lb_NoteWaves* noteWaves);

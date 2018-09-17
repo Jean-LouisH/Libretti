@@ -17,6 +17,10 @@
 #include "Binary.h"
 
 bool exists(char* filename);
-lb_Binary loadBinaryFromFile(char* filename);
+lb_Binary_u8 loadASCIIStringFromFile(char* filename);
+void saveBinaryU8ToFile(lb_Binary_u8* binary, char* filename);
+void saveBinaryS16ToFile(lb_Binary_s16* binary, char* filename);
+void appendBinaryU8ToFile(lb_Binary_u8* binary, char* filename);
+void appendBinaryS16ToFile(lb_Binary_s16* binary, char* filename);
 
 #endif /*File_h*/

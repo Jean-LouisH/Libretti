@@ -1,5 +1,6 @@
 #include "include/Callback.h" 
 #include "include/CallbackList.h"
+#include "include/File.h"
 #include <SDL.h>
 
 void initAudioPlayback(CallbackList* callbackList)
@@ -28,11 +29,12 @@ void initAudioPlayback(CallbackList* callbackList)
 			&obtained,
 			NULL);
 
+		SDL_PauseAudioDevice(device, 0);
 		callbackList->device = device;
 	}
 }
 
-void initAudioCapture()
+void initAudioCapture(lb_Binary_s16* binary)
 {
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
@@ -47,9 +49,9 @@ void initAudioCapture()
 		desired.freq = SAMPLE_FREQUENCY;
 		desired.format = AUDIO_S16SYS;
 		desired.channels = 1;
-		desired.samples = 1024;
-		desired.callback = (SDL_AudioCallback)runCallbackPlay;
-//		desired.userdata = ;
+		desired.samples = SAMPLE_SIZE;
+		desired.callback = (SDL_AudioCallback)runCallbackCapture;
+		desired.userdata = binary;
 
 		SDL_AudioDeviceID device = SDL_OpenAudioDevice(
 			NULL,
@@ -57,6 +59,8 @@ void initAudioCapture()
 			&desired,
 			&obtained,
 			NULL);
+
+		SDL_PauseAudioDevice(device, 0);
 	}
 }
 
@@ -65,14 +69,14 @@ void runCallbackPlay(void* userdata, Uint8* stream, int byteLength)
 	/*Converts the 8-bit native stream to 16-bits and references
 	a double-byte length that points to the stream samples as a collection
 	of two bytes.*/
-	Sint16* callbackStream = (Sint16*)stream;
+	Sint16* playbackStream = (Sint16*)stream;
 	int doubleByteLength = byteLength / sizeof(Sint16);
 	CallbackList* callbackList = (CallbackList*)userdata;
 
 	/*Clears stream after accumulating channels*/
 	for (int i = 0; i < doubleByteLength; i++)
 	{
-		callbackStream[i] = 0;
+		playbackStream[i] = 0;
 	}
 
 	for (int i = 0; i < callbackList->size; i++)
@@ -94,5 +98,21 @@ void runCallbackPlay(void* userdata, Uint8* stream, int byteLength)
 
 void runCallbackCapture(void* userdata, Uint8* stream, int byteLength)
 {
+	/*Converts the 8-bit native stream to 16-bits and references
+	a double-byte length that points to the stream samples as a collection
+	of two bytes.*/
+	Sint16* captureStream = (Sint16*)stream;
+	int doubleByteLength = byteLength / sizeof(Sint16);
+	lb_Binary_s16* binary = (lb_Binary_s16*)userdata;
 
+	int16_t debug[SAMPLE_SIZE];
+
+	for (int i = 0; i < binary->size; i++)
+		binary->data[i] = captureStream[i];
+
+	for (int i = 0; i < binary->size; i++)
+		debug[i] = binary->data[i];
+
+	//debugging
+	lb_appendBinaryS16ToFile(binary, "audio_recording_dump.bin");
 }
