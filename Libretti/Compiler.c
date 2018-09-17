@@ -364,7 +364,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 					timbre = SAMPLE;
 					strcat(filename.data, value.data);
 					strcat(filename.data, extension.data);
-					lb_Binary sampleFile = loadBinaryFromFile(filename.data);
+					lb_Binary_u8 sampleFile = loadBinaryU8FromFile(filename.data);
 					sample = sampleFile.data;
 					sampleSize = sampleFile.size;
 
