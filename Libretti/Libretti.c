@@ -71,7 +71,7 @@ Libretti* lb_createAndAddLibrettiToCallback(const char* filename)
 
 int lb_validateScriptFile(const char* filename)
 {
-	char* script = loadBinaryFromFile(filename).data;
+	char* script = loadASCIIStringFromFile(filename).data;
 	int validationStatuses = validateScript(script);
 	free(script);
 	return validationStatuses;
@@ -79,7 +79,7 @@ int lb_validateScriptFile(const char* filename)
 
 void lb_compileAudioFromScriptFile(lb_Audio* audio, const char* filename)
 {
-	char* script = loadBinaryFromFile(filename).data;
+	char* script = loadASCIIStringFromFile(filename).data;
 	if (script != NULL)
 	{
 		compileAudioFromScript(audio, script);
@@ -173,6 +173,35 @@ void lb_stopAll()
 {
 	for (int i = 0; i < callbackList->librettiList; i++)
 		lb_stop(callbackList->librettiList[i]);
+}
+
+lb_Binary_s16* lb_captureAudio()
+{
+	lb_Binary_s16* binary = calloc(1, sizeof *binary);
+	binary->size = SAMPLE_SIZE;
+	binary->data = calloc(SAMPLE_SIZE, sizeof *binary->data);
+	initAudioCapture(binary);
+	return binary;
+}
+
+void lb_saveBinaryU8ToFile(lb_Binary_u8* binary, const char* filename)
+{
+	saveBinaryU8ToFile(binary, (char*)filename);
+}
+
+void lb_saveBinaryS16ToFile(lb_Binary_s16* binary, const char* filename)
+{
+	saveBinaryS16ToFile(binary, (char*)filename);
+}
+
+void lb_appendBinaryU8ToFile(lb_Binary_u8* binary, const char* filename)
+{
+	appendBinaryU8ToFile(binary, (char*)filename);
+}
+
+void lb_appendBinaryS16ToFile(lb_Binary_s16* binary, const char* filename)
+{
+	appendBinaryS16ToFile(binary, (char*)filename);
 }
 
 void lb_exportAudioToWAV(lb_Audio* audio, const char* name)
