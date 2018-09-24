@@ -89,7 +89,7 @@ void lb_compileAudioFromScriptFile(lb_Audio* audio, const char* filename)
 
 void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio, lb_Runtime* runtime)
 {
-	lb_Note* currentNotes = malloc(sizeof *currentNotes);
+	lb_Note* currentNotes = malloc(audio->trackCount * (sizeof *currentNotes));
 	lb_updateNotesFromAudio(currentNotes, audio, runtime);
 	lb_updateNoteWavesFromNotes(noteWaves, currentNotes, audio->trackCount);
 	free(currentNotes);
@@ -97,7 +97,21 @@ void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio, lb_Ru
 
 void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime* runtime)
 {
+	for (int i = 0; i < audio->trackCount; i++)
+	{
+		while (runtime->currentPlayTime > audio->tracks[i].noteEvents[runtime->noteIndex[i]].startTime)
+		{
+			runtime->noteIndex[i]++;
 
+			/*To reset the song when the time exceeds the last time stamp.*/
+			if (runtime->currentPlayTime > audio->timeLength)
+			{
+				runtime->currentPlayTime = audio->loopTargetTime;
+				runtime->noteIndex[i] = 0;
+			}
+		}
+		currentNotes[i] = audio->tracks[i].noteEvents[runtime->noteIndex[i]].note;
+	}
 }
 
 void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, uint8_t trackCount)
