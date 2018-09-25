@@ -34,13 +34,13 @@ int validateScript(char* script)
 	int unclosedCrescendos = 0;
 	int unclosedDiminuendos = 0;
 
-	lb_String header = newString("");
-	lb_String value = newString("");
-	lb_String debug = newString("");
+	lb_String header = lb_newString("");
+	lb_String value = lb_newString("");
+	lb_String debug = lb_newString("");
 
 	do
 	{
-		append(&debug, script[readPosition]);
+		lb_appendString(&debug, script[readPosition]);
 		if (!validateSymbol(script[readPosition], parseState))
 		{
 			validationStatuses |= INVALID_USE_OF_SYMBOL;
@@ -103,9 +103,9 @@ int validateScript(char* script)
 				if (parseState == IGNORING_FIRST_SPACE_IN_VALUE)
 					parseState = READING_VALUE;
 				else if (parseState == READING_HEADER)
-					append(&header, script[readPosition]);
+					lb_appendString(&header, script[readPosition]);
 				else if (parseState == READING_VALUE)
-					append(&value, script[readPosition]);
+					lb_appendString(&value, script[readPosition]);
 				else if (parseState == READING_NOTE_DURATION)
 					parseState = READING_TRACK_SCOPE;
 				break;
@@ -147,13 +147,13 @@ int validateScript(char* script)
 				if (strcmp(header.data, "time sig") == 0)
 				{
 					int valueReadPosition = 0;
-					lb_String upper = newString("");
-					lb_String lower = newString("");
+					lb_String upper = lb_newString("");
+					lb_String lower = lb_newString("");
 
 					while (value.data[valueReadPosition] != 0 &&
 						value.data[valueReadPosition] != '/')
 					{
-						append(&upper, value.data[valueReadPosition]);
+						lb_appendString(&upper, value.data[valueReadPosition]);
 						valueReadPosition++;
 					}
 
@@ -161,7 +161,7 @@ int validateScript(char* script)
 
 					while (value.data[valueReadPosition] != 0)
 					{
-						append(&lower, value.data[valueReadPosition]);
+						lb_appendString(&lower, value.data[valueReadPosition]);
 						valueReadPosition++;
 					}
 
@@ -229,11 +229,11 @@ int validateScript(char* script)
 						strcmp(value.data, "metallic") != 0)
 					{
 #ifdef _DEBUG
-						lb_String filename = newString("../Libretti/Samples/");
+						lb_String filename = lb_newString("../Libretti/Samples/");
 #else
 						lb_String filename = newString("Samples/");
 #endif
-						lb_String extension = newString(".pcm");
+						lb_String extension = lb_newString(".pcm");
 						strcat(filename.data, value.data);
 						strcat(filename.data, extension.data);
 						if (!exists(filename.data))
@@ -316,11 +316,11 @@ int validateScript(char* script)
 			default:
 				if (parseState == READING_HEADER)
 				{
-					append(&header, script[readPosition]);
+					lb_appendString(&header, script[readPosition]);
 				}
 				else if (parseState == READING_VALUE)
 				{
-					append(&value, script[readPosition]);
+					lb_appendString(&value, script[readPosition]);
 				}
 				else if (parseState == IGNORING_FIRST_SPACE_IN_VALUE)
 				{
@@ -361,8 +361,8 @@ int validateScript(char* script)
 		if (parseState == READING_NOTHING ||
 			parseState == READING_TRACK_SCOPE)
 		{
-			clear(&header);
-			clear(&value);
+			lb_clearString(&header);
+			lb_clearString(&value);
 		}
 
 		readPosition++;

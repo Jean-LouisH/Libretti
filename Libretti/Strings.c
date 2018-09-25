@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-lb_String newString(const char* initialString)
+lb_String lb_newString(const char* initialString)
 {
 	lb_String string;
 	string.length = strlen(initialString);
@@ -15,7 +15,7 @@ lb_String newString(const char* initialString)
 	return string;
 }
 
-void append(lb_String* string, char symbol)
+void lb_appendString(lb_String* string, char symbol)
 {
 	if (string->length >= string->capacity)
 	{
@@ -34,15 +34,15 @@ void append(lb_String* string, char symbol)
 	}
 }
 
-void clear(lb_String* string)
+void lb_clearString(lb_String* string)
 {
 	string->data[0] = NULL;
 	string->length = 0;
 }
 
-void freeString(lb_String* string)
+void lb_freeString(lb_String* string)
 {
-	clear(string);
+	lb_clearString(string);
 	free(string->data);
 	string->capacity = 0;
 }
