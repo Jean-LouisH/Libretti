@@ -14,6 +14,7 @@
 #define Notes_h
 
 #include <stdint.h>
+#include "Binary.h"
 #include "Effects.h"
 
 typedef struct
@@ -22,11 +23,9 @@ typedef struct
 	double frequency;
 	uint8_t panning;
 	uint8_t timbre;
-	uint8_t duration;
 	uint8_t articulation;
 	uint16_t cue;
-	char* sample;
-	uint32_t sampleSize;
+	lb_Binary_s16 sample;
 	lb_Effects effects;
 }lb_Note;
 
