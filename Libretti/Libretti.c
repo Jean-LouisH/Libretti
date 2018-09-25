@@ -99,7 +99,8 @@ void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime*
 {
 	for (int i = 0; i < audio->trackCount; i++)
 	{
-		while (runtime->currentPlayTime > audio->tracks[i].noteEvents[runtime->noteIndex[i]].startTime)
+		while (runtime->currentPlayTime > audio->tracks[i].noteEvents[runtime->noteIndex[i]].startTime &&
+			runtime->noteIndex[i] <= audio->tracks[i].noteCount && audio->tracks[i].noteCount > 0)
 		{
 			runtime->noteIndex[i]++;
 
