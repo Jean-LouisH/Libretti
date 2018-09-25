@@ -33,7 +33,7 @@ void allocateMemory(lb_Audio* audio, char* script)
 	char symbol = NULL;
 	bool isReadingHeader = false;
 	bool isReadingValue = false;
-	lb_String header = newString("");
+	lb_String header = lb_newString("");
 
 	do
 	{
@@ -55,7 +55,7 @@ void allocateMemory(lb_Audio* audio, char* script)
 				lyricsEventCount++;
 			isReadingHeader = false;
 			isReadingValue = true;
-			clear(&header);
+			lb_clearString(&header);
 			break;
 		case '}':
 			audio->tracks[currentTrack].noteEvents = malloc(sizeof(lb_NoteEvent) * noteCount);
@@ -68,7 +68,7 @@ void allocateMemory(lb_Audio* audio, char* script)
 			if (!isReadingValue)
 			{
 				if (isReadingHeader)
-					append(&header, symbol);
+					lb_appendString(&header, symbol);
 				else if (symbol >= 'A' && symbol <= 'G' ||
 					symbol == 'R')
 					noteCount++;
@@ -82,7 +82,7 @@ void allocateMemory(lb_Audio* audio, char* script)
 	audio->lyricsEvents = malloc(sizeof(lb_LyricsEvent) * lyricsEventCount);
 	audio->lyricsEventCount = lyricsEventCount;
 	audio->trackCount = currentTrack + 1;
-	freeString(&header);
+	lb_freeString(&header);
 }
 
 void buildAudioData(lb_Audio* audio, char* script)
@@ -105,12 +105,12 @@ void buildAudioData(lb_Audio* audio, char* script)
 	uint8_t articulation = NORMAL;
 	uint16_t cue = 0;
 	double duration = 0.0;
-	char* sample = NULL;
-	uint32_t sampleSize = 0;
+	lb_Binary_s16 sample = { NULL, 0 };
 	bool tupletIsOpened = false;
 	bool slurIsOpened = false;
 	bool isReadingCrescendo = false;
 	bool isReadingDiminuendo = false;
+	bool hasFractionalDuration = false;
 
 	lb_Note note;
 	lb_Effects effects;
@@ -120,8 +120,10 @@ void buildAudioData(lb_Audio* audio, char* script)
 
 	uint8_t parseState = READING_NOTHING;
 	uint8_t previousParseState = 0;
-	lb_String header = newString("");
-	lb_String value = newString("");
+	lb_String header = lb_newString("");
+	lb_String value = lb_newString("");
+
+	lb_String durationString = lb_newString("");
 
 	do
 	{
@@ -146,6 +148,11 @@ void buildAudioData(lb_Audio* audio, char* script)
 		case '>':
 			isReadingDiminuendo = !isReadingDiminuendo;
 			break;
+		case '|':
+			duration = (double)timeSigUpper;
+			duration *= (60.0 / (double)tempo) / (4.0 / (double)timeSigLower);
+			currentTime += duration;
+			break;
 		case ' ':
 			if (isReadingCrescendo)
 				isReadingCrescendo = false;
@@ -154,13 +161,37 @@ void buildAudioData(lb_Audio* audio, char* script)
 				isReadingDiminuendo = false;
 
 			if (parseState == IGNORING_FIRST_SPACE_IN_VALUE)
+			{
 				parseState = READING_VALUE;
+			}
 			else if (parseState == READING_HEADER)
-				append(&header, script[readPosition]);
+			{
+				lb_appendString(&header, script[readPosition]);
+			}
 			else if (parseState == READING_VALUE)
-				append(&value, script[readPosition]);
+			{
+				lb_appendString(&value, script[readPosition]);
+			}
 			else if (parseState == READING_NOTE_DURATION)
+			{
+				if (hasFractionalDuration)
+					duration = 1.0 / atoi(durationString.data);
+				else
+					duration = atoi(durationString.data);
+
+				lb_clearString(&durationString);
+
+				if (tupletIsOpened)
+					duration = (duration * 2.0) / 3.0;
+
+				double secondsPerBeat = 60.0 / (double)tempo;
+				double beatLength = 4.0 / (double)timeSigLower;
+				secondsPerBeat /= beatLength;
+				duration *= secondsPerBeat;
+				currentTime += duration;
 				parseState = READING_TRACK_SCOPE;
+				currentNote++;
+			}
 			break;
 		case ':':
 			parseState = IGNORING_FIRST_SPACE_IN_VALUE;
@@ -242,13 +273,13 @@ void buildAudioData(lb_Audio* audio, char* script)
 			else if (strcmp(header.data, "time sig") == 0)
 			{
 				int valueReadPosition = 0;
-				lb_String upper = newString("");
-				lb_String lower = newString("");
+				lb_String upper = lb_newString("");
+				lb_String lower = lb_newString("");
 
 				while (value.data[valueReadPosition] != 0 &&
 					value.data[valueReadPosition] != '/')
 				{
-					append(&upper, value.data[valueReadPosition]);
+					lb_appendString(&upper, value.data[valueReadPosition]);
 					valueReadPosition++;
 				}
 
@@ -256,7 +287,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 
 				while (value.data[valueReadPosition] != 0)
 				{
-					append(&lower, value.data[valueReadPosition]);
+					lb_appendString(&lower, value.data[valueReadPosition]);
 					valueReadPosition++;
 				}
 
@@ -286,6 +317,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 				}
 				audio->tempoEvents[currentTempoEvent].tempo = tempo;
 				audio->tempoEvents[currentTempoEvent].startTime = currentTime;
+				currentTempoEvent++;
 			}
 			else if (strcmp(header.data, "dynamic") == 0)
 			{
@@ -356,18 +388,15 @@ void buildAudioData(lb_Audio* audio, char* script)
 				else
 				{
 #ifdef _DEBUG
-					lb_String filename = newString("../Libretti/Samples/");
+					lb_String filename = lb_newString("../Libretti/Samples/");
 #else
 					lb_String filename = newString("Samples/");
 #endif
-					lb_String extension = newString(".pcm");
+					lb_String extension = lb_newString(".pcm");
 					timbre = SAMPLE;
 					strcat(filename.data, value.data);
 					strcat(filename.data, extension.data);
-					lb_Binary_u8 sampleFile = loadBinaryU8FromFile(filename.data);
-					sample = sampleFile.data;
-					sampleSize = sampleFile.size;
-
+					sample = loadBinaryS16FromFile(filename.data);
 				}
 			}
 			else if (strcmp(header.data, "octave") == 0)
@@ -393,6 +422,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 			else if (strcmp(header.data, "lyric") == 0)
 			{
 
+				currentLyricsEvent++;
 			}
 			else if (strcmp(header.data, "eq") == 0)
 			{
@@ -410,11 +440,15 @@ void buildAudioData(lb_Audio* audio, char* script)
 			{
 
 			}
-			clear(&header);
-			clear(&value);
+			lb_clearString(&header);
+			lb_clearString(&value);
 			parseState = previousParseState;
 			break;
 		case '}':
+			audio->timeLength = currentTime;
+			currentTime = 0.0;
+			currentNote = 0;
+			currentTrack++;
 			parseState = READING_NOTHING;
 			break;
 		case '+':
@@ -426,11 +460,11 @@ void buildAudioData(lb_Audio* audio, char* script)
 		default:
 			if (parseState == READING_HEADER)
 			{
-				append(&header, script[readPosition]);
+				lb_appendString(&header, script[readPosition]);
 			}
 			else if (parseState == READING_VALUE)
 			{
-				append(&value, script[readPosition]);
+				lb_appendString(&value, script[readPosition]);
 			}
 			else if (parseState == READING_TRACK_SCOPE)
 			{
@@ -447,7 +481,6 @@ void buildAudioData(lb_Audio* audio, char* script)
 					note.cue = cue;
 					note.panning = panning;
 					note.sample = sample;
-					note.sampleSize = sampleSize;
 					note.timbre = timbre;
 					note.effects = effects;
 
@@ -455,35 +488,43 @@ void buildAudioData(lb_Audio* audio, char* script)
 					audio->tracks[currentTrack].noteEvents[currentNote].startTime = currentTime;
 				}
 			}
-			else if (parseState == READING_NOTE_FREQUENCY && 
-				(script[readPosition] >= '1' && script[readPosition] <= '9' ||
-				script[readPosition] == '/'))
+			else if ((parseState == READING_NOTE_FREQUENCY || parseState == READING_NOTE_ACCIDENTAL) &&
+				(script[readPosition] >= '1' && script[readPosition] <= '9'))
 			{
-				char substring[1];
-
-				if (script[readPosition] == '/')
-				{
-					readPosition++;
-					substring[0] = script[readPosition];
-					duration = atoi(substring);
-					duration = 1.0 / duration;
-				}
+				hasFractionalDuration = false;
+				parseState = READING_NOTE_DURATION;
+				lb_appendString(&durationString, script[readPosition]);
+			}
+			else if ((parseState == READING_NOTE_FREQUENCY || parseState == READING_NOTE_ACCIDENTAL) &&
+				(script[readPosition] == '/'))
+			{
+				hasFractionalDuration = true;
+				parseState = READING_NOTE_DURATION;
+			}
+			else if (parseState == READING_NOTE_DURATION && script[readPosition] == '.')
+			{
+				if (hasFractionalDuration)
+					duration = 1.0 / atoi(durationString.data);
 				else
-				{
-					substring[0] = script[readPosition];
-					duration = atoi(substring);
-				}
+					duration = atoi(durationString.data);
 
-				readPosition++;
-				if (script[readPosition] == '.')
-				{
-					duration += duration / 2.0;
-				}
+				duration += duration / 2.0;
 
 				if (tupletIsOpened)
 					duration = (duration * 2.0) / 3.0;
 
-				audio->tracks[currentTrack].noteEvents[currentNote].note.duration = duration;
+				double secondsPerBeat = 60.0 / (double)tempo;
+				double beatLength = 4.0 / (double)timeSigLower;
+				secondsPerBeat /= beatLength;
+				duration *= secondsPerBeat;
+				currentTime += duration;
+				parseState = READING_TRACK_SCOPE;
+				currentNote++;
+			}
+			else if (parseState == READING_NOTE_DURATION && 
+				(script[readPosition] >= '0' && script[readPosition] <= '9'))
+			{
+				lb_appendString(&durationString, script[readPosition]);
 			}
 			else if (parseState == READING_NOTE_FREQUENCY &&
 				(script[readPosition] == '#' || script[readPosition] == 'b' ||
@@ -504,31 +545,31 @@ void tuneByKeySignature(uint8_t keySignature, char* noteChar)
 		switch (*noteChar)
 		{
 			case 'F': 
-				noteChar = 'f'; 
+				*noteChar = 'f'; 
 				break;
 			case 'C':
 				if (keySignature != G_MAJOR)
-					noteChar = 'c';
+					*noteChar = 'c';
 				break;
 			case 'G':
 				if (keySignature != G_MAJOR && keySignature != D_MAJOR)
-					noteChar = 'g';
+					*noteChar = 'g';
 				break;
 			case 'D':
 				if (keySignature != G_MAJOR && keySignature != D_MAJOR &&
 					keySignature != A_MAJOR)
-					noteChar = 'e';
+					*noteChar = 'e';
 				break;
 			case 'A':
 				if (keySignature != G_MAJOR && keySignature != D_MAJOR &&
 					keySignature != A_MAJOR && keySignature != E_MAJOR)
-					noteChar = 'b';
+					*noteChar = 'b';
 				break;
 			case 'E':
 				if (keySignature != G_MAJOR && keySignature != D_MAJOR &&
 					keySignature != A_MAJOR && keySignature != E_MAJOR &&
 					keySignature != B_MAJOR)
-					noteChar = 'F';
+					*noteChar = 'F';
 				break;
 		}
 	}
@@ -545,7 +586,7 @@ void assignFrequencyFromNoteChar(double* frequency, uint8_t octave, char noteCha
 		case 'E': *frequency = E1 * pow(2, octave - 1); break;
 		case 'F': *frequency = F1 * pow(2, octave - 1); break;
 		case 'G': *frequency = G1 * pow(2, octave - 1); break;
-			/*Flats and sharps char codes.*/
+			/*Flats and sharps char codes reserved for compiler.*/
 		case 'b': *frequency = Bf0 * pow(2, octave); break;
 		case 'c': *frequency = Cs1 * pow(2, octave - 1); break;
 		case 'e': *frequency = Ef1 * pow(2, octave - 1); break;
