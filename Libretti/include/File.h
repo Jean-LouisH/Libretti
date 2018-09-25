@@ -19,6 +19,7 @@
 bool exists(char* filename);
 lb_Binary_u8 loadASCIIStringFromFile(char* filename);
 lb_Binary_u8 loadBinaryU8FromFile(char* filename);
+lb_Binary_s16 loadBinaryS16FromFile(char* filename);
 void saveBinaryU8ToFile(lb_Binary_u8* binary, char* filename);
 void saveBinaryS16ToFile(lb_Binary_s16* binary, char* filename);
 void appendBinaryU8ToFile(lb_Binary_u8* binary, char* filename);

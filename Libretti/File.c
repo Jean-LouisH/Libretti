@@ -43,9 +43,28 @@ lb_Binary_u8 loadBinaryU8FromFile(char* filename)
 		fseek(inputFile, 0, SEEK_END);
 		binary.size = ftell(inputFile);
 		rewind(inputFile);
-		binary.data = malloc(sizeof *binary.data * (binary.size));
+		binary.data = malloc(sizeof(lb_Binary_u8) * (binary.size));
 		if (binary.data != NULL)
-			fread(binary.data, sizeof *binary.data, binary.size, inputFile);
+			fread(binary.data, sizeof(lb_Binary_u8), binary.size, inputFile);
+		fclose(inputFile);
+	}
+	return binary;
+}
+
+lb_Binary_s16 loadBinaryS16FromFile(char* filename)
+{
+	FILE* inputFile = fopen(filename, "rb");
+	lb_Binary_s16 binary;
+	binary.data = NULL;
+	binary.size = 0;
+	if (inputFile != NULL)
+	{
+		fseek(inputFile, 0, SEEK_END);
+		binary.size = ftell(inputFile);
+		rewind(inputFile);
+		binary.data = malloc(sizeof(lb_Binary_s16) * (binary.size));
+		if (binary.data != NULL)
+			fread(binary.data, sizeof(lb_Binary_s16), binary.size, inputFile);
 		fclose(inputFile);
 	}
 	return binary;
