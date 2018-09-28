@@ -4,6 +4,7 @@ Libretti
 ###  Table of Contents
 
 1. [Introduction](#introduction)
+1.1 [Name Origin](#name-origin)
 
 ## 1. Introduction
 
@@ -11,6 +12,9 @@ Libretti is a core synthesizer library for integration with applications and gam
 
 This software is free, open source and [MIT Licenced](https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE). You can find the software repository [here](https://github.com/Jean-LouisH/Libretti).
 
+### 1.1 Name Origin
+
+**Libretti** is named after the plural form of the Italian word "Libretto" which means "booklet". A Libretto is used for musical performances where musical notes, lyrics and performance cues are recorded. This is the same objective that Libretti is intended to address within digital applications: it is meant to define data structures that house the musical content, runtime information and means of communicating playback.
 
 
 
