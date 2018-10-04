@@ -100,7 +100,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 	uint8_t octave = 0;
 	uint8_t tempo = 0;
 	uint16_t dynamic = 0;
-	uint8_t panning = 0;
+	int8_t panning = 0;
 	uint8_t timbre = 0;
 	uint8_t articulation = NORMAL;
 	uint16_t cue = 0;
@@ -340,7 +340,12 @@ void buildAudioData(lb_Audio* audio, char* script)
 			}
 			else if (strcmp(header.data, "reverb") == 0)
 			{
-
+				float reverbValue = atof(value.data);
+				if (reverbValue == 0)
+				{
+					if (strcmp(value.data, "standard") == 0)
+						;
+				}
 			}
 			else if (strcmp(header.data, "vibrato") == 0)
 			{
@@ -364,7 +369,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 				}
 				else
 				{
-					panning = (panningValue + 1.0) * 127;
+					panning = panningValue * 127;
 				}
 			}
 			else if (strcmp(header.data, "timbre") == 0)
@@ -451,12 +456,6 @@ void buildAudioData(lb_Audio* audio, char* script)
 			currentTrack++;
 			parseState = READING_NOTHING;
 			break;
-		case '+':
-			octave++;
-			break;
-		case '-':
-			octave--;
-			break;
 		default:
 			if (parseState == READING_HEADER)
 			{
@@ -534,6 +533,16 @@ void buildAudioData(lb_Audio* audio, char* script)
 			{
 				parseState = READING_NOTE_ACCIDENTAL;
 				tuneByAccidental(&note.frequency, octave, script[readPosition], noteToPlay);
+			}
+			else if (script[readPosition] == '-')
+			{
+				if (parseState != READING_VALUE)
+					octave--;
+			}
+			else if (script[readPosition] == '+')
+			{
+				if (parseState != READING_VALUE)
+					octave++;
 			}
 		}
 		readPosition++;
