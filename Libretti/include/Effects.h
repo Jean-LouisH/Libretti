@@ -40,7 +40,8 @@ typedef struct
 {
 	ReverbControl reverb;
 	EchoControl echo;
-	EQControl* eq; //list of frequencies and levels.
+	EQControl* eq;
+	uint16_t eqListSize;
 	VibratoControl vibrato;
 	double crossfading_ms;
 	double pitchBlend_pct;
