@@ -510,6 +510,8 @@ void buildAudioData(lb_Audio* audio, char* script)
 
 				duration += duration / 2.0;
 
+				lb_clearString(&durationString);
+
 				if (tupletIsOpened)
 					duration = (duration * 2.0) / 3.0;
 
