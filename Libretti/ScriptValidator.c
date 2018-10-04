@@ -38,6 +38,10 @@ int validateScript(char* script)
 	lb_String value = lb_newString("");
 	lb_String debug = lb_newString("");
 
+	double duration = 0.0;
+	bool hasFractionalDuration = false;
+	lb_String durationString = lb_newString("");
+
 	do
 	{
 		lb_appendString(&debug, script[readPosition]);
@@ -101,13 +105,31 @@ int validateScript(char* script)
 					isReadingDiminuendo = false;
 
 				if (parseState == IGNORING_FIRST_SPACE_IN_VALUE)
+				{
 					parseState = READING_VALUE;
+				}
 				else if (parseState == READING_HEADER)
+				{
 					lb_appendString(&header, script[readPosition]);
+				}
 				else if (parseState == READING_VALUE)
+				{
 					lb_appendString(&value, script[readPosition]);
+				}
 				else if (parseState == READING_NOTE_DURATION)
+				{
+					if (hasFractionalDuration)
+						duration = 1.0 / atoi(durationString.data);
+					else
+						duration = atoi(durationString.data);
+
+					if (tupletIsUnclosed)
+						duration = (duration * 2.0) / 3.0;
+
+					lb_clearString(&durationString);
+					beatsInABar += duration;
 					parseState = READING_TRACK_SCOPE;
+				}
 				break;
 			case '|':
 				if (beatsInABar != 0)
@@ -332,28 +354,45 @@ int validateScript(char* script)
 						script[readPosition] == 'R')
 						parseState = READING_NOTE_FREQUENCY;
 				}
-				else if (parseState == READING_NOTE_FREQUENCY)
+				else if ((parseState == READING_NOTE_FREQUENCY || parseState == READING_NOTE_ACCIDENTAL) &&
+					(script[readPosition] >= '1' && script[readPosition] <= '9'))
 				{
-					if (script[readPosition] == '#' || script[readPosition] == 'b' ||
-						script[readPosition] == 'n')
-					{
-						parseState = READING_NOTE_ACCIDENTAL;
-					}
-					else if (script[readPosition] >= '1' && script[readPosition] <= '9')
-					{
-						parseState = READING_NOTE_DURATION;
-						char substring[1];
-						substring[0] = script[readPosition];
-						double durationValue = atoi(substring);
-						if (tupletIsUnclosed)
-							durationValue = (durationValue * 2.0) / 3.0;
-						beatsInABar += durationValue;
-					}
+					hasFractionalDuration = false;
+					parseState = READING_NOTE_DURATION;
+					lb_appendString(&durationString, script[readPosition]);
 				}
-				else if (parseState == READING_NOTE_ACCIDENTAL)
+				else if ((parseState == READING_NOTE_FREQUENCY || parseState == READING_NOTE_ACCIDENTAL) &&
+					(script[readPosition] == '/'))
 				{
-					if (script[readPosition] >= '1' && script[readPosition] <= '9')
-						parseState = READING_NOTE_DURATION;
+					hasFractionalDuration = true;
+					parseState = READING_NOTE_DURATION;
+				}
+				else if (parseState == READING_NOTE_DURATION && script[readPosition] == '.')
+				{
+					if (hasFractionalDuration)
+						duration = 1.0 / atoi(durationString.data);
+					else
+						duration = atoi(durationString.data);
+
+					duration += duration / 2.0;
+
+					if (tupletIsUnclosed)
+						duration = (duration * 2.0) / 3.0;
+
+					lb_clearString(&durationString);
+					beatsInABar += duration;
+					parseState = READING_TRACK_SCOPE;
+				}
+				else if (parseState == READING_NOTE_DURATION &&
+					(script[readPosition] >= '0' && script[readPosition] <= '9'))
+				{
+					lb_appendString(&durationString, script[readPosition]);
+				}
+				else if (parseState == READING_NOTE_FREQUENCY &&
+					(script[readPosition] == '#' || script[readPosition] == 'b' ||
+						script[readPosition] == 'n'))
+				{
+					parseState = READING_NOTE_ACCIDENTAL;
 				}
 			}
 		}
