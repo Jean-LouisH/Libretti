@@ -26,13 +26,12 @@ typedef struct
 
 typedef struct
 {
-	double frequency;
-	double level_pct;
+	double level_dB;
 }EQControl;
 
 typedef struct
 {
-	double extent;
+	double extent_cents;
 	double rate_per_s;
 }VibratoControl;
 
@@ -40,10 +39,9 @@ typedef struct
 {
 	ReverbControl reverb;
 	EchoControl echo;
-	EQControl* eq;
-	uint16_t eqListSize;
+	EQControl eq[10]; //31Hz, 62Hz, 125Hz, 250Hz, 500Hz, 1kHz, 2kHz, 4kHz, 8kHz, 16kHz
 	VibratoControl vibrato;
-	double crossfading_ms;
+	uint32_t crossfading_ms;
 	double pitchBlend_pct;
 }lb_Effects;
 
