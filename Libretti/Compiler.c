@@ -5,6 +5,7 @@
 #include "include/Strings.h"
 #include "include/Timing.h"
 #include "include/Notes.h"
+#include <string.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -87,13 +88,14 @@ void allocateMemory(lb_Audio* audio, char* script)
 
 void buildAudioData(lb_Audio* audio, char* script)
 {
-	int readPosition = 0;
-	int currentNote = 0;
-	int currentTrack = 0;
-	int currentTempoEvent = 0;
-	int currentLyricsEvent = 0;
+	uint32_t readPosition = 0;
+	uint32_t currentNote = 0;
+	uint8_t currentTrack = 0;
+	uint32_t currentTempoEvent = 0;
+	uint32_t currentLyricsEvent = 0;
 
-	double currentTime = 0.0;
+	double currentTime_s = 0.0;
+	uint16_t barCount = 0;
 
 	uint8_t timeSigLower = 0;
 	uint8_t timeSigUpper = 0;
@@ -114,8 +116,15 @@ void buildAudioData(lb_Audio* audio, char* script)
 
 	lb_Note note;
 	lb_Effects effects;
-	effects.msCrossfading = 0.0;
-	effects.pitchBlendPercentage = 0.0;
+	effects.echo.decay_pct = 0.0;
+	effects.echo.delay_ms = 0.0;
+	effects.reverb.damping_pct = 0.0;
+	effects.reverb.preDelay_ms = 0.0;
+	effects.reverb.roomSize_pct = 0.0;
+	effects.vibrato.extent_cents = 0.0;
+	effects.vibrato.rate_per_s = 0.0;
+	effects.crossfading_ms = 0.0;
+	effects.pitchBlend_pct = 0.0;
 	char noteToPlay;
 
 	uint8_t parseState = READING_NOTHING;
@@ -149,9 +158,10 @@ void buildAudioData(lb_Audio* audio, char* script)
 			isReadingDiminuendo = !isReadingDiminuendo;
 			break;
 		case '|':
+			barCount++;
 			duration = (double)timeSigUpper;
 			duration *= (60.0 / (double)tempo) / (4.0 / (double)timeSigLower);
-			currentTime += duration;
+			currentTime_s = duration * barCount;
 			break;
 		case ' ':
 			if (isReadingCrescendo)
@@ -188,7 +198,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 				double beatLength = 4.0 / (double)timeSigLower;
 				secondsPerBeat /= beatLength;
 				duration *= secondsPerBeat;
-				currentTime += duration;
+				currentTime_s += duration;
 				parseState = READING_TRACK_SCOPE;
 				currentNote++;
 			}
@@ -315,8 +325,8 @@ void buildAudioData(lb_Audio* audio, char* script)
 					else if (strcmp(value.data, "presto") == 0)
 						tempo = PRESTO;
 				}
-				audio->tempoEvents[currentTempoEvent].tempo = tempo;
-				audio->tempoEvents[currentTempoEvent].startTime = currentTime;
+				audio->tempoEvents[currentTempoEvent].tempo_bpm = tempo;
+				audio->tempoEvents[currentTempoEvent].startTime_s = currentTime_s;
 				currentTempoEvent++;
 			}
 			else if (strcmp(header.data, "dynamic") == 0)
@@ -344,12 +354,31 @@ void buildAudioData(lb_Audio* audio, char* script)
 				if (reverbValue == 0)
 				{
 					if (strcmp(value.data, "standard") == 0)
-						;
+					{
+						effects.reverb.damping_pct = 50;
+						effects.reverb.preDelay_ms = 10;
+						effects.reverb.roomSize_pct = 50;
+					}
+					else if (strcmp(value.data, "none") == 0)
+					{
+						effects.reverb.damping_pct = 0;
+						effects.reverb.preDelay_ms = 0;
+						effects.reverb.roomSize_pct = 0;
+					}
 				}
 			}
 			else if (strcmp(header.data, "vibrato") == 0)
 			{
-
+				if (strcmp(value.data, "standard") == 0)
+				{
+					effects.vibrato.extent_cents = 100;
+					effects.vibrato.rate_per_s = 8;
+				}
+				else if (strcmp(value.data, "none") == 0)
+				{
+					effects.vibrato.extent_cents = 0;
+					effects.vibrato.rate_per_s = 0;
+				}
 			}
 			else if (strcmp(header.data, "panning") == 0)
 			{
@@ -410,7 +439,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 			}
 			else if (strcmp(header.data, "loop") == 0)
 			{
-				audio->loopTargetTime = currentTime;
+				audio->loopTimestamp_s = currentTime_s;
 				audio->loopCount = atoi(value.data);
 				if (strcmp(value.data, "infinity") == 0 || 
 					audio->loopCount > 255)
@@ -418,41 +447,99 @@ void buildAudioData(lb_Audio* audio, char* script)
 			}
 			else if (strcmp(header.data, "cue") == 0)
 			{
-
+				cue = atoi(value.data);
 			}
 			else if (strcmp(header.data, "echo") == 0)
 			{
-
+				if (strcmp(value.data, "standard") == 0)
+				{
+					effects.echo.decay_pct = 50;
+					effects.echo.delay_ms = 1000;
+				}
+				else if (strcmp(value.data, "none") == 0)
+				{
+					effects.echo.decay_pct = 0;
+					effects.echo.delay_ms = 0;
+				}
 			}
 			else if (strcmp(header.data, "lyric") == 0)
 			{
-
+				audio->lyricsEvents[currentLyricsEvent].lyrics = malloc(sizeof(char) * value.capacity);
+				strcpy(audio->lyricsEvents[currentLyricsEvent].lyrics, value.data);
+				audio->lyricsEvents[currentLyricsEvent].startTime_s = currentTime_s;
 				currentLyricsEvent++;
 			}
 			else if (strcmp(header.data, "eq") == 0)
 			{
+				int valueReadPosition = 0;
+				lb_String frequencyString = lb_newString("");
+				lb_String levelString = lb_newString("");
 
-			}
-			else if (strcmp(header.data, "flanging") == 0)
-			{
+				while (value.data[valueReadPosition] != 0 &&
+					value.data[valueReadPosition] != ';')
+				{
+					lb_appendString(&frequencyString, value.data[valueReadPosition]);
+					valueReadPosition++;
+				}
 
+				valueReadPosition++;
+
+				while (value.data[valueReadPosition] != 0)
+				{
+					lb_appendString(&levelString, value.data[valueReadPosition]);
+					valueReadPosition++;
+				}
+
+				if (strcmp(value.data, "none") == 0)
+				{
+					for (int i = 0; i < 10; i++)
+						effects.eq[i].level_dB = 0;
+				}
+				else
+				{
+					if (strcmp(frequencyString.data, "31Hz") == 0)
+						effects.eq[0].level_dB = atof(levelString.data);
+					if (strcmp(frequencyString.data, "62Hz") == 0)
+						effects.eq[1].level_dB = atof(levelString.data);
+					if (strcmp(frequencyString.data, "125Hz") == 0)
+						effects.eq[2].level_dB = atof(levelString.data);
+					if (strcmp(frequencyString.data, "250Hz") == 0)
+						effects.eq[3].level_dB = atof(levelString.data);
+					if (strcmp(frequencyString.data, "500Hz") == 0)
+						effects.eq[4].level_dB = atof(levelString.data);
+					if (strcmp(frequencyString.data, "1kHz") == 0)
+						effects.eq[5].level_dB = atof(levelString.data);
+					if (strcmp(frequencyString.data, "2kHz") == 0)
+						effects.eq[6].level_dB = atof(levelString.data);
+					if (strcmp(frequencyString.data, "4kHz") == 0)
+						effects.eq[7].level_dB = atof(levelString.data);
+					if (strcmp(frequencyString.data, "8kHz") == 0)
+						effects.eq[8].level_dB = atof(levelString.data);
+					if (strcmp(frequencyString.data, "16kHz") == 0)
+						effects.eq[9].level_dB = atof(levelString.data);
+				}
 			}
 			else if (strcmp(header.data, "crossfading") == 0)
 			{
-
+				effects.crossfading_ms = atoi(value.data);
+				if (strcmp(value.data, "none") == 0)
+					effects.crossfading_ms = 0;
 			}
 			else if (strcmp(header.data, "pitch blend") == 0)
 			{
-
+				effects.pitchBlend_pct = atof(value.data);
+				if (strcmp(value.data, "none") == 0)
+					effects.pitchBlend_pct = 0;
 			}
 			lb_clearString(&header);
 			lb_clearString(&value);
 			parseState = previousParseState;
 			break;
 		case '}':
-			audio->timeLength = currentTime;
-			currentTime = 0.0;
+			audio->timeLength_s = currentTime_s;
+			currentTime_s = 0.0;
 			currentNote = 0;
+			barCount = 0;
 			currentTrack++;
 			parseState = READING_NOTHING;
 			break;
@@ -473,7 +560,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 					parseState = READING_NOTE_FREQUENCY;
 					noteToPlay = script[readPosition];
 					tuneByKeySignature(audio->keySignature, &noteToPlay);
-					assignFrequencyFromNoteChar(&note.frequency, octave, noteToPlay);
+					assignFrequencyFromNoteChar(&note.frequency_Hz, octave, noteToPlay);
 
 					note.amplitude = dynamic;
 					note.articulation = articulation;
@@ -484,7 +571,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 					note.effects = effects;
 
 					audio->tracks[currentTrack].noteEvents[currentNote].note = note;
-					audio->tracks[currentTrack].noteEvents[currentNote].startTime = currentTime;
+					audio->tracks[currentTrack].noteEvents[currentNote].startTime_s = currentTime_s;
 				}
 			}
 			else if ((parseState == READING_NOTE_FREQUENCY || parseState == READING_NOTE_ACCIDENTAL) &&
@@ -518,7 +605,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 				double beatLength = 4.0 / (double)timeSigLower;
 				secondsPerBeat /= beatLength;
 				duration *= secondsPerBeat;
-				currentTime += duration;
+				currentTime_s += duration;
 				parseState = READING_TRACK_SCOPE;
 				currentNote++;
 			}
@@ -532,7 +619,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 					script[readPosition] == 'n'))
 			{
 				parseState = READING_NOTE_ACCIDENTAL;
-				tuneByAccidental(&note.frequency, octave, script[readPosition], noteToPlay);
+				tuneByAccidental(&note.frequency_Hz, octave, script[readPosition], noteToPlay);
 			}
 			else if (script[readPosition] == '-')
 			{
