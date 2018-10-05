@@ -99,15 +99,15 @@ void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime*
 {
 	for (int i = 0; i < audio->trackCount; i++)
 	{
-		while (runtime->currentPlayTime > audio->tracks[i].noteEvents[runtime->noteIndex[i]].startTime &&
+		while (runtime->currentPlayTime_s > audio->tracks[i].noteEvents[runtime->noteIndex[i]].startTime_s &&
 			runtime->noteIndex[i] <= audio->tracks[i].noteCount && audio->tracks[i].noteCount > 0)
 		{
 			runtime->noteIndex[i]++;
 
 			/*To reset the song when the time exceeds the last time stamp.*/
-			if (runtime->currentPlayTime > audio->timeLength)
+			if (runtime->currentPlayTime_s > audio->timeLength_s)
 			{
-				runtime->currentPlayTime = audio->loopTargetTime;
+				runtime->currentPlayTime_s = audio->loopTimestamp_s;
 				runtime->noteIndex[i] = 0;
 			}
 		}
@@ -124,7 +124,7 @@ void lb_incrementPlayTime(Libretti* libretti, double timeSeconds)
 {
 	if (libretti->runtime->playStates & IS_PLAYING)
 	{
-		libretti->runtime->currentPlayTime += timeSeconds;
+		libretti->runtime->currentPlayTime_s += timeSeconds;
 	}
 }
 
@@ -133,7 +133,7 @@ void lb_incrementAllPlayTimes(double timeSeconds)
 	for (int i = 0; i < callbackList->size; i++)
 	{
 		Libretti* libretti = callbackList->librettiList[i];
-		libretti->runtime->currentPlayTime += timeSeconds;
+		libretti->runtime->currentPlayTime_s += timeSeconds;
 	}
 }
 
@@ -157,7 +157,7 @@ void lb_pause(Libretti* libretti)
 
 void lb_reset(Libretti* libretti)
 {
-	libretti->runtime->currentPlayTime = 0.0;
+	libretti->runtime->currentPlayTime_s = 0.0;
 }
 
 void lb_stop(Libretti* libretti)
@@ -190,7 +190,7 @@ void lb_stopAll()
 		lb_stop(callbackList->librettiList[i]);
 }
 
-lb_Binary_s16* lb_captureAudio()
+lb_Binary_s16* lb_getAudioCaptureStreamBuffer()
 {
 	lb_Binary_s16* binary = calloc(1, sizeof *binary);
 	binary->size = SAMPLE_SIZE;

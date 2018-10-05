@@ -25,7 +25,7 @@ enum states
 
 typedef struct
 {
-	double currentPlayTime;
+	double currentPlayTime_s;
 	uint32_t noteIndex[MAX_TRACKS];
 	SDL_AudioDeviceID device;
 	uint8_t playStates;

@@ -56,7 +56,7 @@ extern "C"
 	void lb_pauseAll();
 	void lb_resetAll();
 	void lb_stopAll();
-	lb_Binary_s16* lb_captureAudio();
+	lb_Binary_s16* lb_getAudioCaptureStreamBuffer();
 	void lb_saveBinaryU8ToFile(lb_Binary_u8* binary, const char* filename);
 	void lb_saveBinaryS16ToFile(lb_Binary_s16* binary, const char* filename);
 	void lb_appendBinaryU8ToFile(lb_Binary_u8* binary, const char* filename);

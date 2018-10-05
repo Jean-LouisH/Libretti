@@ -18,19 +18,19 @@
 typedef struct
 {
 	lb_Note note;
-	double startTime;
+	double startTime_s;
 }lb_NoteEvent;
 
 typedef struct
 {
-	unsigned char tempo;
-	double startTime;
+	unsigned char tempo_bpm;
+	double startTime_s;
 }lb_TempoEvent;
 
 typedef struct
 {
 	char* lyrics;
-	double startTime;
+	double startTime_s;
 }lb_LyricsEvent;
 
 #endif /*Events_h*/
