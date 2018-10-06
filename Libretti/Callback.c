@@ -1,6 +1,7 @@
 #include "include/Callback.h" 
 #include "include/CallbackList.h"
 #include "include/File.h"
+#include "include/Mixer.h"
 #include <SDL.h>
 
 void initAudioPlayback(CallbackList* callbackList)
@@ -73,6 +74,8 @@ void runCallbackPlay(void* userdata, Uint8* stream, int byteLength)
 	int doubleByteLength = byteLength / sizeof(Sint16);
 	CallbackList* callbackList = (CallbackList*)userdata;
 
+	Sint16 debugStream[SAMPLE_SIZE * 6] = { 0 };
+
 	/*Clears stream after accumulating channels*/
 	for (int i = 0; i < doubleByteLength; i++)
 	{
@@ -91,6 +94,7 @@ void runCallbackPlay(void* userdata, Uint8* stream, int byteLength)
 			if (libretti->audio->trackCount > 0)
 			{
 				lb_updateNoteWavesFromAudio(libretti->noteWaves, libretti->audio, libretti->runtime);
+				interleaveNoteWavesToStream(playbackStream, libretti->noteWaves);
 			}
 		}
 	}
