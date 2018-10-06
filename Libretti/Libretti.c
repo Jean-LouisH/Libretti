@@ -91,6 +91,7 @@ void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio, lb_Ru
 {
 	lb_Note* currentNotes = malloc(audio->trackCount * (sizeof *currentNotes));
 	lb_updateNotesFromAudio(currentNotes, audio, runtime);
+	noteWaves->count = audio->trackCount;
 	lb_updateNoteWavesFromNotes(noteWaves, currentNotes, audio->trackCount);
 	free(currentNotes);
 }
@@ -99,8 +100,8 @@ void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime*
 {
 	for (int i = 0; i < audio->trackCount; i++)
 	{
-		while (runtime->currentPlayTime_s > audio->tracks[i].noteEvents[runtime->noteIndex[i]].startTime_s &&
-			runtime->noteIndex[i] <= audio->tracks[i].noteCount && audio->tracks[i].noteCount > 0)
+		while ((runtime->currentPlayTime_s > audio->tracks[i].noteEvents[runtime->noteIndex[i]].startTime_s) &&
+			(runtime->noteIndex[i] < audio->tracks[i].noteCount) && (audio->tracks[i].noteCount > 0))
 		{
 			runtime->noteIndex[i]++;
 
@@ -117,7 +118,7 @@ void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime*
 
 void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, uint8_t trackCount)
 {
-	generateNoteWaves(noteWaves, currentNotes, trackCount);
+	generateNoteWaves(noteWaves, currentNotes);
 }
 
 void lb_incrementPlayTime(Libretti* libretti, double timeSeconds)
