@@ -59,7 +59,10 @@ void allocateMemory(lb_Audio* audio, char* script)
 			lb_clearString(&header);
 			break;
 		case '}':
-			audio->tracks[currentTrack].noteEvents = malloc(sizeof(lb_NoteEvent) * noteCount);
+			if (noteCount > 0)
+				audio->tracks[currentTrack].noteEvents = malloc(sizeof(lb_NoteEvent) * noteCount);
+			else
+				audio->tracks[currentTrack].noteEvents = calloc(1, sizeof(lb_NoteEvent));
 			audio->tracks[currentTrack].noteCount = noteCount;
 			break;
 		case ']':
@@ -125,6 +128,10 @@ void buildAudioData(lb_Audio* audio, char* script)
 	effects.vibrato.rate_per_s = 0.0;
 	effects.crossfading_ms = 0.0;
 	effects.pitchBlend_pct = 0.0;
+
+	for (int i = 0; i < 10; i++)
+		effects.eq[i].level_dB = 0;
+
 	char noteToPlay;
 
 	uint8_t parseState = READING_NOTHING;
@@ -573,6 +580,16 @@ void buildAudioData(lb_Audio* audio, char* script)
 					audio->tracks[currentTrack].noteEvents[currentNote].note = note;
 					audio->tracks[currentTrack].noteEvents[currentNote].startTime_s = currentTime_s;
 				}
+				else if (script[readPosition] == '-')
+				{
+					if (parseState != READING_VALUE)
+						octave--;
+				}
+				else if (script[readPosition] == '+')
+				{
+					if (parseState != READING_VALUE)
+						octave++;
+				}
 			}
 			else if ((parseState == READING_NOTE_FREQUENCY || parseState == READING_NOTE_ACCIDENTAL) &&
 				(script[readPosition] >= '1' && script[readPosition] <= '9'))
@@ -620,16 +637,6 @@ void buildAudioData(lb_Audio* audio, char* script)
 			{
 				parseState = READING_NOTE_ACCIDENTAL;
 				tuneByAccidental(&note.frequency_Hz, octave, script[readPosition], noteToPlay);
-			}
-			else if (script[readPosition] == '-')
-			{
-				if (parseState != READING_VALUE)
-					octave--;
-			}
-			else if (script[readPosition] == '+')
-			{
-				if (parseState != READING_VALUE)
-					octave++;
 			}
 		}
 		readPosition++;
