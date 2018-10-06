@@ -13,6 +13,9 @@
 #ifndef Mixer_h
 #define Mixer_h
 
+#include "SDL_stdinc.h"
+#include "NoteWaves.h"
 
+void interleaveNoteWavesToStream(Sint16 outputStream[], lb_NoteWaves* noteWaves);
 
 #endif /*Mixer_h*/
