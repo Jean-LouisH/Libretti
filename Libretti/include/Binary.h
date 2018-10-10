@@ -10,10 +10,10 @@
 * License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE
 */
 
-#include <stdint.h>
-
 #ifndef Binary_h
 #define Binary_h
+
+#include <stdint.h>
 
 //Unsigned binaries
 //////////////////////////////////
