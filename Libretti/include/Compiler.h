@@ -20,7 +20,7 @@ void compileAudioFromScript(lb_Audio* audio, char* script);
 void allocateMemory(lb_Audio* audio, char* script);
 void buildAudioData(lb_Audio* audio, char* script);
 void tuneByKeySignature(uint8_t keySignature, char* noteChar);
-void assignFrequencyFromNoteChar(double* frequency, uint8_t octave, char noteChar);
-void tuneByAccidental(double* frequency, uint8_t octave, char scriptChar, char noteChar);
+void assignFrequencyFromNoteChar(float* frequency, uint8_t octave, char noteChar);
+void tuneByAccidental(float* frequency, uint8_t octave, char scriptChar, char noteChar);
 
 #endif /*Compiler_h*/

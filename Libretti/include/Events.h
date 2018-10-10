@@ -13,24 +13,25 @@
 #ifndef Events_h
 #define Events_h
 
+#include <stdint.h>
 #include "Notes.h"
 
 typedef struct
 {
 	lb_Note note;
-	double startTime_s;
+	float startTime_s;
 }lb_NoteEvent;
 
 typedef struct
 {
-	unsigned char tempo_bpm;
-	double startTime_s;
+	uint8_t tempo_bpm;
+	float startTime_s;
 }lb_TempoEvent;
 
 typedef struct
 {
 	char* lyrics;
-	double startTime_s;
+	float startTime_s;
 }lb_LyricsEvent;
 
 #endif /*Events_h*/

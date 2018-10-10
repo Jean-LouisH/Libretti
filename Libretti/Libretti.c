@@ -121,7 +121,7 @@ void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes,
 	generateNoteWaves(noteWaves, currentNotes);
 }
 
-void lb_incrementPlayTime(Libretti* libretti, double timeSeconds)
+void lb_incrementPlayTime(Libretti* libretti, float timeSeconds)
 {
 	if (libretti->runtime->playStates & IS_PLAYING)
 	{
@@ -129,7 +129,7 @@ void lb_incrementPlayTime(Libretti* libretti, double timeSeconds)
 	}
 }
 
-void lb_incrementAllPlayTimes(double timeSeconds)
+void lb_incrementAllPlayTimes(float timeSeconds)
 {
 	for (int i = 0; i < callbackList->size; i++)
 	{
