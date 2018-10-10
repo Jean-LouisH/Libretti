@@ -449,8 +449,8 @@ void buildAudioData(lb_Audio* audio, char* script)
 				audio->loopTimestamp_s = currentTime_s;
 				audio->loopCount = atoi(value.data);
 				if (strcmp(value.data, "infinity") == 0 || 
-					audio->loopCount > 255)
-					audio->loopCount = 255;
+					audio->loopCount > pow(2, (sizeof audio->loopCount) * 8) - 1)
+					audio->loopCount = pow(2, (sizeof audio->loopCount) * 8) - 1;
 			}
 			else if (strcmp(header.data, "cue") == 0)
 			{
@@ -680,7 +680,7 @@ void tuneByKeySignature(uint8_t keySignature, char* noteChar)
 	}
 }
 
-void assignFrequencyFromNoteChar(double* frequency, uint8_t octave, char noteChar)
+void assignFrequencyFromNoteChar(float* frequency, uint8_t octave, char noteChar)
 {
 	switch (noteChar)
 	{
@@ -702,7 +702,7 @@ void assignFrequencyFromNoteChar(double* frequency, uint8_t octave, char noteCha
 	}
 }
 
-void tuneByAccidental(double* frequency, uint8_t octave, char scriptChar, char noteChar)
+void tuneByAccidental(float* frequency, uint8_t octave, char scriptChar, char noteChar)
 {
 	switch (scriptChar)
 	{
