@@ -47,7 +47,7 @@ enum validationStatuses
 	EXTRA_TRACK_SCOPE_CLOSED_BRACKET				= 1 << 23	
 };
 
-int validateScript(char* script);
+int validateScript(const char* script);
 bool validateSymbol(char symbol, uint8_t parseState);
 void printCompilationStatuses(int validationStatuses);
 
