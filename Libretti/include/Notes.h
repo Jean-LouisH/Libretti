@@ -19,8 +19,8 @@
 
 typedef struct
 {
-	double amplitude;
-	double frequency_Hz;
+	float amplitude;
+	float frequency_Hz;
 	int8_t panning;
 	uint8_t timbre;
 	uint8_t articulation;

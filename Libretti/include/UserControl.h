@@ -33,8 +33,8 @@ enum userControlCodes
 
 typedef struct
 {
-	double outputVolume;
-	double outputPanning; //-1.0 to 1.0
+	float outputVolume;
+	float outputPanning; //-1.0 to 1.0
 	lb_Effects effects;
 	uint32_t controlSwitches;
 }lb_UserControl;

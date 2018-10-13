@@ -20,12 +20,12 @@
 enum states
 {
 	IS_PLAYING = 1 << 0,
-	PLAYED_ONCE = 1 << 1
+	PLAYED_AT_LEAST_ONCE = 1 << 1
 };
 
 typedef struct
 {
-	double currentPlayTime_s;
+	float currentPlayTime_s;
 	uint32_t noteIndex[MAX_TRACKS];
 	SDL_AudioDeviceID device;
 	uint8_t playStates;
