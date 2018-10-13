@@ -4,7 +4,7 @@
 #include "include/Mixer.h"
 #include <SDL.h>
 
-void initAudioPlayback(CallbackList* callbackList)
+void initAudioPlayback(CallbackList callbackList[])
 {
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 	{

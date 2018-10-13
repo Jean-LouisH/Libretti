@@ -54,9 +54,9 @@ extern "C"
 	/*Updates existing note wavesfrom audio at a given runtime.*/
 	void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio, lb_Runtime* runtime);
 	/*Extract as many simultaneous notes that matches the audio track count, at a given runtime.*/
-	void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime* runtime);
+	void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime* runtime);
 	/*Updates note waves with a PCM representation of the encoded notes.*/
-	void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, uint8_t trackCount);
+	void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note currentNotes[], uint8_t trackCount);
 	/*Updates the Libretti's runtime with a delta in seconds.*/
 	void lb_incrementPlayTime(Libretti* libretti, float timeSeconds);
 	/*Updates the times of all Librettis in the global callback list.*/

@@ -96,7 +96,7 @@ void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio, lb_Ru
 	free(currentNotes);
 }
 
-void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime* runtime)
+void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime* runtime)
 {
 	for (int i = 0; i < audio->trackCount; i++)
 	{
@@ -110,13 +110,14 @@ void lb_updateNotesFromAudio(lb_Note* currentNotes, lb_Audio* audio, lb_Runtime*
 			{
 				runtime->currentPlayTime_s = audio->loopTimestamp_s;
 				runtime->noteIndex[i] = 0;
+				runtime->playStates |= PLAYED_AT_LEAST_ONCE;
 			}
 		}
 		currentNotes[i] = audio->tracks[i].noteEvents[runtime->noteIndex[i]].note;
 	}
 }
 
-void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note* currentNotes, uint8_t trackCount)
+void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note currentNotes[], uint8_t trackCount)
 {
 	generateNoteWaves(noteWaves, currentNotes);
 }
