@@ -16,7 +16,7 @@ void generateNoteWaves(lb_NoteWaves* noteWaves, lb_Note currentNotes[])
 			double frequency = noteWaves->metaData[i].frequency_Hz;
 			double time = (timesteps[i] / SAMPLE_FREQUENCY);
 			double period = (1.0 / noteWaves->metaData[i].frequency_Hz);
-			double amplitude = noteWaves->metaData[i].amplitude;
+			double amplitude = noteWaves->metaData[i].amplitude * CHANNELS;
 
 			switch (noteWaves->metaData[i].timbre)
 			{
