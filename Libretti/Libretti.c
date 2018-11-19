@@ -115,36 +115,44 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 			}
 		}
 
-		lb_NoteEvent noteEvent;
-		lb_NoteEvent nextNoteEvent;
-		lb_Note silentNote = { 0 };
-
-		const float slurTimeRatio = 1.0;
-		const float normalTimeRatio = 0.85;
-		const float staccatoTimeRatio = 0.15;
-
-		float currentTimeRatio = normalTimeRatio;
-
-		noteEvent = audio->tracks[i].noteEvents[runtime->noteIndex[i]];
-
-		switch (noteEvent.note.articulation)
+		if (runtime->noteIndex[i] > 0)
 		{
-		case SLUR: currentTimeRatio = slurTimeRatio; break;
-		case NORMAL: currentTimeRatio = normalTimeRatio; break;
-		case STACCATO: currentTimeRatio = staccatoTimeRatio; break;
-		}
+			lb_NoteEvent noteEvent;
+			lb_NoteEvent nextNoteEvent;
+			lb_Note silentNote = { 0 };
 
-		if (runtime->noteIndex[i] + 1 <= audio->tracks[i].noteCount)
-			nextNoteEvent = audio->tracks[i].noteEvents[runtime->noteIndex[i] + 1];
+			const float slurTimeRatio = 1.0;
+			const float normalTimeRatio = 0.85;
+			const float staccatoTimeRatio = 0.15;
 
-		if (runtime->currentPlayTime_s >
-			(noteEvent.startTime_s + ((nextNoteEvent.startTime_s - noteEvent.startTime_s) * currentTimeRatio)))
-		{
-			currentNotes[i] = silentNote;
-		}
-		else
-		{
-			currentNotes[i] = audio->tracks[i].noteEvents[runtime->noteIndex[i]].note;
+			float currentTimeRatio = normalTimeRatio;
+
+			noteEvent = audio->tracks[i].noteEvents[runtime->noteIndex[i] - 1];
+
+			switch (noteEvent.note.articulation)
+			{
+			case SLUR: currentTimeRatio = slurTimeRatio; break;
+			case NORMAL: currentTimeRatio = normalTimeRatio; break;
+			case STACCATO: currentTimeRatio = staccatoTimeRatio; break;
+			}
+
+			if (runtime->noteIndex[i] <= audio->tracks[i].noteCount)
+				nextNoteEvent = audio->tracks[i].noteEvents[runtime->noteIndex[i]];
+
+			float noteLiftTime = (noteEvent.startTime_s + 
+				((nextNoteEvent.startTime_s - noteEvent.startTime_s) * currentTimeRatio));
+
+			//if (runtime->currentPlayTime_s >
+			//	(noteEvent.startTime_s + ((nextNoteEvent.startTime_s - noteEvent.startTime_s) * currentTimeRatio)))
+
+			if (runtime->currentPlayTime_s > noteLiftTime)
+			{
+				currentNotes[i] = silentNote;
+			}
+			else
+			{
+				currentNotes[i] = audio->tracks[i].noteEvents[runtime->noteIndex[i] - 1].note;
+			}
 		}
 	}
 }
