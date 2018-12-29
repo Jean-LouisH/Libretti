@@ -1,7 +1,8 @@
 #include <Libretti.h>
 #include <SDL.h>
 #include <string>
-
+#include "ApplicationWindow.hpp"
+#include <Oscilloscope.hpp>
 #include "ConsoleMenu.hpp"
 
 #define RECORD_TEST 0
@@ -12,21 +13,17 @@
 int main(int argc, char* argv[])
 {
 	std::string fileName;
-	const double fps = 60;
-	double cycleStart = 0.0;
-	double cycleEnd = 0.0;
-	double deltaSeconds = 0.0;
-	double frameTime = 0.0;
 	bool isRunning = true;
 
 	menu(&fileName);
 #if !RECORD_TEST
 	Libretti* libretti = lb_createAndAddLibrettiToCallback(fileName.c_str());
+	ApplicationWindow appWindow = ApplicationWindow("Libretti Playback Test");
 #else
 	lb_Binary_s16* binary = lb_captureAudio();
 
 	SDL_Window* window = SDL_CreateWindow(
-		"Libretti Test Console",
+		"Libretti Recording Test Console",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		800,
@@ -38,15 +35,12 @@ int main(int argc, char* argv[])
 
 	do
 	{
-		cycleStart = SDL_GetTicks();
 #if !RECORD_TEST
-		lb_incrementAllPlayTimes(frameTime / MS_PER_S);
+		isRunning = appWindow.handleEvents(libretti);
+		Oscilloscope::renderWaveforms(appWindow.getSDLWindow(), libretti);
+		lb_incrementAllPlayTimes(appWindow.getFrameTime() / MS_PER_S);
 #endif
-		cycleEnd = SDL_GetTicks();
-		double frameDelay = (MS_PER_S / fps) - (cycleEnd - cycleStart);
-		if (frameDelay > 0)
-			SDL_Delay(frameDelay);
-		frameTime = SDL_GetTicks() - cycleStart;
+		appWindow.swapBuffers();
 
 #if RECORD_TEST
 		SDL_Event SDLEvents;
