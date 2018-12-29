@@ -179,7 +179,7 @@ void lb_incrementAllPlayTimes(float timeSeconds)
 	}
 }
 
-void lb_load(Libretti* libretti, char* filename)
+void lb_load(Libretti* libretti, const char* filename)
 {
 	lb_compileAudioFromScriptFile(libretti->audio, filename);
 	lb_play(libretti->runtime);

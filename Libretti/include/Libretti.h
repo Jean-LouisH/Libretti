@@ -62,7 +62,7 @@ extern "C"
 	/*Updates the times of all Librettis in the global callback list.*/
 	void lb_incrementAllPlayTimes(float timeSeconds);
 	/*Updates an existing Libretti with a compiled script.*/
-	void lb_load(Libretti* libretti, char* filename);
+	void lb_load(Libretti* libretti, const char* filename);
 	/*Allows the Libretti's runtime to increment time.*/
 	void lb_play(Libretti* libretti);
 	/*Stops the Libretti's runtime from incrementing time.*/
