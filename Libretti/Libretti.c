@@ -117,8 +117,8 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 
 		if (runtime->noteIndex[i] > 0)
 		{
-			lb_NoteEvent noteEvent;
-			lb_NoteEvent nextNoteEvent;
+			lb_NoteEvent noteEvent = audio->tracks[i].noteEvents[runtime->noteIndex[i] - 1];
+			lb_NoteEvent nextNoteEvent = noteEvent;
 			lb_Note silentNote = { 0 };
 
 			const float slurTimeRatio = 1.0;
@@ -127,13 +127,11 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 
 			float currentTimeRatio = normalTimeRatio;
 
-			noteEvent = audio->tracks[i].noteEvents[runtime->noteIndex[i] - 1];
-
 			switch (noteEvent.note.articulation)
 			{
-			case SLUR: currentTimeRatio = slurTimeRatio; break;
-			case NORMAL: currentTimeRatio = normalTimeRatio; break;
-			case STACCATO: currentTimeRatio = staccatoTimeRatio; break;
+				case SLUR: currentTimeRatio = slurTimeRatio; break;
+				case NORMAL: currentTimeRatio = normalTimeRatio; break;
+				case STACCATO: currentTimeRatio = staccatoTimeRatio; break;
 			}
 
 			if (runtime->noteIndex[i] <= audio->tracks[i].noteCount)
@@ -182,7 +180,7 @@ void lb_incrementAllPlayTimes(float timeSeconds)
 void lb_load(Libretti* libretti, const char* filename)
 {
 	lb_compileAudioFromScriptFile(libretti->audio, filename);
-	lb_play(libretti->runtime);
+	lb_play(libretti);
 }
 
 void lb_play(Libretti* libretti)
@@ -204,8 +202,8 @@ void lb_reset(Libretti* libretti)
 
 void lb_stop(Libretti* libretti)
 {
-	lb_reset(libretti->runtime);
-	lb_pause(libretti->runtime);
+	lb_reset(libretti);
+	lb_pause(libretti);
 }
 
 void lb_playAll()
