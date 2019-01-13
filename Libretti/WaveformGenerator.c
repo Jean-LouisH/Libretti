@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <math.h>
 
-
 void generateNoteWaves(lb_NoteWaves* noteWaves, lb_Note currentNotes[])
 {
 	static double timesteps[MAX_TRACKS];

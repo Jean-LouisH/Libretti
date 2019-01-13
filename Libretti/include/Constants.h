@@ -18,7 +18,7 @@
 #define MAX_FPS 60
 #define SAMPLE_FREQUENCY 44100
 #define SAMPLES_PER_FRAME (SAMPLE_FREQUENCY / MAX_FPS)
-#define SAMPLE_SIZE (SAMPLES_PER_FRAME > 1024 ? 2048 : 1024)	
+#define SAMPLE_SIZE (SAMPLES_PER_FRAME > 1024 ? 2048 : 1024) //Ensures that the buffer has more than enough spaced reserved.
 
 enum key_signatures
 {
