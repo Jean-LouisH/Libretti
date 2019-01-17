@@ -54,6 +54,8 @@ void lb_addLibrettiToCallback(Libretti* libretti)
 	{
 		libretti->runtime->device = callbackList->device;
 		libretti->runtime->playStates = 0;
+		libretti->runtime->userControl.outputVolume = 1.0;
+		libretti->runtime->userControl.outputPanning = 0.0;
 		lb_reset(libretti);
 		lb_play(libretti);
 		callbackList->librettiList[callbackList->size] = libretti;
@@ -160,20 +162,20 @@ void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note currentNotes[]
 	generateNoteWaves(noteWaves, currentNotes);
 }
 
-void lb_incrementPlayTime(Libretti* libretti, float timeSeconds)
+void lb_incrementPlayTime(Libretti* libretti, float deltaTimeSeconds)
 {
 	if (libretti->runtime->playStates & IS_PLAYING)
 	{
-		libretti->runtime->currentPlayTime_s += timeSeconds;
+		libretti->runtime->currentPlayTime_s += deltaTimeSeconds;
 	}
 }
 
-void lb_incrementAllPlayTimes(float timeSeconds)
+void lb_incrementAllPlayTimes(float deltaTimeSeconds)
 {
 	for (int i = 0; i < callbackList->size; i++)
 	{
 		Libretti* libretti = callbackList->librettiList[i];
-		libretti->runtime->currentPlayTime_s += timeSeconds;
+		libretti->runtime->currentPlayTime_s += deltaTimeSeconds;
 	}
 }
 
@@ -261,6 +263,34 @@ void lb_appendBinaryS16ToFile(lb_Binary_s16* binary, const char* filename)
 
 void lb_exportAudioToWAV(lb_Audio* audio, const char* name)
 {
+	lb_Runtime* exportRuntime = lb_createRuntime();
+	lb_NoteWaves* exportNoteWaves = lb_createNoteWaves();
+	lb_Binary_s16 exportBinary;
+
+	int maxNoteCount = 0;
+
+	for (int i = 0; i < audio->trackCount; i++)
+		if (audio->tracks[i].noteCount > maxNoteCount)
+			maxNoteCount = audio->tracks[i].noteCount;
+
+	int streamLength = maxNoteCount * SAMPLE_SIZE;
+	exportBinary.data = calloc(streamLength, sizeof(int16_t));
+
+	/*Building the export binary stream*/
+	while (!(exportRuntime->playStates & PLAYED_AT_LEAST_ONCE))
+	{
+		int streamPosition = 0;
+		lb_updateNoteWavesFromAudio(exportNoteWaves, audio, exportRuntime);
+		for (int i = 0; i < SAMPLE_SIZE; i++)
+		{
+			exportBinary.data[streamPosition] += exportNoteWaves->streams[0][i];
+			streamPosition++;
+		}
+		exportRuntime->currentPlayTime_s += 17.0 / 1000.0;
+	}
+
+
+	/*Exporting to WAV file*/
 
 }
 
