@@ -59,7 +59,7 @@ extern "C"
 	/*Updates existing audio with compiled script.*/
 	void lb_compileAudioFromScriptFile(lb_Audio* audio, const char* filename);
 
-	/*Updates existing note wavesfrom audio at a given runtime.*/
+	/*Updates existing note waves from audio at a given runtime.*/
 	void lb_updateNoteWavesFromAudio(lb_NoteWaves* noteWaves, lb_Audio* audio, lb_Runtime* runtime);
 
 	/*Extract as many simultaneous notes that matches the audio track count, at a given runtime.*/
@@ -69,10 +69,10 @@ extern "C"
 	void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note currentNotes[], uint8_t trackCount);
 
 	/*Updates the Libretti's runtime with a delta in seconds.*/
-	void lb_incrementPlayTime(Libretti* libretti, float timeSeconds);
+	void lb_incrementPlayTime(Libretti* libretti, float deltaTimeSeconds);
 
 	/*Updates the times of all Librettis in the global callback list.*/
-	void lb_incrementAllPlayTimes(float timeSeconds);
+	void lb_incrementAllPlayTimes(float deltaTimeSeconds);
 
 	/*Updates an existing Libretti with a compiled script.*/
 	void lb_load(Libretti* libretti, const char* filename);
@@ -116,7 +116,7 @@ extern "C"
 	/*Appends a file streamed in signed 16-bits.*/
 	void lb_appendBinaryS16ToFile(lb_Binary_s16* binary, const char* filename);
 
-	/*Decodes an audio struct to PCM and encodes it in WAV file format.*/
+	/*Decodes an audio struct to a PCM stream and encodes it in WAV file format.*/
 	void lb_exportAudioToWAV(lb_Audio* audio, const char* name);
 
 	/*Deletes runtime memory allocation.*/
