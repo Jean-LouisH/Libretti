@@ -6,10 +6,7 @@ lb_String lb_newString(const char* initialString)
 {
 	lb_String string;
 	string.length = strlen(initialString);
-	if (string.length < 1)
-		string.capacity = 1;
-	else
-		string.capacity = string.length;
+	string.capacity = string.length + 1;
 	string.data = calloc(string.capacity, sizeof(char));
 	strcpy(string.data, initialString);
 	return string;
@@ -19,7 +16,7 @@ void lb_appendString(lb_String* string, char symbol)
 {
 	if (string->length >= string->capacity)
 	{
-		int newCapacity = string->capacity + 8;
+		int newCapacity = string->capacity + 10;
 		string->data = realloc(string->data, newCapacity * sizeof(char));
 		if (string->data != NULL)
 			string->capacity = newCapacity;
