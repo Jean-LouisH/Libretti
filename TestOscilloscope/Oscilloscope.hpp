@@ -17,7 +17,6 @@
 
 namespace Oscilloscope
 {
-	/** Creates a window and context targeted
-	* at an oscilloscope that renders audio waves.*/
+	/**Renders audio waves to an OpenGL targeted window.*/
 	void renderWaveforms(SDL_Window* window, Libretti* libretti);
 }
