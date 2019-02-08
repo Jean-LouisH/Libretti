@@ -482,7 +482,7 @@ bool validateSymbol(char symbol, uint8_t parseState)
 		{
 			switch (symbol)
 			{
-			case '#': case 'b':	case 'n':
+			case '#': case 'b':	case 'n': case '/':
 				valid = true;
 			}
 		}
