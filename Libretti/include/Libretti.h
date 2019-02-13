@@ -69,10 +69,10 @@ extern "C"
 	void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note currentNotes[], uint8_t trackCount);
 
 	/*Updates the Libretti's runtime with a delta in seconds.*/
-	void lb_incrementPlayTime(Libretti* libretti, float deltaTimeSeconds);
+	void lb_incrementPlayTime(Libretti* libretti, float deltaTime_s);
 
 	/*Updates the times of all Librettis in the global callback list.*/
-	void lb_incrementAllPlayTimes(float deltaTimeSeconds);
+	void lb_incrementAllPlayTimes(float deltaTime_s);
 
 	/*Updates an existing Libretti with a compiled script.*/
 	void lb_load(Libretti* libretti, const char* filename);
