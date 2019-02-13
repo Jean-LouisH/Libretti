@@ -1,4 +1,4 @@
-Libretti scripting language Specifications
+## Libretti scripting language Specifications
 
 Reference: https://en.wikipedia.org/wiki/List_of_musical_symbols
 
