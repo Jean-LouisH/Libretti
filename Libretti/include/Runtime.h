@@ -14,7 +14,7 @@
 #define Runtime_h
 
 #include <stdint.h>
-#include "UserControl.h"
+#include "UserEffectsOverride.h"
 #include <SDL_audio.h>
 
 enum states
@@ -29,7 +29,7 @@ typedef struct
 	uint32_t noteIndex[MAX_TRACKS];
 	SDL_AudioDeviceID device;
 	uint8_t playStates;
-	lb_UserControl userControl;
+	lb_UserEffectsOverride userControl;
 }lb_Runtime;
 
 #endif /*Runtime_h*/

@@ -33,13 +33,13 @@
     <ClCompile Include="WaveformGenerator.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UserControl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptValidator.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Strings.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserEffectsOverride.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,9 +86,6 @@
     <ClInclude Include="include\Events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\UserControl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\ScriptValidator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -105,6 +102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Binary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UserEffectsOverride.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

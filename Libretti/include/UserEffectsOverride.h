@@ -2,21 +2,21 @@
 *                      This file is part of:
 *                          Libretti
 *
-* User Control
+* User Effects Override
 *
-* Represents the runtime controllable settings defined by the application.
+* Represents the runtime controllable settings overrided by the application.
 *
 * Copyright (c) 2017-2019 Jean-Louis Haywood. All rights reserved.
 * License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE
 */
 
-#ifndef UserControl_h
-#define UserControl_h
+#ifndef UserEffectsOverride_h
+#define UserEffectsOverride_h
 
 #include <stdint.h>
 #include "Effects.h"
 
-enum userControlCodes
+enum userEffectsOverrideCodes
 {
 	PAN_OUTPUT				= 1 << 0,
 	REVERB_OUTPUT			= 1 << 1,
@@ -37,6 +37,6 @@ typedef struct
 	float outputPanning; //-1.0 to 1.0
 	lb_Effects effects;
 	uint32_t controlSwitches;
-}lb_UserControl;
+}lb_UserEffectsOverride;
 
-#endif /*UserControl_h*/
+#endif /*UserEffectsOverride_h*/
