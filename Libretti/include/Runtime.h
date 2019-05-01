@@ -29,7 +29,7 @@ typedef struct
 	uint32_t noteIndex[MAX_TRACKS];
 	SDL_AudioDeviceID device;
 	uint8_t playStates;
-	lb_UserEffectsOverride userControl;
+	lb_UserEffectsOverride userEffectsOverride;
 }lb_Runtime;
 
 #endif /*Runtime_h*/
