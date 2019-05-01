@@ -30,7 +30,7 @@ typedef struct
 
 typedef struct
 {
-	char* lyrics;
+	char lyrics[128];
 	float startTime_s;
 }lb_LyricsEvent;
 
