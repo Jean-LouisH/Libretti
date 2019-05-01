@@ -54,8 +54,8 @@ void lb_addLibrettiToCallback(Libretti* libretti)
 	{
 		libretti->runtime->device = callbackList->device;
 		libretti->runtime->playStates = 0;
-		libretti->runtime->userControl.outputVolume = 1.0;
-		libretti->runtime->userControl.outputPanning = 0.0;
+		libretti->runtime->userEffectsOverride.outputVolume = 1.0;
+		libretti->runtime->userEffectsOverride.outputPanning = 0.0;
 		lb_reset(libretti);
 		lb_play(libretti);
 		callbackList->librettiList[callbackList->size] = libretti;
@@ -233,9 +233,12 @@ void lb_stopAll()
 lb_Binary_s16* lb_getAudioCaptureStreamBuffer()
 {
 	lb_Binary_s16* binary = calloc(1, sizeof *binary);
-	binary->size = SAMPLE_SIZE;
-	binary->data = calloc(SAMPLE_SIZE, sizeof *binary->data);
-	initAudioCapture(binary);
+	if (binary != NULL)
+	{
+		binary->size = SAMPLE_SIZE;
+		binary->data = calloc(SAMPLE_SIZE, sizeof * binary->data);
+		initAudioCapture(binary);
+	}
 	return binary;
 }
 
