@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-void compileAudioFromScript(lb_Audio* audio, char* script)
+void compileAudioFromScript(lb_Audio* audio, const char* script)
 {
 	if (validateScript(script) == ALL_OK)
 	{
@@ -24,7 +24,7 @@ void compileAudioFromScript(lb_Audio* audio, char* script)
 	}
 }
 
-void allocateMemory(lb_Audio* audio, char* script)
+void allocateMemory(lb_Audio* audio, const char* script)
 {
 	int readPosition = 0;
 	int currentTrack = -1;
@@ -89,7 +89,7 @@ void allocateMemory(lb_Audio* audio, char* script)
 	lb_freeString(&header);
 }
 
-void buildAudioData(lb_Audio* audio, char* script)
+void buildAudioData(lb_Audio* audio, const char* script)
 {
 	uint32_t readPosition = 0;
 	uint32_t currentNote = 0;
@@ -471,7 +471,7 @@ void buildAudioData(lb_Audio* audio, char* script)
 			}
 			else if (strcmp(header.data, "lyric") == 0)
 			{
-				audio->lyricsEvents[currentLyricsEvent].lyrics = malloc(sizeof(char) * value.capacity);
+				//audio->lyricsEvents[currentLyricsEvent].lyrics = malloc(sizeof(char) * value.capacity);
 				strcpy(audio->lyricsEvents[currentLyricsEvent].lyrics, value.data);
 				audio->lyricsEvents[currentLyricsEvent].startTime_s = currentTime_s;
 				currentLyricsEvent++;
