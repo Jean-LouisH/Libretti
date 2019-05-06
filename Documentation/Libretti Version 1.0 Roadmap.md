@@ -1,11 +1,16 @@
 ## Libretti Version 1.0 Roadmap
 
+* Has the core library written in C for portability. This will be suitable for integration in C and C++ applications.
+
 * Can validate the contents of text files against the Libretti scripting specification.
+
 * Can compile audio builds from scripts according to the Libretti scripting specification.
+
 * Supports audio specifications
 	- 44.1 kHz sample rate
 	- 16 bit format
 	- 5.1 channel
+	
 * Has mixer effects via notes;
 	- Crossfading
 	- Echo
@@ -14,11 +19,14 @@
 	- Pitch Blend
 	- Reverb
 	- Vibrato
+	
 * Has user application effects override;
 	- All of the above mixing effects
 	- Variable panning
 	- Volume control
+	
 * Supports input device streams by comprising tracks of note, tempo and lyrics event units with statically allocated data.
+
 * Has at least 21 general purpose tracks designed to simultaneously support at least:
 	- 10 for keyboards
 	- 5 for strings
@@ -27,6 +35,7 @@
 	- 2 for winds
 	- 1 for electronic/primitives
 	- 1 for percussion
+	
 * Supports the following timbres;
 	- Sine 
 	- Square
@@ -43,6 +52,7 @@
 		- Percussion
 		- Strings
 		- Brass
+
 * Has application integration controls such as;
 	- Repeating
 	- Timbre swapping
