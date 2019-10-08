@@ -8,8 +8,8 @@ It is named after the plural form of the Italian word "[Libretto](https://en.wik
 
 ## Documentation
 
-[Libretti's scripting language](https://github.com/Jean-LouisH/Libretti/blob/master/Documentation/Scripting%20Language%20Specification.txt)
-[Script Validation Codes](https://github.com/Jean-LouisH/Libretti/blob/master/Documentation/Script%20Validation%20Codes.md)
+* [Libretti's scripting language](https://github.com/Jean-LouisH/Libretti/blob/master/Documentation/Scripting%20Language%20Specification.txt)
+* [Script Validation Codes](https://github.com/Jean-LouisH/Libretti/blob/master/Documentation/Script%20Validation%20Codes.md)
 
 ## License
 
