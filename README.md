@@ -1,6 +1,8 @@
-[Libretti](https://github.com/Jean-LouisH/Libretti) is **a synthesizer library for integration with applications and games**.
+# [Libretti](https://github.com/Jean-LouisH/Libretti)
 
 ![ScreenShot](screenshot.png)
+
+[Libretti](https://github.com/Jean-LouisH/Libretti) is **a synthesizer library for integration with applications and games**.
 
 It can compile audio data from text files that are written with [Libretti's scripting language](https://github.com/Jean-LouisH/Libretti/blob/master/Documentation/Scripting%20Language%20Specification.txt)
 
@@ -8,7 +10,7 @@ It is named after the plural form of the Italian word "[Libretto](https://en.wik
 
 ## Documentation
 
-* [Libretti's scripting language](https://github.com/Jean-LouisH/Libretti/blob/master/Documentation/Scripting%20Language%20Specification.txt)
+* [Libretti's Scripting Language](https://github.com/Jean-LouisH/Libretti/blob/master/Documentation/Scripting%20Language%20Specification.txt)
 * [Script Validation Codes](https://github.com/Jean-LouisH/Libretti/blob/master/Documentation/Script%20Validation%20Codes.md)
 
 ## License
