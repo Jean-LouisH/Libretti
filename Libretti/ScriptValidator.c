@@ -425,6 +425,18 @@ int validateScript(char* script)
 	else if (unclosedHeaders < 0)
 		validationStatuses |= EXTRA_HEADER_TAG_CLOSED_BRACKET;
 
+	if (slurIsUnclosed)
+		validationStatuses |= UNCLOSED_SLUR;
+
+	if (tupletIsUnclosed)
+		validationStatuses |= UNCLOSED_TUPLET;
+
+	if (unclosedCrescendos > 0)
+		validationStatuses |= UNCLOSED_CRESCENDO;
+
+	if (unclosedDiminuendos > 0)
+		validationStatuses |= UNCLOSED_DIMINUENDO;
+
 	printCompilationStatuses(validationStatuses);
 
 	//freeString(&header);
@@ -549,8 +561,6 @@ void printCompilationStatuses(int validationStatuses)
 			printf("Code %d: \tUNCLOSED_TRACK_SCOPE.\n", UNCLOSED_TRACK_SCOPE);
 		if (validationStatuses & UNEXPECTED_HEADER_NAME)
 			printf("Code %d: \tUNEXPECTED_HEADER_NAME.\n", UNEXPECTED_HEADER_NAME);
-		if (validationStatuses & UNEXPECTED_HEADER_VALUE)
-			printf("Code %d: \tUNEXPECTED_HEADER_VALUE.\n", UNEXPECTED_HEADER_VALUE);
 		if (validationStatuses & INVALID_USE_OF_SYMBOL)
 			printf("Code %d: \tINVALID_USE_OF_SYMBOL.\n", INVALID_USE_OF_SYMBOL);
 		if (validationStatuses & BEATS_DO_NOT_MATCH_TIME_SIG)
