@@ -102,24 +102,29 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 {
 	for (int i = 0; i < audio->trackCount; i++)
 	{
-		while ((runtime->currentPlayTime_s > audio->tracks[i].noteEvents[runtime->noteIndex[i]].startTime_s) &&
-			(runtime->noteIndex[i] < audio->tracks[i].noteCount) && 
-			(audio->tracks[i].noteCount > 0))
+		if (audio->tracks[i].noteCount > 0)
 		{
-			runtime->noteIndex[i]++;
-
-			/*To reset the song when the time exceeds the last time stamp.*/
-			if (runtime->currentPlayTime_s > audio->timeLength_s)
+			/*Find and set the current note to play*/
+			while ((runtime->currentPlayTime_s > audio->tracks[i].noteEvents[runtime->noteIndices[i]].startTime_s) &&
+				(runtime->noteIndices[i] < audio->tracks[i].noteCount))
 			{
-				runtime->currentPlayTime_s = audio->loopTimestamp_s;
-				runtime->noteIndex[i] = 0;
-				runtime->playStates |= PLAYED_AT_LEAST_ONCE;
+				runtime->noteIndices[i]++;
+
+				/*To reset the song when the time exceeds the last time stamp.*/
+				if ((runtime->noteIndices[i] >= audio->tracks[i].noteCount) ||
+					(runtime->currentPlayTime_s > audio->timeLength_s))
+				{
+					runtime->currentPlayTime_s = 0.0;
+					runtime->playStates |= PLAYED_AT_LEAST_ONCE;
+					for (int j = 0; j < audio->trackCount; j++)
+						runtime->noteIndices[j] = 0;
+				}	
 			}
 		}
 
-		if (runtime->noteIndex[i] > 0)
+		if (runtime->noteIndices[i] > 0)
 		{
-			lb_NoteEvent noteEvent = audio->tracks[i].noteEvents[runtime->noteIndex[i] - 1];
+			lb_NoteEvent noteEvent = audio->tracks[i].noteEvents[runtime->noteIndices[i] - 1];
 			lb_NoteEvent nextNoteEvent = noteEvent;
 			lb_Note silentNote = { 0 };
 
@@ -136,8 +141,8 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 				case STACCATO: currentTimeRatio = staccatoTimeRatio; break;
 			}
 
-			if (runtime->noteIndex[i] <= audio->tracks[i].noteCount)
-				nextNoteEvent = audio->tracks[i].noteEvents[runtime->noteIndex[i]];
+			if (runtime->noteIndices[i] <= audio->tracks[i].noteCount)
+				nextNoteEvent = audio->tracks[i].noteEvents[runtime->noteIndices[i]];
 
 			float noteLiftTime = (noteEvent.startTime_s + 
 				((nextNoteEvent.startTime_s - noteEvent.startTime_s) * currentTimeRatio));
@@ -151,7 +156,7 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 			}
 			else
 			{
-				currentNotes[i] = audio->tracks[i].noteEvents[runtime->noteIndex[i] - 1].note;
+				currentNotes[i] = audio->tracks[i].noteEvents[runtime->noteIndices[i] - 1].note;
 			}
 		}
 	}
@@ -198,6 +203,8 @@ void lb_pause(Libretti* libretti)
 void lb_reset(Libretti* libretti)
 {
 	libretti->runtime->currentPlayTime_s = 0.0;
+	for (int i = 0; i < MAX_TRACKS; i++)
+		libretti->runtime->noteIndices[i] = 0;
 }
 
 void lb_stop(Libretti* libretti)
