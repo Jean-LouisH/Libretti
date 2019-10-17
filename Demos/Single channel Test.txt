@@ -3,5 +3,5 @@
 {
 [timbre: sine wave][octave: 5]
 
-[loop: infinity][panning: far left] ~ A4 | [panning: left] A4 | [panning: mono] A4 | [panning: right] A4 | [panning: far right] A4 ~| 
+[loop: infinity][panning: far left] ~ A4 | [panning: left] A4 | [panning: mono] A4 | [panning: right] A4 | [panning: far right] A4 ~ | 
 }
