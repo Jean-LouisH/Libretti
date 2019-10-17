@@ -105,19 +105,29 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 		if (audio->tracks[i].noteCount > 0)
 		{
 			/*Find and set the current note to play*/
-			while ((runtime->currentPlayTime_s > audio->tracks[i].noteEvents[runtime->noteIndices[i]].startTime_s) &&
-				(runtime->noteIndices[i] < audio->tracks[i].noteCount))
+			while ((runtime->currentPlayTime_s > 
+				audio->tracks[i].noteEvents[runtime->noteIndices[i]].startTime_s))
 			{
 				runtime->noteIndices[i]++;
 
-				/*To reset the song when the time exceeds the last time stamp.*/
+				/*Reset the song when the time exceeds the last time stamp.*/
 				if ((runtime->noteIndices[i] >= audio->tracks[i].noteCount) ||
 					(runtime->currentPlayTime_s > audio->timeLength_s))
 				{
-					runtime->currentPlayTime_s = 0.0;
+					runtime->currentPlayTime_s = audio->loopTimestamp_s;
 					runtime->playStates |= PLAYED_AT_LEAST_ONCE;
+
 					for (int j = 0; j < audio->trackCount; j++)
+					{
 						runtime->noteIndices[j] = 0;
+
+						/*Find and set note indices to loop time stamps.*/
+						while (audio->loopTimestamp_s > 
+							audio->tracks[i].noteEvents[runtime->noteIndices[i]].startTime_s)
+						{
+							runtime->noteIndices[j]++;
+						}
+					}
 				}	
 			}
 		}
