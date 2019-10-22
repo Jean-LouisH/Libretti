@@ -439,9 +439,10 @@ int validateScript(char* script)
 
 	printCompilationStatuses(validationStatuses);
 
-	//freeString(&header);
-	//freeString(&value);
-	//freeString(&debug);
+	lb_freeString(&header);
+	lb_freeString(&value);
+	lb_freeString(&debug);
+	lb_freeString(&durationString);
 
 	return validationStatuses;
 }

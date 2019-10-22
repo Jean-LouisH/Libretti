@@ -313,6 +313,9 @@ void buildAudioData(lb_Audio* audio, const char* script)
 
 				audio->timeSignature[0] = timeSigUpper;
 				audio->timeSignature[1] = timeSigLower;
+
+				lb_freeString(&upper);
+				lb_freeString(&lower);
 			}
 			else if (strcmp(header.data, "tempo") == 0)
 			{
@@ -438,6 +441,8 @@ void buildAudioData(lb_Audio* audio, const char* script)
 					strcat(filename.data, value.data);
 					strcat(filename.data, extension.data);
 					sample = loadBinaryS16FromFile(filename.data);
+					lb_freeString(&filename);
+					lb_freeString(&extension);
 				}
 			}
 			else if (strcmp(header.data, "octave") == 0)
@@ -525,6 +530,9 @@ void buildAudioData(lb_Audio* audio, const char* script)
 					if (strcmp(frequencyString.data, "16kHz") == 0)
 						effects.eq[9].level_dB = atof(levelString.data);
 				}
+
+				lb_freeString(&frequencyString);
+				lb_freeString(&levelString);
 			}
 			else if (strcmp(header.data, "crossfading") == 0)
 			{
@@ -641,6 +649,10 @@ void buildAudioData(lb_Audio* audio, const char* script)
 		}
 		readPosition++;
 	} while (script[readPosition] != NULL);
+
+	lb_freeString(&header);
+	lb_freeString(&value);
+	lb_freeString(&durationString);
 }
 
 void tuneByKeySignature(uint8_t keySignature, char* noteChar)
