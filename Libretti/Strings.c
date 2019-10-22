@@ -6,40 +6,53 @@ lb_String lb_newString(const char* initialString)
 {
 	lb_String string;
 	string.length = strlen(initialString);
-	string.capacity = string.length + 1;
+	if (string.length == 0)
+		string.capacity = 2;
+	else
+		string.capacity = string.length + 1;
 	string.data = calloc(string.capacity, sizeof(char));
-	strcpy(string.data, initialString);
+	if (string.data != NULL)
+		strcpy(string.data, initialString);
 	return string;
 }
 
 void lb_appendString(lb_String* string, char symbol)
 {
-	if (string->length >= string->capacity)
+	if (string->data != NULL)
 	{
-		int newCapacity = string->capacity + 10;
-		string->data = realloc(string->data, newCapacity * sizeof(char));
-		if (string->data != NULL)
-			string->capacity = newCapacity;
-	}
+		if (string->length == string->capacity - 1)
+		{
+			int newCapacity = string->capacity * 2;
+			string->data = realloc(string->data, newCapacity * sizeof(char));
+			if (string->data != NULL)
+				string->capacity = newCapacity;
+		}
 
-	/*in case allocation fails, check again.*/
-	if (string->length < string->capacity)
-	{
-		string->data[string->length] = symbol;
-		string->data[string->length + 1] = NULL;
-		string->length++;
+		/*in case allocation fails, check again.*/
+		if (string->length < string->capacity - 1)
+		{
+			string->length++;
+			string->data[string->length - 1] = symbol;
+			string->data[string->length] = NULL;
+		}
 	}
 }
 
 void lb_clearString(lb_String* string)
 {
-	string->data[0] = NULL;
-	string->length = 0;
+	if (string->data != NULL)
+	{
+		string->data[0] = NULL;
+		string->length = 0;
+	}
 }
 
 void lb_freeString(lb_String* string)
 {
-	lb_clearString(string);
-	free(string->data);
-	string->capacity = 0;
+	if (string->data != NULL)
+	{
+		free(string->data);
+		string->length = 0;
+		string->capacity = 0;
+	}
 }
