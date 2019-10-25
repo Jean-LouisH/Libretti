@@ -29,6 +29,7 @@ typedef struct
 	uint32_t noteIndices[MAX_TRACKS];
 	SDL_AudioDeviceID device;
 	uint8_t playStates;
+	uint16_t currentLoopCount;
 	lb_UserEffectsOverride userEffectsOverride;
 }lb_Runtime;
 

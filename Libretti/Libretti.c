@@ -54,6 +54,7 @@ void lb_addLibrettiToCallback(Libretti* libretti)
 	{
 		libretti->runtime->device = callbackList->device;
 		libretti->runtime->playStates = 0;
+		libretti->runtime->currentLoopCount = 0;
 		libretti->runtime->userEffectsOverride.outputVolume = 1.0;
 		libretti->runtime->userEffectsOverride.outputPanning = 0.0;
 		lb_reset(libretti);
@@ -114,8 +115,19 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 				if ((runtime->noteIndices[i] >= audio->tracks[i].noteCount) ||
 					(runtime->currentPlayTime_s > audio->timeLength_s))
 				{
-					runtime->currentPlayTime_s = audio->loopTimestamp_s;
 					runtime->playStates |= PLAYED_AT_LEAST_ONCE;
+					runtime->currentLoopCount++;
+
+					if ((runtime->currentLoopCount < audio->loopCount) ||
+						audio->loopCount == pow(2, (sizeof audio->loopCount) * 8) - 1)
+					{
+						runtime->currentPlayTime_s = audio->loopTimestamp_s;
+					}
+					else
+					{
+						runtime->playStates &= ~IS_PLAYING;
+						SDL_PauseAudioDevice(runtime->device, true);
+					}
 
 					for (int j = 0; j < audio->trackCount; j++)
 					{
