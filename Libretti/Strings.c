@@ -10,7 +10,7 @@ lb_String lb_newString(const char* initialString)
 	if (string.length == 0)
 		string.capacity = 2;
 	else
-		string.capacity = pow(2.0, floor(log(string.length) / log(2.0))) * 2;
+		string.capacity = pow(2.0, 1 + floor(log(string.length) / log(2.0)));
 	string.data = calloc(string.capacity, sizeof(char));
 	if (string.data != NULL)
 		strcpy(string.data, initialString);
