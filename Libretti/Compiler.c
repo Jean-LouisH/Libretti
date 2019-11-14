@@ -107,7 +107,6 @@ void buildAudioData(lb_Audio* audio, const char* script)
 	uint16_t dynamic = 0;
 	int8_t panning = 0;
 	uint8_t timbre = 0;
-	uint8_t articulation = NORMAL;
 	uint16_t cue = 0;
 	double duration = 0.0;
 	lb_Binary_s16 sample = { NULL, 0 };
@@ -162,7 +161,14 @@ void buildAudioData(lb_Audio* audio, const char* script)
 			isReadingCrescendo = !isReadingCrescendo;
 			break;
 		case '>':
-			isReadingDiminuendo = !isReadingDiminuendo;
+			if (parseState == READING_NOTE_DURATION)
+				parseState = READING_DYNAMIC_ACCENT;
+			else
+				isReadingDiminuendo = !isReadingDiminuendo;
+			break;
+		case '*':
+			if (parseState == READING_NOTE_DURATION)
+				parseState = READING_STACCATO;
 			break;
 		case '|':
 			barCount++;
@@ -177,20 +183,30 @@ void buildAudioData(lb_Audio* audio, const char* script)
 			if (isReadingDiminuendo)
 				isReadingDiminuendo = false;
 
-			if (parseState == IGNORING_FIRST_SPACE_IN_VALUE)
+			if (parseState == READING_NOTE_DURATION ||
+				parseState == READING_DYNAMIC_ACCENT ||
+				parseState == READING_STACCATO)
 			{
-				parseState = READING_VALUE;
-			}
-			else if (parseState == READING_HEADER)
-			{
-				lb_appendString(&header, script[readPosition]);
-			}
-			else if (parseState == READING_VALUE)
-			{
-				lb_appendString(&value, script[readPosition]);
-			}
-			else if (parseState == READING_NOTE_DURATION)
-			{
+				if (parseState == READING_DYNAMIC_ACCENT)
+					note.amplitude = dynamic * 2;
+				else
+					note.amplitude = dynamic;
+
+				if (parseState == READING_STACCATO)
+					note.articulation = STACCATO;
+				else if (slurIsOpened)
+					note.articulation = SLUR;
+				else
+					note.articulation = NORMAL;
+				note.cue = cue;
+				note.panning = panning;
+				note.sample = sample;
+				note.timbre = timbre;
+				note.effects = effects;
+
+				audio->tracks[currentTrack].noteEvents[currentNote].note = note;
+				audio->tracks[currentTrack].noteEvents[currentNote].startTime_s = currentTime_s;
+
 				if (hasFractionalDuration)
 					duration = 1.0 / atoi(durationString.data);
 				else
@@ -208,6 +224,19 @@ void buildAudioData(lb_Audio* audio, const char* script)
 				currentTime_s += duration;
 				parseState = READING_TRACK_SCOPE;
 				currentNote++;
+			}
+
+			if (parseState == IGNORING_FIRST_SPACE_IN_VALUE)
+			{
+				parseState = READING_VALUE;
+			}
+			else if (parseState == READING_HEADER)
+			{
+				lb_appendString(&header, script[readPosition]);
+			}
+			else if (parseState == READING_VALUE)
+			{
+				lb_appendString(&value, script[readPosition]);
 			}
 			break;
 		case ':':
@@ -576,17 +605,6 @@ void buildAudioData(lb_Audio* audio, const char* script)
 					noteToPlay = script[readPosition];
 					tuneByKeySignature(audio->keySignature, &noteToPlay);
 					assignFrequencyFromNoteChar(&note.frequency_Hz, octave, noteToPlay);
-
-					note.amplitude = dynamic;
-					note.articulation = articulation;
-					note.cue = cue;
-					note.panning = panning;
-					note.sample = sample;
-					note.timbre = timbre;
-					note.effects = effects;
-
-					audio->tracks[currentTrack].noteEvents[currentNote].note = note;
-					audio->tracks[currentTrack].noteEvents[currentNote].startTime_s = currentTime_s;
 				}
 				else if (script[readPosition] == '-')
 				{
