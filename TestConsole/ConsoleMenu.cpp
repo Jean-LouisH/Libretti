@@ -1,40 +1,50 @@
 #include "ConsoleMenu.hpp"
 #include <iostream>
+#include <vector>
 
 void menu(std::string* fileName)
 {
 	system("cls");
 	std::cout << "\n\t\t\tLibretti Console Test\n\n";
 #ifdef _DEBUG
-	std::string demos[] = {
-		{ "../Demos/Mary had a little lamb (feature test).txt" },
-	{ "../Demos/Mary had a little lamb.txt" },
-	{ "../Demos/Multichannel test.txt" },
-	{ "../Demos/Single channel test.txt" },
-	};
-	std::cout << "Demos\n----\n1. Mary had a little lamb (feature test)\n";
-	std::cout << "2. Mary had a little lamb\n";
-	std::cout << "3. Multichannel test\n";
-	std::cout << "4. Single channel test\n";
+	//std::string demos[] = {
+	//	{ "../Demos/Mary had a little lamb (feature test).txt" },
+	//{ "../Demos/Mary had a little lamb.txt" },
+	//{ "../Demos/Multichannel test.txt" },
+	//{ "../Demos/Single channel test.txt" },
+	//};
+
+	std::vector<std::string> demos;
+
+	demos.push_back("../Demos/Mary Had a Little Lamb.txt");
+	demos.push_back("../Demos/C Major Scale.txt");
+	demos.push_back("../Demos/C Minor Scale.txt");
+	demos.push_back("../Demos/D Major Scale.txt");
+	demos.push_back("../Demos/Tests/Accidentals Test.txt");
+	demos.push_back("../Demos/Tests/Crescendo Test.txt");
+	demos.push_back("../Demos/Tests/Diminuendo Test.txt");
+	demos.push_back("../Demos/Tests/Dotted Note Test.txt");
+	demos.push_back("../Demos/Tests/Dynamic Accent Test.txt");
+	demos.push_back("../Demos/Tests/Dynamics Test.txt");
+	demos.push_back("../Demos/Tests/Multichannel Test.txt");
+	demos.push_back("../Demos/Tests/Octave Test.txt");
+	demos.push_back("../Demos/Tests/Panning Test.txt");
+	demos.push_back("../Demos/Tests/Slur Test.txt");
+	demos.push_back("../Demos/Tests/Staccato Test.txt");
+	demos.push_back("../Demos/Tests/Timbre Test.txt");
+	demos.push_back("../Demos/Tests/Trill Test.txt");
+	demos.push_back("../Demos/Tests/Varying Tempo Test.txt");
+
+	std::cout << "Demos\n----\n";
+	for (int i = 0; i < demos.size(); i++)
+		std::cout << i + 1 << ". " << demos.at(i) << "\n";
 	std::cout << "\nEnter demo number, or filepath to play -> ";
 
 	std::getline(std::cin, *fileName);
 
-	if (*fileName == "1")
+	if (atoi(fileName->c_str()) >= 1 && atoi(fileName->c_str()) <= demos.size())
 	{
-		*fileName = demos[0];
-	}
-	else if (*fileName == "2")
-	{
-		*fileName = demos[1];
-	}
-	else if (*fileName == "3")
-	{
-		*fileName = demos[2];
-	}
-	else if (*fileName == "4")
-	{
-		*fileName = demos[3];
+		*fileName = demos[atoi(fileName->c_str()) - 1];
 	}
 #else
 	std::cout << "Enter filepath to play -> ";
