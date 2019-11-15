@@ -74,7 +74,6 @@ Example:
 }
 
 {
-[lyric: mary had a ] | [lyric: little lamb] | | | [lyric: mary had a ] | [lyric: little lamb, its] |  
+[lyric: mary had a] | [lyric: little lamb] | | | [lyric: mary had a] | [lyric: little lamb, its] |  
 [lyric: fleece were white as] | [lyric: snow] |
-}
-"
+}"
