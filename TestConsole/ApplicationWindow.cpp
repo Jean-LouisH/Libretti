@@ -86,11 +86,11 @@ bool ApplicationWindow::handleEvents(Libretti* libretti)
 			{
 				std::string filename;
 				lb_stop(libretti);
-				SDL_HideWindow(window);
+				SDL_HideWindow(this->window);
 				menu(&filename);
 				lb_load(libretti, filename.c_str());
 				lb_play(libretti);
-				SDL_ShowWindow(window);
+				SDL_ShowWindow(this->window);
 			}
 			break;
 		}
