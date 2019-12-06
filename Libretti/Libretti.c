@@ -23,12 +23,29 @@ Libretti* lb_createLibretti(const char* filename)
 	return libretti;
 }
 
+Libretti* lb_createEmptyLibretti()
+{
+	Libretti* libretti = malloc(sizeof *libretti);
+	if (libretti != NULL)
+	{
+		libretti->audio = lb_createEmptyAudio();
+		libretti->noteWaves = lb_createNoteWaves();
+		libretti->runtime = lb_createRuntime();
+	}
+	return libretti;
+}
+
 lb_Audio* lb_createAudio(const char* filename)
 {
 	lb_Audio* audio = calloc(1, sizeof(lb_Audio));
 	if (audio != NULL)
 		lb_compileAudioFromScriptFile(audio, filename);
 	return audio;
+}
+
+lb_Audio* lb_createEmptyAudio()
+{
+	return calloc(1, sizeof(lb_Audio));
 }
 
 lb_NoteWaves* lb_createNoteWaves()
@@ -67,6 +84,14 @@ void lb_addLibrettiToCallback(Libretti* libretti)
 Libretti* lb_createAndAddLibrettiToCallback(const char* filename)
 {
 	Libretti* libretti = lb_createLibretti(filename);
+	if (libretti != NULL)
+		lb_addLibrettiToCallback(libretti);
+	return libretti;
+}
+
+Libretti* lb_createAndAddEmptyLibrettiToCallback()
+{
+	Libretti* libretti = lb_createEmptyLibretti();
 	if (libretti != NULL)
 		lb_addLibrettiToCallback(libretti);
 	return libretti;

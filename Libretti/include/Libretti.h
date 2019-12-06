@@ -38,8 +38,14 @@ extern "C"
 	/*Allocates and returns a Libretti without adding to callback. */
 	Libretti* lb_createLibretti(const char* filename);
 
+	/*Allocates and returns an empty Libretti without adding to callback. */
+	Libretti* lb_createEmptyLibretti();
+
 	/*Returns an audio struct with a compiled script.*/
 	lb_Audio* lb_createAudio(const char* filename);
+
+	/*Returns an empty audio struct with a compiled script.*/
+	lb_Audio* lb_createEmptyAudio();
 
 	/*Returns an clear, empty note wave stream struct.*/
 	lb_NoteWaves* lb_createNoteWaves();
@@ -52,6 +58,9 @@ extern "C"
 
 	/*Allocates and returns a Libretti with the global callback list updated.*/
 	Libretti* lb_createAndAddLibrettiToCallback(const char* filename);
+
+	/*Allocates and returns an empty Libretti with the global callback list updated.*/
+	Libretti* lb_createAndAddEmptyLibrettiToCallback();
 
 	/*Loads script and validates it against the language specification, returns validation codes.*/
 	int lb_validateScriptFile(const char* filename);
