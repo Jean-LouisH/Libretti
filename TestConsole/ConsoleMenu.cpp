@@ -7,19 +7,14 @@ void menu(std::string* fileName)
 	system("cls");
 	std::cout << "\n\t\t\tLibretti Console Test\n\n";
 #ifdef _DEBUG
-	//std::string demos[] = {
-	//	{ "../Demos/Mary had a little lamb (feature test).txt" },
-	//{ "../Demos/Mary had a little lamb.txt" },
-	//{ "../Demos/Multichannel test.txt" },
-	//{ "../Demos/Single channel test.txt" },
-	//};
-
 	std::vector<std::string> demos;
 
 	demos.push_back("../Demos/Mary Had a Little Lamb.txt");
-	demos.push_back("../Demos/C Major Scale.txt");
-	demos.push_back("../Demos/C Minor Scale.txt");
-	demos.push_back("../Demos/D Major Scale.txt");
+	demos.push_back("../Demos/Starman Theme.txt");
+
+	demos.push_back("../Demos/Tests/C Major Scale.txt");
+	demos.push_back("../Demos/Tests/C Minor Scale.txt");
+	demos.push_back("../Demos/Tests/D Major Scale.txt");
 	demos.push_back("../Demos/Tests/Accidentals Test.txt");
 	demos.push_back("../Demos/Tests/Crescendo Test.txt");
 	demos.push_back("../Demos/Tests/Diminuendo Test.txt");
