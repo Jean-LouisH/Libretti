@@ -15,10 +15,14 @@ int main(int argc, char* argv[])
 	std::string fileName;
 	bool isRunning = true;
 
+#if !RECORD_TEST
+	ApplicationWindow appWindow = ApplicationWindow("Libretti Playback Test");
+	SDL_HideWindow(appWindow.getSDLWindow());
+#endif
 	menu(&fileName);
+	SDL_ShowWindow(appWindow.getSDLWindow());
 #if !RECORD_TEST
 	Libretti* libretti = lb_createAndAddLibrettiToCallback(fileName.c_str());
-	ApplicationWindow appWindow = ApplicationWindow("Libretti Playback Test");
 #else
 	lb_Binary_s16* binary = lb_captureAudio();
 
