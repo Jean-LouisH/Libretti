@@ -140,7 +140,8 @@ int validateScript(char* script)
 				break;
 			case ':':
 				parseState = IGNORING_FIRST_SPACE_IN_VALUE;
-				if (strcmp(header.data, "name") != 0 &&
+				if (strcmp(header.data, "comment") != 0 &&
+					strcmp(header.data, "name") != 0 &&
 					strcmp(header.data, "artist") != 0 &&
 					strcmp(header.data, "lyric") != 0 &&
 					strcmp(header.data, "time sig") != 0 &&
