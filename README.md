@@ -1,6 +1,6 @@
 # [Libretti](https://github.com/Jean-LouisH/Libretti)
 
-![ScreenShot](screenshot.png)
+![ScreenShot](Screenshot.gif)
 
 [Libretti](https://github.com/Jean-LouisH/Libretti) is **a synthesizer library for integration with applications and games**.
 
