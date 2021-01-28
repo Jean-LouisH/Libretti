@@ -19,7 +19,3 @@ It is named after the plural form of the Italian word "[Libretto](https://en.wik
 
 * Jean-Louis Haywood (Jean-LouisH)
 
-## License
-
-[MIT License](https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE)
-

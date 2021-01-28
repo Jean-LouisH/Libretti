@@ -6,8 +6,7 @@
 *
 * Defines values associated with tempo, slurring or staccato.
 *
-* Copyright (c) 2017-2019 Jean-Louis Haywood. All rights reserved.
-* License: https://github.com/Jean-LouisH/Libretti/blob/master/LICENSE
+* Copyright (c) 2017-2021 Jean-Louis Haywood. All rights reserved.
 */
 
 #ifndef Timing_h
