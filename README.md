@@ -15,6 +15,10 @@ It is named after the plural form of the Italian word "[Libretto](https://en.wik
 * [Libretti's Scripting Language](https://github.com/Jean-LouisH/Libretti/blob/master/Documentation/Scripting%20Language%20Specification.txt)
 * [Script Validation Codes](https://github.com/Jean-LouisH/Libretti/blob/master/Documentation/Script%20Validation%20Codes.md)
 
+## Demos
+
+[![](http://img.youtube.com/vi/_82c5dsiYjo/0.jpg)](http://www.youtube.com/watch?v=_82c5dsiYjo "Libretti - Prototype Music Scripting Library Demo")
+
 ## Contributing
 
 * Jean-Louis Haywood (Jean-LouisH)
