@@ -17,6 +17,7 @@ It is named after the plural form of the Italian word "[Libretto](https://en.wik
 
 ## Demos
 
+[YouTube: Libretti - Prototype Music Scripting Library Demo](http://www.youtube.com/watch?v=_82c5dsiYjo)
 [![](http://img.youtube.com/vi/_82c5dsiYjo/0.jpg)](http://www.youtube.com/watch?v=_82c5dsiYjo "Libretti - Prototype Music Scripting Library Demo")
 
 ## Contributing
