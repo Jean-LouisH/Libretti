@@ -254,7 +254,7 @@ int validateScript(char* script)
 #ifdef _DEBUG
 						lb_String filename = lb_newString("../Libretti/Samples/");
 #else
-						lb_String filename = newString("Samples/");
+						lb_String filename = lb_newString("Samples/");
 #endif
 						lb_String extension = lb_newString(".pcm");
 						strcat(filename.data, value.data);

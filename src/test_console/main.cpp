@@ -2,13 +2,15 @@
 #include <SDL.h>
 #include <string>
 #include "ApplicationWindow.hpp"
-#include <Oscilloscope.hpp>
+//#include <Oscilloscope.hpp>
 #include "ConsoleMenu.hpp"
 
 #define RECORD_TEST 0
 #define RECORDING_FILEPATH "audio_recording_dump.bin"
 
 #define MS_PER_S 1000.0
+
+#undef main //undo SDLmain definition
 
 int main(int argc, char* argv[])
 {
@@ -41,7 +43,7 @@ int main(int argc, char* argv[])
 	{
 #if !RECORD_TEST
 		isRunning = appWindow.handleEvents(libretti);
-		Oscilloscope::renderWaveforms(appWindow.getSDLWindow(), libretti);
+		//Oscilloscope::renderWaveforms(appWindow.getSDLWindow(), libretti);
 		lb_incrementAllPlayTimes(appWindow.getFrameTime() / MS_PER_S);
 #endif
 		appWindow.swapBuffers();
