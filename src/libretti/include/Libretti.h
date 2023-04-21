@@ -45,6 +45,9 @@ extern "C"
 	}Libretti;
 
 	/*Allocates and returns a Libretti without adding to callback. */
+	LIBRETTI_API void lb_initialize();
+
+	/*Allocates and returns a Libretti without adding to callback. */
 	LIBRETTI_API Libretti* lb_createLibretti(const char* filename);
 
 	/*Allocates and returns an empty Libretti without adding to callback. */
@@ -98,6 +101,8 @@ extern "C"
 	/*Allows the Libretti's runtime to increment time.*/
 	LIBRETTI_API void lb_play(Libretti* libretti);
 
+	LIBRETTI_API Libretti* lb_play_key(uint16_t keyFrequency, float duration);
+
 	/*Stops the Libretti's runtime from incrementing time.*/
 	LIBRETTI_API void lb_pause(Libretti* libretti);
 
@@ -148,6 +153,8 @@ extern "C"
 
 	/*Deletes memory allocation of runtime, note waves and audio, and the container Libretti.*/
 	LIBRETTI_API void lb_freeLibretti(Libretti* libretti);
+
+	LIBRETTI_API void lb_finalize();
 
 #ifdef __cplusplus
 }

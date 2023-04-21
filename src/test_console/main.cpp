@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
 	menu(&fileName);
 	SDL_ShowWindow(appWindow.getSDLWindow());
 #if !RECORD_TEST
+	lb_initialize();
 	Libretti* libretti = lb_createAndAddLibrettiToCallback(fileName.c_str());
 #else
 	lb_Binary_s16* binary = lb_captureAudio();
@@ -70,6 +71,7 @@ int main(int argc, char* argv[])
 #else
 	SDL_DestroyWindow(window);
 #endif
+	lb_finalize();
 	SDL_Quit();
 	return 0;
 }

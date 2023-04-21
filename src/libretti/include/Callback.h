@@ -20,5 +20,6 @@ void initAudioPlayback(CallbackList callbackList[]);
 void initAudioCapture(lb_Binary_s16* binary);
 void runCallbackPlay(void* userdata, Uint8* stream, int byteLength);
 void runCallbackCapture(void* userdata, Uint8* stream, int byteLength);
+void finalizeAudioPlayback(CallbackList callbackList[]);
 
 #endif /*Callback_h*/

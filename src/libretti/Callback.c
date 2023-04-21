@@ -82,18 +82,21 @@ void runCallbackPlay(void* userdata, Uint8* stream, int byteLength)
 		playbackStream[i] = 0;
 	}
 
-	for (int i = 0; i < callbackList->size; i++)
+	if (callbackList != NULL)
 	{
-		Libretti* libretti = callbackList->librettiList[i];
-
-		if (libretti != NULL &&
-			libretti->audio != NULL &&
-			libretti->noteWaves != NULL &&
-			libretti->runtime != NULL &&
-			libretti->audio->trackCount > 0)
+		for (int i = 0; i < callbackList->size; i++)
 		{
-			lb_updateNoteWavesFromAudio(libretti->noteWaves, libretti->audio, libretti->runtime);
-			interleaveNoteWavesToStream(playbackStream, libretti->noteWaves);
+			Libretti* libretti = callbackList->librettiList[i];
+
+			if (libretti != NULL &&
+				libretti->audio != NULL &&
+				libretti->noteWaves != NULL &&
+				libretti->runtime != NULL &&
+				libretti->audio->trackCount > 0)
+			{
+				lb_updateNoteWavesFromAudio(libretti->noteWaves, libretti->audio, libretti->runtime);
+				interleaveNoteWavesToStream(playbackStream, libretti->noteWaves);
+			}
 		}
 	}
 }
@@ -117,4 +120,12 @@ void runCallbackCapture(void* userdata, Uint8* stream, int byteLength)
 
 	//debugging
 	lb_appendBinaryS16ToFile(binary, "audio_recording_dump.bin");
+}
+
+void finalizeAudioPlayback(CallbackList callbackList[])
+{
+	SDL_PauseAudioDevice(callbackList->device, 1);
+	SDL_CloseAudioDevice(callbackList->device);
+	SDL_CloseAudio();
+	callbackList->device = 0;
 }

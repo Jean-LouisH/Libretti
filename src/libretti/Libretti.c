@@ -11,6 +11,15 @@
 
 static CallbackList* callbackList;
 
+void lb_initialize()
+{
+	if (callbackList == NULL)
+	{
+		callbackList = calloc(1, sizeof(CallbackList));
+		initAudioPlayback(callbackList);
+	}
+}
+
 Libretti* lb_createLibretti(const char* filename)
 {
 	Libretti* libretti = malloc(sizeof *libretti);
@@ -60,13 +69,6 @@ lb_Runtime* lb_createRuntime()
 
 void lb_addLibrettiToCallback(Libretti* libretti)
 {
-	if (callbackList == NULL)
-	{
-		callbackList = calloc(1, sizeof(CallbackList));
-		initAudioPlayback(callbackList);
-	}
-	
-	//Checks for allocation after calloc()
 	if (callbackList != NULL)
 	{
 		libretti->runtime->device = callbackList->device;
@@ -232,10 +234,13 @@ void lb_incrementPlayTime(Libretti* libretti, float deltaTime_s)
 
 void lb_incrementAllPlayTimes(float deltaTime_s)
 {
-	for (int i = 0; i < callbackList->size; i++)
+	if (callbackList != NULL)
 	{
-		Libretti* libretti = callbackList->librettiList[i];
-		lb_incrementPlayTime(libretti, deltaTime_s);
+		for (int i = 0; i < callbackList->size; i++)
+		{
+			Libretti* libretti = callbackList->librettiList[i];
+			lb_incrementPlayTime(libretti, deltaTime_s);
+		}
 	}
 }
 
@@ -249,6 +254,36 @@ void lb_play(Libretti* libretti)
 {
 	libretti->runtime->playStates |= IS_PLAYING;
 	SDL_PauseAudioDevice(libretti->runtime->device, false);
+}
+
+Libretti* lb_play_key(uint16_t keyFrequency, float duration)
+{
+	Libretti* libretti = lb_createEmptyLibretti();
+	lb_Audio* audio = libretti->audio;
+	audio->trackCount = 1;
+	audio->tracks[0].noteEvents = calloc(1, sizeof(lb_NoteEvent));
+
+	if (audio->tracks[0].noteEvents != NULL)
+	{
+		audio->tracks[0].noteCount = 1;
+		audio->tracks[0].noteEvents->startTime_s = 0.0;
+		audio->tracks[0].noteEvents->note.amplitude = MF;
+		audio->tracks[0].noteEvents->note.articulation = NORMAL;
+		audio->tracks[0].noteEvents->note.frequency_Hz = keyFrequency;
+		audio->tracks[0].noteEvents->note.panning = CENTRE;
+		audio->tracks[0].noteEvents->note.timbre = SQUARE_WAVE;
+		audio->keySignature = C_MAJOR;
+		audio->loopCount = 0;
+		audio->loopTimestamp_s = 0.0;
+		audio->lyricsEventCount = 0;
+		audio->tempoEventCount = 0;
+		audio->timeLength_s = duration;
+		audio->timeSignature[0] = 4;
+		audio->timeSignature[1] = 4;
+		lb_addLibrettiToCallback(libretti);
+	}
+
+	return libretti;
 }
 
 void lb_pause(Libretti* libretti)
@@ -390,4 +425,9 @@ void lb_freeLibretti(Libretti* libretti)
 	libretti->noteWaves = NULL;
 	libretti->audio = NULL;
 	free(libretti);
+}
+
+void lb_finalize()
+{
+	finalizeAudioPlayback(callbackList);
 }
