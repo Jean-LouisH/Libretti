@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
+project("glad")
+
 # Include sub-projects.
-add_subdirectory("libretti")
-add_subdirectory("test_console")
-add_subdirectory("test_oscilloscope")
+add_subdirectory("glad")

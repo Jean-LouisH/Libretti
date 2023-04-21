@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include <string>
 #include "ApplicationWindow.hpp"
-//#include <Oscilloscope.hpp>
+#include <Oscilloscope.hpp>
 #include "ConsoleMenu.hpp"
 
 #define RECORD_TEST 0
@@ -39,11 +39,13 @@ int main(int argc, char* argv[])
 	lb_saveBinaryS16ToFile(binary, RECORDING_FILEPATH);
 #endif
 
+	Oscilloscope::initialize();
+
 	do
 	{
 #if !RECORD_TEST
 		isRunning = appWindow.handleEvents(libretti);
-		//Oscilloscope::renderWaveforms(appWindow.getSDLWindow(), libretti);
+		Oscilloscope::renderWaveforms(appWindow.getSDLWindow(), libretti);
 		lb_incrementAllPlayTimes(appWindow.getFrameTime() / MS_PER_S);
 #endif
 		appWindow.swapBuffers();

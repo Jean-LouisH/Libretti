@@ -1,7 +1,15 @@
 #include "Oscilloscope.hpp"
 #include <SDL.h>
-#include <SDL_opengl.h>
+#include <glad/glad.h>
 #include <string>
+
+void Oscilloscope::initialize()
+{
+	if ((!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)))
+	{
+		printf("GLAD failed to initialize.");
+	}
+}
 
 void Oscilloscope::renderWaveforms(SDL_Window* window, Libretti* libretti)
 {
@@ -11,6 +19,8 @@ void Oscilloscope::renderWaveforms(SDL_Window* window, Libretti* libretti)
 
 	for (int i = 0; i < noteWaves->count; i++)
 	{
+		/*OpenGL compatibility profile fixed-functions are
+		sufficient for this simple test oscilloscope.*/
 		glBegin(GL_LINE_STRIP);
 		glColor4ub(255, 255, 255, 255);
 

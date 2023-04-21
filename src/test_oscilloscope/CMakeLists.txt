@@ -9,6 +9,7 @@ add_library(test_oscilloscope STATIC
 	  ${test_oscilloscope_headers})
 
 add_dependencies(test_oscilloscope
+	glad
 	libretti)
 
  add_definitions(/bigobj)
@@ -19,10 +20,12 @@ find_library(SDL2 SDL2.lib SDL2main.lib PATHS ../../thirdparty/SDL2-2.0.9/lib/x6
 include_directories(
 		../../thirdparty/SDL2-2.0.9/include
 		../libretti/include
+		../../thirdparty/glad/include
 		.
 )
 
 target_link_libraries (test_oscilloscope
+		glad
 		libretti
 		${SDL2}
 
