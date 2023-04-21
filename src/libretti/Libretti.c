@@ -201,9 +201,9 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 
 			switch (noteEvent.note.articulation)
 			{
-				case SLUR: currentTimeRatio = slurTimeRatio; break;
-				case NORMAL: currentTimeRatio = normalTimeRatio; break;
-				case STACCATO: currentTimeRatio = staccatoTimeRatio; break;
+				case LB_SLUR: currentTimeRatio = slurTimeRatio; break;
+				case LB_NORMAL: currentTimeRatio = normalTimeRatio; break;
+				case LB_STACCATO: currentTimeRatio = staccatoTimeRatio; break;
 			}
 
 			float noteLiftTime = (noteEvent.startTime_s +
@@ -267,11 +267,11 @@ Libretti* lb_play_key(uint16_t keyFrequency, float duration)
 	{
 		audio->tracks[0].noteCount = 1;
 		audio->tracks[0].noteEvents->startTime_s = 0.0;
-		audio->tracks[0].noteEvents->note.amplitude = MF;
-		audio->tracks[0].noteEvents->note.articulation = NORMAL;
+		audio->tracks[0].noteEvents->note.amplitude = LB_MF;
+		audio->tracks[0].noteEvents->note.articulation = LB_NORMAL;
 		audio->tracks[0].noteEvents->note.frequency_Hz = keyFrequency;
-		audio->tracks[0].noteEvents->note.panning = CENTRE;
-		audio->tracks[0].noteEvents->note.timbre = SQUARE_WAVE;
+		audio->tracks[0].noteEvents->note.panning = LB_CENTRE;
+		audio->tracks[0].noteEvents->note.timbre = LB_SQUARE_WAVE;
 		audio->keySignature = C_MAJOR;
 		audio->loopCount = 0;
 		audio->loopTimestamp_s = 0.0;

@@ -193,11 +193,11 @@ void buildAudioData(lb_Audio* audio, const char* script)
 					note.amplitude = dynamic;
 
 				if (parseState == READING_STACCATO)
-					note.articulation = STACCATO;
+					note.articulation = LB_STACCATO;
 				else if (slurIsOpened)
-					note.articulation = SLUR;
+					note.articulation = LB_SLUR;
 				else
-					note.articulation = NORMAL;
+					note.articulation = LB_NORMAL;
 				note.cue = cue;
 				note.panning = panning;
 				note.sample = sample;
@@ -371,21 +371,21 @@ void buildAudioData(lb_Audio* audio, const char* script)
 			else if (strcmp(header.data, "dynamic") == 0)
 			{
 				if (strcmp(value.data, "ppp") == 0)
-					dynamic = PPP;
+					dynamic = LB_PPP;
 				else if (strcmp(value.data, "pp") == 0)
-					dynamic = PP;
+					dynamic = LB_PP;
 				else if (strcmp(value.data, "p") == 0)
-					dynamic = P;
+					dynamic = LB_P;
 				else if (strcmp(value.data, "mp") == 0)
-					dynamic = MP;
+					dynamic = LB_MP;
 				else if (strcmp(value.data, "mf") == 0)
-					dynamic = MF;
+					dynamic = LB_MF;
 				else if (strcmp(value.data, "f") == 0)
-					dynamic = F;
+					dynamic = LB_F;
 				else if (strcmp(value.data, "ff") == 0)
-					dynamic = FF;
+					dynamic = LB_FF;
 				else if (strcmp(value.data, "fff") == 0)
-					dynamic = FFF;
+					dynamic = LB_FFF;
 			}
 			else if (strcmp(header.data, "reverb") == 0)
 			{
@@ -425,15 +425,15 @@ void buildAudioData(lb_Audio* audio, const char* script)
 				if (panningValue == 0)
 				{
 					if (strcmp(value.data, "far left") == 0)
-						panning = REAR_LEFT;
+						panning = LB_REAR_LEFT;
 					else if (strcmp(value.data, "left") == 0)
-						panning = FRONT_LEFT;
+						panning = LB_FRONT_LEFT;
 					else if (strcmp(value.data, "mono") == 0)
-						panning = CENTRE;
+						panning = LB_CENTRE;
 					else if (strcmp(value.data, "right") == 0)
-						panning = FRONT_RIGHT;
+						panning = LB_FRONT_RIGHT;
 					else if (strcmp(value.data, "far right") == 0)
-						panning = REAR_RIGHT;
+						panning = LB_REAR_RIGHT;
 				}
 				else
 				{
@@ -443,21 +443,21 @@ void buildAudioData(lb_Audio* audio, const char* script)
 			else if (strcmp(header.data, "timbre") == 0)
 			{
 				if (strcmp(value.data, "square wave") == 0)
-					timbre = SQUARE_WAVE;
+					timbre = LB_SQUARE_WAVE;
 				else if (strcmp(value.data, "sine wave") == 0)
-					timbre = SINE_WAVE;
+					timbre = LB_SINE_WAVE;
 				else if (strcmp(value.data, "triangle wave") == 0)
-					timbre = TRIANGLE_WAVE;
+					timbre = LB_TRIANGLE_WAVE;
 				else if (strcmp(value.data, "sawtooth wave") == 0)
-					timbre = SAWTOOTH_WAVE;
+					timbre = LB_SAWTOOTH_WAVE;
 				else if (strcmp(value.data, "pulse 10") == 0)
-					timbre = PULSE_10;
+					timbre = LB_PULSE_10;
 				else if (strcmp(value.data, "pulse 25") == 0)
-					timbre = PULSE_25;
+					timbre = LB_PULSE_25;
 				else if (strcmp(value.data, "noise") == 0)
-					timbre = NOISE;
+					timbre = LB_NOISE;
 				else if (strcmp(value.data, "metallic") == 0)
-					timbre = METALLIC;
+					timbre = LB_METALLIC;
 				else
 				{
 #ifdef _DEBUG
@@ -466,7 +466,7 @@ void buildAudioData(lb_Audio* audio, const char* script)
 					lb_String filename = lb_newString("Samples/");
 #endif
 					lb_String extension = lb_newString(".pcm");
-					timbre = SAMPLE;
+					timbre = LB_SAMPLE;
 					strcat(filename.data, value.data);
 					strcat(filename.data, extension.data);
 					sample = loadBinaryS16FromFile(filename.data);
@@ -714,21 +714,21 @@ void assignFrequencyFromNoteChar(float* frequency, uint8_t octave, char noteChar
 {
 	switch (noteChar)
 	{
-		case 'A': *frequency = A0 * pow(2, octave); break;
-		case 'B': *frequency = B0 * pow(2, octave); break;
-		case 'C': *frequency = C1 * pow(2, octave - 1); break;
-		case 'D': *frequency = D1 * pow(2, octave - 1); break;
-		case 'E': *frequency = E1 * pow(2, octave - 1); break;
-		case 'F': *frequency = F1 * pow(2, octave - 1); break;
-		case 'G': *frequency = G1 * pow(2, octave - 1); break;
+		case 'A': *frequency = LB_A0 * pow(2, octave); break;
+		case 'B': *frequency = LB_B0 * pow(2, octave); break;
+		case 'C': *frequency = LB_C1 * pow(2, octave - 1); break;
+		case 'D': *frequency = LB_D1 * pow(2, octave - 1); break;
+		case 'E': *frequency = LB_E1 * pow(2, octave - 1); break;
+		case 'F': *frequency = LB_F1 * pow(2, octave - 1); break;
+		case 'G': *frequency = LB_G1 * pow(2, octave - 1); break;
 			/*Flats and sharps char codes reserved for compiler.*/
-		case 'b': *frequency = Bf0 * pow(2, octave); break;
-		case 'c': *frequency = Cs1 * pow(2, octave - 1); break;
-		case 'e': *frequency = Ef1 * pow(2, octave - 1); break;
-		case 'f': *frequency = Fs1 * pow(2, octave - 1); break;
-		case 'g': *frequency = Gs1 * pow(2, octave - 1); break;
+		case 'b': *frequency = LB_Bf0 * pow(2, octave); break;
+		case 'c': *frequency = LB_Cs1 * pow(2, octave - 1); break;
+		case 'e': *frequency = LB_Ef1 * pow(2, octave - 1); break;
+		case 'f': *frequency = LB_Fs1 * pow(2, octave - 1); break;
+		case 'g': *frequency = LB_Gs1 * pow(2, octave - 1); break;
 			/*Rest value.*/
-		case 'R': *frequency = R; break;
+		case 'R': *frequency = LB_R; break;
 	}
 }
 
@@ -739,35 +739,35 @@ void tuneByAccidental(float* frequency, uint8_t octave, char scriptChar, char no
 	case '#':
 		switch (noteChar)
 		{
-			case 'A': *frequency = Bf0 * pow(2, octave); break;
-			case 'B': *frequency = C1 * pow(2, octave - 1); break;
-			case 'C': *frequency = Cs1 * pow(2, octave - 1); break;
-			case 'D': *frequency = Ef1 * pow(2, octave - 1); break;
-			case 'E': *frequency = F1 * pow(2, octave - 1); break;
-			case 'F': *frequency = Fs1 * pow(2, octave - 1); break;
-			case 'G': *frequency = Gs1 * pow(2, octave - 1); break;
+			case 'A': *frequency = LB_Bf0 * pow(2, octave); break;
+			case 'B': *frequency = LB_C1 * pow(2, octave - 1); break;
+			case 'C': *frequency = LB_Cs1 * pow(2, octave - 1); break;
+			case 'D': *frequency = LB_Ef1 * pow(2, octave - 1); break;
+			case 'E': *frequency = LB_F1 * pow(2, octave - 1); break;
+			case 'F': *frequency = LB_Fs1 * pow(2, octave - 1); break;
+			case 'G': *frequency = LB_Gs1 * pow(2, octave - 1); break;
 		}
 		break;
 	case 'b':
 		switch (noteChar)
 		{
-			case 'A': *frequency = Gs1 * pow(2, octave - 1); break;
-			case 'B': *frequency = Bf0 * pow(2, octave); break;
-			case 'C': *frequency = B0 * pow(2, octave); break;
-			case 'D': *frequency = Cs1 * pow(2, octave - 1); break;
-			case 'E': *frequency = Ef1 * pow(2, octave - 1); break;
-			case 'F': *frequency = E1 * pow(2, octave - 1); break;
-			case 'G': *frequency = Fs1 * pow(2, octave - 1); break;
+			case 'A': *frequency = LB_Gs1 * pow(2, octave - 1); break;
+			case 'B': *frequency = LB_Bf0 * pow(2, octave); break;
+			case 'C': *frequency = LB_B0 * pow(2, octave); break;
+			case 'D': *frequency = LB_Cs1 * pow(2, octave - 1); break;
+			case 'E': *frequency = LB_Ef1 * pow(2, octave - 1); break;
+			case 'F': *frequency = LB_E1 * pow(2, octave - 1); break;
+			case 'G': *frequency = LB_Fs1 * pow(2, octave - 1); break;
 		}
 		break;
 	case 'n':
 		switch (noteChar)
 		{
-			case 'b': *frequency = B0 * pow(2, octave); break;
-			case 'c': *frequency = C1 * pow(2, octave - 1); break;
-			case 'e': *frequency = E1 * pow(2, octave - 1); break;
-			case 'f': *frequency = F1 * pow(2, octave - 1); break;
-			case 'g': *frequency = G1 * pow(2, octave - 1); break;
+			case 'b': *frequency = LB_B0 * pow(2, octave); break;
+			case 'c': *frequency = LB_C1 * pow(2, octave - 1); break;
+			case 'e': *frequency = LB_E1 * pow(2, octave - 1); break;
+			case 'f': *frequency = LB_F1 * pow(2, octave - 1); break;
+			case 'g': *frequency = LB_G1 * pow(2, octave - 1); break;
 		}
 		break;
 	}

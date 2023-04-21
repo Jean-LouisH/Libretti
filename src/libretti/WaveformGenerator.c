@@ -19,27 +19,27 @@ void generateNoteWaves(lb_NoteWaves* noteWaves, lb_Note currentNotes[])
 
 			switch (noteWaves->metaData[i].timbre)
 			{
-				case SQUARE_WAVE:
+				case LB_SQUARE_WAVE:
 					noteWaves->streams[i][n] = amplitude * pow((-1), (int)(frequency * time));
 					break;
-				case SINE_WAVE:
+				case LB_SINE_WAVE:
 					noteWaves->streams[i][n] = amplitude * sin(2.0 * M_PI * frequency * time);
 					break;
-				case TRIANGLE_WAVE:
+				case LB_TRIANGLE_WAVE:
 					noteWaves->streams[i][n] = (2.0 * amplitude / M_PI) * asin(sin((2.0 * M_PI / period) * time));
 					break;
-				case SAWTOOTH_WAVE:
+				case LB_SAWTOOTH_WAVE:
 					noteWaves->streams[i][n] = 2 * amplitude * (time / period - (int)(0.5 + time / period));
 					break;
-				case PULSE_10:
+				case LB_PULSE_10:
 					noteWaves->streams[i][n] = amplitude * 
 						(2 * amplitude * (time / period - (int)(0.5 + time / period)) > (amplitude * (1.0 - 0.10)));
 					break;
-				case PULSE_25:
+				case LB_PULSE_25:
 					noteWaves->streams[i][n] = amplitude *
 						(2 * amplitude * (time / period - (int)(0.5 + time / period)) > (amplitude * (1.0 - 0.25)));
 					break;
-				case NOISE:
+				case LB_NOISE:
 					noteWaves->streams[i][n] = (double)((bool)(frequency) * 
 						(rand() % (int)(2 * amplitude) + (int)(-amplitude)));
 					break;
