@@ -16,7 +16,7 @@ private:
 public:
 	ApplicationWindow(std::string appName);
 	~ApplicationWindow();
-	bool handleEvents(Libretti* libretti);
+	bool handleEvents(lb_Libretti* libretti);
 	void swapBuffers();
 	int getFrameTime();
 	SDL_Window* getSDLWindow();

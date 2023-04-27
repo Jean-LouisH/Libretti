@@ -18,13 +18,13 @@
 
 enum states
 {
-	IS_PLAYING = 1 << 0,
-	PLAYED_AT_LEAST_ONCE = 1 << 1
+	LB_RUNTIME_STATE_IS_PLAYING = 1 << 0,
+	LB_RUNTIME_STATE_PLAYED_AT_LEAST_ONCE = 1 << 1
 };
 
 typedef struct
 {
-	float currentPlayTime_s;
+	float currentPlayTime; //in seconds
 	uint32_t trackNoteIndices[MAX_TRACKS];
 	SDL_AudioDeviceID device;
 	uint8_t playStates;

@@ -25,8 +25,8 @@ typedef struct
 	uint8_t trackCount;
 	uint8_t tempoEventCount;
 	uint8_t lyricsEventCount;
-	float timeLength_s;
-	float loopTimestamp_s;
+	float timeLength;				//in seconds
+	float loopTimestamp;			//in seconds
 	uint16_t loopCount;
 	char name[64];
 	char artist[32];

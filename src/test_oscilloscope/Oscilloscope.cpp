@@ -11,7 +11,7 @@ void Oscilloscope::initialize()
 	}
 }
 
-void Oscilloscope::renderWaveforms(SDL_Window* window, Libretti* libretti)
+void Oscilloscope::renderWaveforms(SDL_Window* window, lb_Libretti* libretti)
 {
 	lb_NoteWaves* noteWaves = libretti->noteWaves;
 	const double scale = 1.0 + (1.0 / 5.0);
@@ -32,7 +32,7 @@ void Oscilloscope::renderWaveforms(SDL_Window* window, Libretti* libretti)
 			if (j > 0 && !startTrigger)
 			{
 				Sint16 valueRange = 200;
-				Sint16 targetValue = noteWaves->metaData[i].amplitude;
+				Sint16 targetValue = noteWaves->metaData[i].dynamic;
 				Sint16 sampleA = noteWaves->streams[i][j - 1];
 				Sint16 sampleB = noteWaves->streams[i][j];
 
@@ -52,9 +52,9 @@ void Oscilloscope::renderWaveforms(SDL_Window* window, Libretti* libretti)
 				double maxAmplitude = 0;
 				for (int k = 0; k < noteWaves->count; k++)
 				{
-					if (noteWaves->metaData[k].amplitude > maxAmplitude)
+					if (noteWaves->metaData[k].dynamic > maxAmplitude)
 					{
-						maxAmplitude = noteWaves->metaData[k].amplitude;
+						maxAmplitude = noteWaves->metaData[k].dynamic;
 					}
 				}
 

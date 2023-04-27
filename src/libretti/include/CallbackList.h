@@ -18,7 +18,7 @@
 
 typedef struct
 {
-	Libretti* librettiList[MAX_LIBRETTIS];
+	lb_Libretti* librettiList[MAX_LIBRETTIS];
 	SDL_AudioDeviceID device;
 	uint8_t size;
 }CallbackList;

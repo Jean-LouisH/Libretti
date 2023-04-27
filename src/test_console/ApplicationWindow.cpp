@@ -43,7 +43,7 @@ ApplicationWindow::~ApplicationWindow()
 	SDL_Quit();
 }
 
-bool ApplicationWindow::handleEvents(Libretti* libretti)
+bool ApplicationWindow::handleEvents(lb_Libretti* libretti)
 {
 	SDL_Event SDLEvents;
 	bool isRunning = true;
@@ -65,7 +65,7 @@ bool ApplicationWindow::handleEvents(Libretti* libretti)
 			}
 			else if (SDLEvents.key.keysym.sym == SDLK_p)
 			{
-				if (libretti->runtime->playStates & IS_PLAYING)
+				if (libretti->runtime->playStates & LB_RUNTIME_STATE_IS_PLAYING)
 				{
 					lb_pause(libretti);
 				}

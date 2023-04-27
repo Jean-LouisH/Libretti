@@ -42,16 +42,16 @@ extern "C"
 		lb_Audio* audio;
 		lb_NoteWaves* noteWaves;
 		lb_Runtime* runtime;
-	}Libretti;
+	}lb_Libretti;
 
 	/*Allocates and returns a Libretti without adding to callback. */
 	LIBRETTI_API void lb_initialize();
 
 	/*Allocates and returns a Libretti without adding to callback. */
-	LIBRETTI_API Libretti* lb_createLibretti(const char* filename);
+	LIBRETTI_API lb_Libretti* lb_createLibretti(const char* filename);
 
 	/*Allocates and returns an empty Libretti without adding to callback. */
-	LIBRETTI_API Libretti* lb_createEmptyLibretti();
+	LIBRETTI_API lb_Libretti* lb_createEmptyLibretti();
 
 	/*Returns an audio struct with a compiled script.*/
 	LIBRETTI_API lb_Audio* lb_createAudio(const char* filename);
@@ -66,13 +66,13 @@ extern "C"
 	LIBRETTI_API lb_Runtime* lb_createRuntime();
 
 	/*Updates the global callback list to playback Libretti simultaneously.*/
-	LIBRETTI_API void lb_addLibrettiToCallback(Libretti* libretti);
+	LIBRETTI_API void lb_addLibrettiToCallback(lb_Libretti* libretti);
 
 	/*Allocates and returns a Libretti with the global callback list updated.*/
-	LIBRETTI_API Libretti* lb_createAndAddLibrettiToCallback(const char* filename);
+	LIBRETTI_API lb_Libretti* lb_createAndAddLibrettiToCallback(const char* filename);
 
 	/*Allocates and returns an empty Libretti with the global callback list updated.*/
-	LIBRETTI_API Libretti* lb_createAndAddEmptyLibrettiToCallback();
+	LIBRETTI_API lb_Libretti* lb_createAndAddEmptyLibrettiToCallback();
 
 	/*Loads script and validates it against the language specification, returns validation codes.*/
 	LIBRETTI_API int lb_validateScriptFile(const char* filename);
@@ -90,26 +90,26 @@ extern "C"
 	LIBRETTI_API void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note currentNotes[], uint8_t trackCount);
 
 	/*Updates the Libretti's runtime with a delta in seconds.*/
-	LIBRETTI_API void lb_incrementPlayTime(Libretti* libretti, float deltaTime_s);
+	LIBRETTI_API void lb_incrementPlayTime(lb_Libretti* libretti, float deltaTime_s);
 
 	/*Updates the times of all Librettis in the global callback list.*/
 	LIBRETTI_API void lb_incrementAllPlayTimes(float deltaTime_s);
 
 	/*Updates an existing Libretti with a compiled script.*/
-	LIBRETTI_API void lb_load(Libretti* libretti, const char* filename);
+	LIBRETTI_API void lb_load(lb_Libretti* libretti, const char* filename);
 
 	/*Allows the Libretti's runtime to increment time.*/
-	LIBRETTI_API void lb_play(Libretti* libretti);
+	LIBRETTI_API void lb_play(lb_Libretti* libretti);
 
 	/*Plays a sound in the WaveformGenerator until the duration is reached.
-	 * keyFrequency - the tone of the note
+	 * key			- the tone of the note
 	 * dynamic		- the volume or amplitude of the note
 	 * panning		- the direction of the audio in the L/R speaker configuration
 	 * timbre		- the type of instrument used to render the sound
 	 * articulation	- the manner in which the key is released.
 	 * Each parameter must be selected from its corresponding enum*/
-	LIBRETTI_API Libretti* lb_play_note_for(
-		uint16_t keyFrequency,
+	LIBRETTI_API lb_Libretti* lb_play_note_for(
+		uint16_t key,
 		uint16_t dynamic,
 		uint8_t panning,
 		uint8_t timbre,
@@ -117,42 +117,42 @@ extern "C"
 		float duration);
 
 	/*Infinitely plays a sound in the WaveformGenerator.
-	 * keyFrequency - the tone of the note
+	 * key			- the tone of the note
 	 * dynamic		- the volume or amplitude of the note
 	 * panning		- the direction of the audio in the L/R speaker configuration
 	 * timbre		- the type of instrument used to render the sound
 	 * Each parameter must be selected from its corresponding enum*/
-	LIBRETTI_API Libretti* lb_play_note(
-		uint16_t keyFrequency,
+	LIBRETTI_API lb_Libretti* lb_play_note(
+		uint16_t key,
 		uint16_t dynamic,
 		uint8_t panning,
 		uint8_t timbre);
 
 	/*Plays a sound with the minimal amount of info needed for most common case
-	 * keyFrequency - the tone of the note
+	 * key			- the tone of the note
 	 * dynamic		- the volume or amplitude of the note
 	 * Each parameter must be selected from its corresponding enum*/
-	LIBRETTI_API Libretti* lb_play_simple_note_for(
-		uint16_t keyFrequency,
+	LIBRETTI_API lb_Libretti* lb_play_simple_note_for(
+		uint16_t key,
 		uint16_t dynamic,
 		float duration);
 
 	/*Infinitely plays a sound with the minimal amount of info needed for most common case
-	 * keyFrequency - the tone of the note
+	 * key			- the tone of the note
 	 * dynamic		- the volume or amplitude of the note
 	 * Each parameter must be selected from its corresponding enum*/
-	LIBRETTI_API Libretti* lb_play_simple_note(
-		uint16_t keyFrequency,
+	LIBRETTI_API lb_Libretti* lb_play_simple_note(
+		uint16_t key,
 		uint16_t dynamic);
 
 	/*Stops the Libretti's runtime from incrementing time.*/
-	LIBRETTI_API void lb_pause(Libretti* libretti);
+	LIBRETTI_API void lb_pause(lb_Libretti* libretti);
 
 	/*Sets the Libretti's runtime to 0.0s.*/
-	LIBRETTI_API void lb_reset(Libretti* libretti);
+	LIBRETTI_API void lb_reset(lb_Libretti* libretti);
 
 	/*Resets and Pauses the Libretti's runtime.*/
-	LIBRETTI_API void lb_stop(Libretti* libretti);
+	LIBRETTI_API void lb_stop(lb_Libretti* libretti);
 
 	/*Plays all Librettis in the global callback list.*/
 	LIBRETTI_API void lb_playAll();
@@ -167,19 +167,19 @@ extern "C"
 	LIBRETTI_API void lb_stopAll();
 
 	/*Allocates and returns a region in memory that captures the incoming stream recording.*/
-	LIBRETTI_API lb_Binary_s16* lb_getAudioCaptureStreamBuffer();
+	LIBRETTI_API lb_BinaryS16* lb_getAudioCaptureStreamBuffer();
 
 	/*Writes a file streamed in unsigned 8-bits.*/
-	LIBRETTI_API void lb_saveBinaryU8ToFile(lb_Binary_u8* binary, const char* filename);
+	LIBRETTI_API void lb_saveBinaryU8ToFile(lb_BinaryU8* binary, const char* filename);
 
 	/*Writes a file streamed in signed 16-bits.*/
-	LIBRETTI_API void lb_saveBinaryS16ToFile(lb_Binary_s16* binary, const char* filename);
+	LIBRETTI_API void lb_saveBinaryS16ToFile(lb_BinaryS16* binary, const char* filename);
 
 	/*Appends a file streamed in unsigned 8-bits.*/
-	LIBRETTI_API void lb_appendBinaryU8ToFile(lb_Binary_u8* binary, const char* filename);
+	LIBRETTI_API void lb_appendBinaryU8ToFile(lb_BinaryU8* binary, const char* filename);
 
 	/*Appends a file streamed in signed 16-bits.*/
-	LIBRETTI_API void lb_appendBinaryS16ToFile(lb_Binary_s16* binary, const char* filename);
+	LIBRETTI_API void lb_appendBinaryS16ToFile(lb_BinaryS16* binary, const char* filename);
 
 	/*Decodes an audio struct to a PCM stream and encodes it in WAV file format.*/
 	LIBRETTI_API void lb_exportAudioToWAV(lb_Audio* audio, const char* name);
@@ -194,7 +194,7 @@ extern "C"
 	LIBRETTI_API void lb_freeAudio(lb_Audio* audio);
 
 	/*Deletes memory allocation of runtime, note waves and audio, and the container Libretti.*/
-	LIBRETTI_API void lb_freeLibretti(Libretti* libretti);
+	LIBRETTI_API void lb_freeLibretti(lb_Libretti* libretti);
 
 	LIBRETTI_API void lb_finalize();
 

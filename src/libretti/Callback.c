@@ -35,7 +35,7 @@ void initAudioPlayback(CallbackList callbackList[])
 	}
 }
 
-void initAudioCapture(lb_Binary_s16* binary)
+void initAudioCapture(lb_BinaryS16* binary)
 {
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
@@ -86,7 +86,7 @@ void runCallbackPlay(void* userdata, Uint8* stream, int byteLength)
 	{
 		for (int i = 0; i < callbackList->size; i++)
 		{
-			Libretti* libretti = callbackList->librettiList[i];
+			lb_Libretti* libretti = callbackList->librettiList[i];
 
 			if (libretti != NULL &&
 				libretti->audio != NULL &&
@@ -108,7 +108,7 @@ void runCallbackCapture(void* userdata, Uint8* stream, int byteLength)
 	of two bytes.*/
 	Sint16* captureStream = (Sint16*)stream;
 	int doubleByteLength = byteLength / sizeof(Sint16);
-	lb_Binary_s16* binary = (lb_Binary_s16*)userdata;
+	lb_BinaryS16* binary = (lb_BinaryS16*)userdata;
 
 	int16_t debug[SAMPLE_SIZE];
 

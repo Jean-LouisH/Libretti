@@ -20,9 +20,9 @@ void lb_initialize()
 	}
 }
 
-Libretti* lb_createLibretti(const char* filename)
+lb_Libretti* lb_createLibretti(const char* filename)
 {
-	Libretti* libretti = malloc(sizeof *libretti);
+	lb_Libretti* libretti = malloc(sizeof *libretti);
 	if (libretti != NULL)
 	{
 		libretti->audio = lb_createAudio(filename);
@@ -32,9 +32,9 @@ Libretti* lb_createLibretti(const char* filename)
 	return libretti;
 }
 
-Libretti* lb_createEmptyLibretti()
+lb_Libretti* lb_createEmptyLibretti()
 {
-	Libretti* libretti = malloc(sizeof *libretti);
+	lb_Libretti* libretti = malloc(sizeof *libretti);
 	if (libretti != NULL)
 	{
 		libretti->audio = lb_createEmptyAudio();
@@ -67,7 +67,7 @@ lb_Runtime* lb_createRuntime()
 	return calloc(1, sizeof(lb_Runtime));
 }
 
-void lb_addLibrettiToCallback(Libretti* libretti)
+void lb_addLibrettiToCallback(lb_Libretti* libretti)
 {
 	if (callbackList != NULL)
 	{
@@ -83,17 +83,17 @@ void lb_addLibrettiToCallback(Libretti* libretti)
 	}
 }
 
-Libretti* lb_createAndAddLibrettiToCallback(const char* filename)
+lb_Libretti* lb_createAndAddLibrettiToCallback(const char* filename)
 {
-	Libretti* libretti = lb_createLibretti(filename);
+	lb_Libretti* libretti = lb_createLibretti(filename);
 	if (libretti != NULL)
 		lb_addLibrettiToCallback(libretti);
 	return libretti;
 }
 
-Libretti* lb_createAndAddEmptyLibrettiToCallback()
+lb_Libretti* lb_createAndAddEmptyLibrettiToCallback()
 {
-	Libretti* libretti = lb_createEmptyLibretti();
+	lb_Libretti* libretti = lb_createEmptyLibretti();
 	if (libretti != NULL)
 		lb_addLibrettiToCallback(libretti);
 	return libretti;
@@ -144,11 +144,11 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 			else
 			{
 				nextNoteEvent.note = silentNote;
-				nextNoteEvent.startTime_s = audio->timeLength_s;
+				nextNoteEvent.startTime = audio->timeLength;
 			}
 
 			/*Find and set the current note to play*/
-			while ((runtime->currentPlayTime_s > nextNoteEvent.startTime_s))
+			while ((runtime->currentPlayTime > nextNoteEvent.startTime))
 			{
 				if (runtime->trackNoteIndices[i] < audio->tracks[i].noteCount - 1)
 				{
@@ -159,27 +159,27 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 				else
 				{
 					nextNoteEvent.note = silentNote;
-					nextNoteEvent.startTime_s = audio->timeLength_s;
+					nextNoteEvent.startTime = audio->timeLength;
 				}
 
 				/*Reset the song when the time exceeds the last time stamp.*/
-				if (runtime->currentPlayTime_s > audio->timeLength_s)
+				if (runtime->currentPlayTime > audio->timeLength)
 				{
-					runtime->playStates |= PLAYED_AT_LEAST_ONCE;
+					runtime->playStates |= LB_RUNTIME_STATE_PLAYED_AT_LEAST_ONCE;
 					runtime->currentLoopCount++;
 
 					if ((runtime->currentLoopCount < audio->loopCount) ||
 						audio->loopCount == pow(2, (sizeof audio->loopCount) * 8) - 1)
 					{
-						runtime->currentPlayTime_s = audio->loopTimestamp_s;
+						runtime->currentPlayTime = audio->loopTimestamp;
 
 						for (int j = 0; j < audio->trackCount; j++)
 						{
 							runtime->trackNoteIndices[j] = 0;
 
 							/*Find and set note indices to loop time stamps.*/
-							while (audio->loopTimestamp_s > 
-								audio->tracks[j].noteEvents[runtime->trackNoteIndices[j]].startTime_s)
+							while (audio->loopTimestamp > 
+								audio->tracks[j].noteEvents[runtime->trackNoteIndices[j]].startTime)
 							{
 								runtime->trackNoteIndices[j]++;
 							}
@@ -187,7 +187,7 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 					}
 					else
 					{
-						runtime->playStates &= ~IS_PLAYING;
+						runtime->playStates &= ~LB_RUNTIME_STATE_IS_PLAYING;
 						SDL_PauseAudioDevice(runtime->device, true);
 					}
 				}	
@@ -201,15 +201,15 @@ void lb_updateNotesFromAudio(lb_Note currentNotes[], lb_Audio* audio, lb_Runtime
 
 			switch (noteEvent.note.articulation)
 			{
-				case LB_SLUR: currentTimeRatio = slurTimeRatio; break;
-				case LB_NORMAL: currentTimeRatio = normalTimeRatio; break;
-				case LB_STACCATO: currentTimeRatio = staccatoTimeRatio; break;
+				case LB_ARTICULATION_SLUR: currentTimeRatio = slurTimeRatio; break;
+				case LB_ARTICULATION_NORMAL: currentTimeRatio = normalTimeRatio; break;
+				case LB_ARTICULATION_STACCATO: currentTimeRatio = staccatoTimeRatio; break;
 			}
 
-			float noteLiftTime = (noteEvent.startTime_s +
-				((nextNoteEvent.startTime_s - noteEvent.startTime_s) * currentTimeRatio));
+			float noteLiftTime = (noteEvent.startTime +
+				((nextNoteEvent.startTime - noteEvent.startTime) * currentTimeRatio));
 
-			if (runtime->currentPlayTime_s > noteLiftTime)
+			if (runtime->currentPlayTime > noteLiftTime)
 			{
 				currentNotes[i] = silentNote;
 			}
@@ -226,10 +226,10 @@ void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note currentNotes[]
 	generateNoteWaves(noteWaves, currentNotes);
 }
 
-void lb_incrementPlayTime(Libretti* libretti, float deltaTime_s)
+void lb_incrementPlayTime(lb_Libretti* libretti, float deltaTime_s)
 {
-	if (libretti->runtime->playStates & IS_PLAYING)
-		libretti->runtime->currentPlayTime_s += deltaTime_s;
+	if (libretti->runtime->playStates & LB_RUNTIME_STATE_IS_PLAYING)
+		libretti->runtime->currentPlayTime += deltaTime_s;
 }
 
 void lb_incrementAllPlayTimes(float deltaTime_s)
@@ -238,33 +238,33 @@ void lb_incrementAllPlayTimes(float deltaTime_s)
 	{
 		for (int i = 0; i < callbackList->size; i++)
 		{
-			Libretti* libretti = callbackList->librettiList[i];
+			lb_Libretti* libretti = callbackList->librettiList[i];
 			lb_incrementPlayTime(libretti, deltaTime_s);
 		}
 	}
 }
 
-void lb_load(Libretti* libretti, const char* filename)
+void lb_load(lb_Libretti* libretti, const char* filename)
 {
 	lb_compileAudioFromScriptFile(libretti->audio, filename);
 	lb_play(libretti);
 }
 
-void lb_play(Libretti* libretti)
+void lb_play(lb_Libretti* libretti)
 {
-	libretti->runtime->playStates |= IS_PLAYING;
+	libretti->runtime->playStates |= LB_RUNTIME_STATE_IS_PLAYING;
 	SDL_PauseAudioDevice(libretti->runtime->device, false);
 }
 
-Libretti* lb_play_note_for(
-	uint16_t keyFrequency,
+lb_Libretti* lb_play_note_for(
+	uint16_t key,
 	uint16_t dynamic,
 	uint8_t panning,
 	uint8_t timbre,
 	uint8_t articulation,
 	float duration)
 {
-	Libretti* libretti = lb_createEmptyLibretti();
+	lb_Libretti* libretti = lb_createEmptyLibretti();
 	lb_Audio* audio = libretti->audio;
 	audio->trackCount = 1;
 	audio->tracks[0].noteEvents = calloc(1, sizeof(lb_NoteEvent));
@@ -272,18 +272,18 @@ Libretti* lb_play_note_for(
 	if (audio->tracks[0].noteEvents != NULL)
 	{
 		audio->tracks[0].noteCount = 1;
-		audio->tracks[0].noteEvents->startTime_s = 0.0;
-		audio->tracks[0].noteEvents->note.amplitude = dynamic;
+		audio->tracks[0].noteEvents->startTime = 0.0;
+		audio->tracks[0].noteEvents->note.dynamic = dynamic;
 		audio->tracks[0].noteEvents->note.articulation = articulation;
-		audio->tracks[0].noteEvents->note.frequency_Hz = keyFrequency;
+		audio->tracks[0].noteEvents->note.key = key;
 		audio->tracks[0].noteEvents->note.panning = panning;
 		audio->tracks[0].noteEvents->note.timbre = timbre;
-		audio->keySignature = C_MAJOR;
+		audio->keySignature = LB_KEY_SIGNATURE_C_MAJOR;
 		audio->loopCount = 0;
-		audio->loopTimestamp_s = 0.0;
+		audio->loopTimestamp = 0.0;
 		audio->lyricsEventCount = 0;
 		audio->tempoEventCount = 0;
-		audio->timeLength_s = duration;
+		audio->timeLength = duration;
 		audio->timeSignature[0] = 4;
 		audio->timeSignature[1] = 4;
 		lb_addLibrettiToCallback(libretti);
@@ -292,59 +292,59 @@ Libretti* lb_play_note_for(
 	return libretti;
 }
 
-Libretti* lb_play_note(
-	uint16_t keyFrequency,
+lb_Libretti* lb_play_note(
+	uint16_t key,
 	uint16_t dynamic,
 	uint8_t panning,
 	uint8_t timbre)
 {
 	return lb_play_note_for(
-		keyFrequency,
+		key,
 		dynamic,
 		panning,
 		timbre,
-		LB_NORMAL,
+		LB_ARTICULATION_NORMAL,
 		INFINITY);
 }
 
-Libretti* lb_play_simple_note_for(
-	uint16_t keyFrequency,
+lb_Libretti* lb_play_simple_note_for(
+	uint16_t key,
 	uint16_t dynamic,
 	float duration)
 {
 	return lb_play_note_for(
-		keyFrequency,
+		key,
 		dynamic,
-		LB_CENTRE,
-		LB_SQUARE_WAVE,
-		LB_NORMAL,
+		LB_PANNING_CENTRE,
+		LB_TIMBRE_SQUARE_WAVE,
+		LB_ARTICULATION_NORMAL,
 		duration);
 }
 
-Libretti* lb_play_simple_note(
-	uint16_t keyFrequency,
+lb_Libretti* lb_play_simple_note(
+	uint16_t key,
 	uint16_t dynamic)
 {
 	return lb_play_simple_note_for(
-		keyFrequency,
+		key,
 		dynamic,
 		INFINITY);
 }
 
-void lb_pause(Libretti* libretti)
+void lb_pause(lb_Libretti* libretti)
 {
-	libretti->runtime->playStates &= ~IS_PLAYING;
+	libretti->runtime->playStates &= ~LB_RUNTIME_STATE_IS_PLAYING;
 	SDL_PauseAudioDevice(libretti->runtime->device, true);
 }
 
-void lb_reset(Libretti* libretti)
+void lb_reset(lb_Libretti* libretti)
 {
-	libretti->runtime->currentPlayTime_s = 0.0;
+	libretti->runtime->currentPlayTime = 0.0;
 	for (int i = 0; i < MAX_TRACKS; i++)
 		libretti->runtime->trackNoteIndices[i] = 0;
 }
 
-void lb_stop(Libretti* libretti)
+void lb_stop(lb_Libretti* libretti)
 {
 	lb_reset(libretti);
 	lb_pause(libretti);
@@ -374,9 +374,9 @@ void lb_stopAll()
 		lb_stop(callbackList->librettiList[i]);
 }
 
-lb_Binary_s16* lb_getAudioCaptureStreamBuffer()
+lb_BinaryS16* lb_getAudioCaptureStreamBuffer()
 {
-	lb_Binary_s16* binary = calloc(1, sizeof *binary);
+	lb_BinaryS16* binary = calloc(1, sizeof *binary);
 	if (binary != NULL)
 	{
 		binary->size = SAMPLE_SIZE;
@@ -386,22 +386,22 @@ lb_Binary_s16* lb_getAudioCaptureStreamBuffer()
 	return binary;
 }
 
-void lb_saveBinaryU8ToFile(lb_Binary_u8* binary, const char* filename)
+void lb_saveBinaryU8ToFile(lb_BinaryU8* binary, const char* filename)
 {
 	saveBinaryU8ToFile(binary, (char*)filename);
 }
 
-void lb_saveBinaryS16ToFile(lb_Binary_s16* binary, const char* filename)
+void lb_saveBinaryS16ToFile(lb_BinaryS16* binary, const char* filename)
 {
 	saveBinaryS16ToFile(binary, (char*)filename);
 }
 
-void lb_appendBinaryU8ToFile(lb_Binary_u8* binary, const char* filename)
+void lb_appendBinaryU8ToFile(lb_BinaryU8* binary, const char* filename)
 {
 	appendBinaryU8ToFile(binary, (char*)filename);
 }
 
-void lb_appendBinaryS16ToFile(lb_Binary_s16* binary, const char* filename)
+void lb_appendBinaryS16ToFile(lb_BinaryS16* binary, const char* filename)
 {
 	appendBinaryS16ToFile(binary, (char*)filename);
 }
@@ -410,7 +410,7 @@ void lb_exportAudioToWAV(lb_Audio* audio, const char* name)
 {
 	lb_Runtime* exportRuntime = lb_createRuntime();
 	lb_NoteWaves* exportNoteWaves = lb_createNoteWaves();
-	lb_Binary_s16 exportBinary;
+	lb_BinaryS16 exportBinary;
 
 	int maxNoteCount = 0;
 
@@ -422,7 +422,7 @@ void lb_exportAudioToWAV(lb_Audio* audio, const char* name)
 	exportBinary.data = calloc(streamLength, sizeof(int16_t));
 
 	/*Building the export binary stream*/
-	while (!(exportRuntime->playStates & PLAYED_AT_LEAST_ONCE))
+	while (!(exportRuntime->playStates & LB_RUNTIME_STATE_PLAYED_AT_LEAST_ONCE))
 	{
 		int streamPosition = 0;
 		lb_updateNoteWavesFromAudio(exportNoteWaves, audio, exportRuntime);
@@ -431,7 +431,7 @@ void lb_exportAudioToWAV(lb_Audio* audio, const char* name)
 			exportBinary.data[streamPosition] += exportNoteWaves->streams[0][i];
 			streamPosition++;
 		}
-		exportRuntime->currentPlayTime_s += 17.0 / 1000.0;
+		exportRuntime->currentPlayTime += 17.0 / 1000.0;
 	}
 
 
@@ -461,7 +461,7 @@ void lb_freeAudio(lb_Audio* audio)
 	free(audio);
 }
 
-void lb_freeLibretti(Libretti* libretti)
+void lb_freeLibretti(lb_Libretti* libretti)
 {
 	lb_freeRuntime(libretti->runtime);
 	lb_freeNoteWaves(libretti->noteWaves);

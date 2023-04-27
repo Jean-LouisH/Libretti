@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 	SDL_ShowWindow(appWindow.getSDLWindow());
 #if !RECORD_TEST
 	lb_initialize();
-	Libretti* libretti = lb_createAndAddLibrettiToCallback(fileName.c_str());
+	lb_Libretti* libretti = lb_createAndAddLibrettiToCallback(fileName.c_str());
 #else
 	lb_Binary_s16* binary = lb_captureAudio();
 
