@@ -101,7 +101,7 @@ extern "C"
 	/*Allows the Libretti's runtime to increment time.*/
 	LIBRETTI_API void lb_play(Libretti* libretti);
 
-	LIBRETTI_API Libretti* lb_play_key(uint16_t keyFrequency, float duration);
+	LIBRETTI_API Libretti* lb_play_key_for(uint16_t keyFrequency, float duration);
 
 	/*Stops the Libretti's runtime from incrementing time.*/
 	LIBRETTI_API void lb_pause(Libretti* libretti);

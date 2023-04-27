@@ -256,7 +256,7 @@ void lb_play(Libretti* libretti)
 	SDL_PauseAudioDevice(libretti->runtime->device, false);
 }
 
-Libretti* lb_play_key(uint16_t keyFrequency, float duration)
+Libretti* lb_play_key_for(uint16_t keyFrequency, float duration)
 {
 	Libretti* libretti = lb_createEmptyLibretti();
 	lb_Audio* audio = libretti->audio;
