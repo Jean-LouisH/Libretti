@@ -101,7 +101,49 @@ extern "C"
 	/*Allows the Libretti's runtime to increment time.*/
 	LIBRETTI_API void lb_play(Libretti* libretti);
 
-	LIBRETTI_API Libretti* lb_play_key_for(uint16_t keyFrequency, float duration);
+	/*Plays a sound in the WaveformGenerator until the duration is reached.
+	 * keyFrequency - the tone of the note
+	 * dynamic		- the volume or amplitude of the note
+	 * panning		- the direction of the audio in the L/R speaker configuration
+	 * timbre		- the type of instrument used to render the sound
+	 * articulation	- the manner in which the key is released.
+	 * Each parameter must be selected from its corresponding enum*/
+	LIBRETTI_API Libretti* lb_play_note_for(
+		uint16_t keyFrequency,
+		uint16_t dynamic,
+		uint8_t panning,
+		uint8_t timbre,
+		uint8_t articulation,
+		float duration);
+
+	/*Infinitely plays a sound in the WaveformGenerator.
+	 * keyFrequency - the tone of the note
+	 * dynamic		- the volume or amplitude of the note
+	 * panning		- the direction of the audio in the L/R speaker configuration
+	 * timbre		- the type of instrument used to render the sound
+	 * Each parameter must be selected from its corresponding enum*/
+	LIBRETTI_API Libretti* lb_play_note(
+		uint16_t keyFrequency,
+		uint16_t dynamic,
+		uint8_t panning,
+		uint8_t timbre);
+
+	/*Plays a sound with the minimal amount of info needed for most common case
+	 * keyFrequency - the tone of the note
+	 * dynamic		- the volume or amplitude of the note
+	 * Each parameter must be selected from its corresponding enum*/
+	LIBRETTI_API Libretti* lb_play_simple_note_for(
+		uint16_t keyFrequency,
+		uint16_t dynamic,
+		float duration);
+
+	/*Infinitely plays a sound with the minimal amount of info needed for most common case
+	 * keyFrequency - the tone of the note
+	 * dynamic		- the volume or amplitude of the note
+	 * Each parameter must be selected from its corresponding enum*/
+	LIBRETTI_API Libretti* lb_play_simple_note(
+		uint16_t keyFrequency,
+		uint16_t dynamic);
 
 	/*Stops the Libretti's runtime from incrementing time.*/
 	LIBRETTI_API void lb_pause(Libretti* libretti);

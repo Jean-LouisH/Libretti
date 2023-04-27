@@ -256,7 +256,13 @@ void lb_play(Libretti* libretti)
 	SDL_PauseAudioDevice(libretti->runtime->device, false);
 }
 
-Libretti* lb_play_key_for(uint16_t keyFrequency, float duration)
+Libretti* lb_play_note_for(
+	uint16_t keyFrequency,
+	uint16_t dynamic,
+	uint8_t panning,
+	uint8_t timbre,
+	uint8_t articulation,
+	float duration)
 {
 	Libretti* libretti = lb_createEmptyLibretti();
 	lb_Audio* audio = libretti->audio;
@@ -267,11 +273,11 @@ Libretti* lb_play_key_for(uint16_t keyFrequency, float duration)
 	{
 		audio->tracks[0].noteCount = 1;
 		audio->tracks[0].noteEvents->startTime_s = 0.0;
-		audio->tracks[0].noteEvents->note.amplitude = LB_MF;
-		audio->tracks[0].noteEvents->note.articulation = LB_NORMAL;
+		audio->tracks[0].noteEvents->note.amplitude = dynamic;
+		audio->tracks[0].noteEvents->note.articulation = articulation;
 		audio->tracks[0].noteEvents->note.frequency_Hz = keyFrequency;
-		audio->tracks[0].noteEvents->note.panning = LB_CENTRE;
-		audio->tracks[0].noteEvents->note.timbre = LB_SQUARE_WAVE;
+		audio->tracks[0].noteEvents->note.panning = panning;
+		audio->tracks[0].noteEvents->note.timbre = timbre;
 		audio->keySignature = C_MAJOR;
 		audio->loopCount = 0;
 		audio->loopTimestamp_s = 0.0;
@@ -284,6 +290,45 @@ Libretti* lb_play_key_for(uint16_t keyFrequency, float duration)
 	}
 
 	return libretti;
+}
+
+Libretti* lb_play_note(
+	uint16_t keyFrequency,
+	uint16_t dynamic,
+	uint8_t panning,
+	uint8_t timbre)
+{
+	return lb_play_note_for(
+		keyFrequency,
+		dynamic,
+		panning,
+		timbre,
+		LB_NORMAL,
+		INFINITY);
+}
+
+Libretti* lb_play_simple_note_for(
+	uint16_t keyFrequency,
+	uint16_t dynamic,
+	float duration)
+{
+	return lb_play_note_for(
+		keyFrequency,
+		dynamic,
+		LB_CENTRE,
+		LB_SQUARE_WAVE,
+		LB_NORMAL,
+		duration);
+}
+
+Libretti* lb_play_simple_note(
+	uint16_t keyFrequency,
+	uint16_t dynamic)
+{
+	return lb_play_simple_note_for(
+		keyFrequency,
+		dynamic,
+		INFINITY);
 }
 
 void lb_pause(Libretti* libretti)
