@@ -148,8 +148,10 @@ int validateScript(char* script)
 				if (beatsInABar != 0)
 					if (round(beatsInABar) != timeSigUpper)
 					{
-						printf("Error 0x%X: \tBEATS_DO_NOT_MATCH_TIME_SIG at position %d, line %d, column %d.\n",
+						printf("Error 0x%X: \tBEATS_DO_NOT_MATCH_TIME_SIG %d != %d at position %d, line %d, column %d.\n",
 							LB_VALIDATION_BEATS_DO_NOT_MATCH_TIME_SIG,
+							beatsInABar,
+							timeSigUpper,
 							readPosition,
 							linePosition,
 							columnPosition);
@@ -390,8 +392,9 @@ int validateScript(char* script)
 				unclosedTrackScopes--;
 				if (octave < 1 || octave > 7)
 				{
-					printf("Error 0x%X: \tOCTAVE_SHIFTS_OUT_OF_RANGE at position %d, line %d, column %d.\n",
+					printf("Error 0x%X: \tOCTAVE_SHIFTS_OUT_OF_RANGE %d at position %d, line %d, column %d.\n",
 						LB_VALIDATION_OCTAVE_SHIFTS_OUT_OF_RANGE,
+						octave,
 						readPosition,
 						linePosition,
 						columnPosition);
@@ -401,8 +404,10 @@ int validateScript(char* script)
 				if (previousBarCount != 0)
 					if (currentBarCount != previousBarCount)
 					{
-						printf("Error 0x%X: \tBAR_COUNTS_DO_NOT_MATCH at position %d, line %d, column %d.\n",
+						printf("Error 0x%X: \tBAR_COUNTS_DO_NOT_MATCH %d != %d at position %d, line %d, column %d.\n",
 							LB_VALIDATION_BAR_COUNTS_DO_NOT_MATCH,
+							currentBarCount,
+							previousBarCount,
 							readPosition,
 							linePosition,
 							columnPosition);
@@ -508,35 +513,39 @@ int validateScript(char* script)
 
 	if (timeSigLower == 0 || timeSigUpper == 0)
 	{
-		printf("Error 0x%X: \tINVALID_TIME_SIG_PROVIDED.\n",
+		printf("Error 0x%X: \tINVALID_TIME_SIG_PROVIDED. %d/%d \n",
+			timeSigLower,
+			timeSigUpper,
 			LB_VALIDATION_INVALID_TIME_SIG_PROVIDED);
 		validationStatuses |= LB_VALIDATION_INVALID_TIME_SIG_PROVIDED;
 	}
 
 	if (trackScopeCount > MAX_TRACKS)
 	{
-		printf("Error 0x%X: \tTRACK_SCOPE_COUNT_EXCEEDS_MAXIMUM.\n",
+		printf("Error 0x%X: \tTRACK_SCOPE_COUNT_EXCEEDS_MAXIMUM. %d > %d\n",
+			trackScopeCount,
+			MAX_TRACKS,
 			LB_VALIDATION_TRACK_SCOPE_COUNT_EXCEEDS_MAXIMUM);
 		validationStatuses |= LB_VALIDATION_TRACK_SCOPE_COUNT_EXCEEDS_MAXIMUM;
 	}
 
 	else if (trackScopeCount < 1)
 	{
-		printf("Error 0x%X: \tNO_TRACK_SCOPE_DETECTED.\n",
+		printf("Error 0x%X: \tNO_TRACK_SCOPE_DETECTED -> '{ }'.\n",
 			LB_VALIDATION_NO_TRACK_SCOPE_DETECTED);
 		validationStatuses |= LB_VALIDATION_NO_TRACK_SCOPE_DETECTED;
 	}
 
 	if (unclosedTrackScopes > 0)
 	{
-		printf("Error 0x%X: \tUNCLOSED_TRACK_SCOPE.\n",
+		printf("Error 0x%X: \tUNCLOSED_TRACK_SCOPE -> '{'.\n",
 			LB_VALIDATION_UNCLOSED_TRACK_SCOPE);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_TRACK_SCOPE;
 	}
 
 	else if (unclosedTrackScopes < 0)
 	{
-		printf("Error 0x%X: \tEXTRA_TRACK_SCOPE_CLOSED_BRACKET.\n",
+		printf("Error 0x%X: \tEXTRA_TRACK_SCOPE_CLOSED_BRACKET -> '}'.\n",
 			LB_VALIDATION_EXTRA_TRACK_SCOPE_CLOSED_BRACKET);
 		validationStatuses |= LB_VALIDATION_EXTRA_TRACK_SCOPE_CLOSED_BRACKET;
 	}
@@ -544,14 +553,14 @@ int validateScript(char* script)
 
 	if (unclosedHeaders > 0)
 	{
-		printf("Error 0x%X: \tUNCLOSED_HEADER_TAG.\n",
+		printf("Error 0x%X: \tUNCLOSED_HEADER_TAG -> '['.\n",
 			LB_VALIDATION_UNCLOSED_HEADER_TAG);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_HEADER_TAG;
 	}
 
 	else if (unclosedHeaders < 0)
 	{
-		printf("Error 0x%X: \tEXTRA_HEADER_TAG_CLOSED_BRACKET.\n",
+		printf("Error 0x%X: \tEXTRA_HEADER_TAG_CLOSED_BRACKET -> ']'.\n",
 			LB_VALIDATION_EXTRA_HEADER_TAG_CLOSED_BRACKET);
 		validationStatuses |= LB_VALIDATION_EXTRA_HEADER_TAG_CLOSED_BRACKET;
 	}
@@ -559,7 +568,7 @@ int validateScript(char* script)
 
 	if (slurIsUnclosed)
 	{
-		printf("Error 0x%X: \tUNCLOSED_SLUR.\n",
+		printf("Error 0x%X: \tUNCLOSED_SLUR -> '~'.\n",
 			LB_VALIDATION_UNCLOSED_SLUR);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_SLUR;
 	}
@@ -567,7 +576,7 @@ int validateScript(char* script)
 
 	if (tupletIsUnclosed)
 	{
-		printf("Error 0x%X: \tUNCLOSED_TUPLET.\n",
+		printf("Error 0x%X: \tUNCLOSED_TUPLET -> '_'.\n",
 			LB_VALIDATION_UNCLOSED_TUPLET);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_TUPLET;
 	}
@@ -575,7 +584,7 @@ int validateScript(char* script)
 
 	if (unclosedCrescendos > 0)
 	{
-		printf("Error 0x%X: \tUNCLOSED_CRESCENDO.\n",
+		printf("Error 0x%X: \tUNCLOSED_CRESCENDO -> '<<'.\n",
 			LB_VALIDATION_UNCLOSED_CRESCENDO);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_CRESCENDO;
 	}
@@ -583,7 +592,7 @@ int validateScript(char* script)
 
 	if (unclosedDiminuendos > 0)
 	{
-		printf("Error 0x%X: \tUNCLOSED_DIMINUENDO.\n",
+		printf("Error 0x%X: \tUNCLOSED_DIMINUENDO -> '>>'.\n",
 			LB_VALIDATION_UNCLOSED_DIMINUENDO);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_DIMINUENDO;
 	}
