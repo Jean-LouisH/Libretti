@@ -47,6 +47,5 @@ enum validationStatuses
 
 int validateScript(const char* script);
 bool validateSymbol(char symbol, uint8_t parseState);
-void printCompilationStatuses(int validationStatuses);
 
 #endif /*ScriptValidator_h*/
