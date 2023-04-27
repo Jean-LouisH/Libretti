@@ -13,6 +13,8 @@ int validateScript(char* script)
 {
 	int validationStatuses = LB_VALIDATION_ALL_OK;
 	int readPosition = 0;
+	int linePosition = 1;
+	int columnPosition = 1;
 	int trackScopeCount = 0;
 	int unclosedHeaders = 0;
 	int unclosedTrackScopes = 0;
@@ -52,10 +54,12 @@ int validateScript(char* script)
 		lb_appendString(&debug, symbol);
 		if (!validateSymbol(symbol, parseState))
 		{
-			printf("Code %d: \tLB_VALIDATION_INVALID_USE_OF_SYMBOL %c at position %d.\n", 
+			printf("Error 0x%X: \tINVALID_USE_OF_SYMBOL '%c' at position %d, line %d, column %d.\n", 
 				LB_VALIDATION_INVALID_USE_OF_SYMBOL, 
 				symbol,
-				readPosition);
+				readPosition,
+				linePosition,
+				columnPosition);
 			validationStatuses |= LB_VALIDATION_INVALID_USE_OF_SYMBOL;
 		}
 		else
@@ -144,9 +148,11 @@ int validateScript(char* script)
 				if (beatsInABar != 0)
 					if (round(beatsInABar) != timeSigUpper)
 					{
-						printf("Code %d: \tLB_VALIDATION_BEATS_DO_NOT_MATCH_TIME_SIG at position %d.\n",
+						printf("Error 0x%X: \tBEATS_DO_NOT_MATCH_TIME_SIG at position %d, line %d, column %d.\n",
 							LB_VALIDATION_BEATS_DO_NOT_MATCH_TIME_SIG,
-							readPosition);
+							readPosition,
+							linePosition,
+							columnPosition);
 						validationStatuses |= LB_VALIDATION_BEATS_DO_NOT_MATCH_TIME_SIG;
 					}
 				beatsInABar = 0;
@@ -177,9 +183,12 @@ int validateScript(char* script)
 					strcmp(header.data, "crossfading") != 0 &&
 					strcmp(header.data, "pitch blend") != 0)
 				{
-					printf("Code %d: \tLB_VALIDATION_UNEXPECTED_HEADER_NAME at position %d.\n",
+					printf("Error 0x%X: \tUNEXPECTED_HEADER_NAME '%s' at position %d, line %d, column %d.\n",
 						LB_VALIDATION_UNEXPECTED_HEADER_NAME,
-						readPosition);
+						header.data,
+						readPosition,
+						linePosition,
+						columnPosition);
 					validationStatuses |= LB_VALIDATION_UNEXPECTED_HEADER_NAME;
 				}
 				break;
@@ -238,9 +247,12 @@ int validateScript(char* script)
 						strcmp(value.data, "G minor") != 0 &&
 						strcmp(value.data, "D minor") != 0)
 					{
-						printf("Code %d: \tLB_VALIDATION_INVALID_KEY_SIG_PROVIDED at position %d.\n",
+						printf("Error 0x%X: \tINVALID_KEY_SIG_PROVIDED '%s' at position %d, line %d, column %d.\n",
 							LB_VALIDATION_INVALID_KEY_SIG_PROVIDED,
-							readPosition);
+							value.data,
+							readPosition,
+							linePosition,
+							columnPosition);
 						validationStatuses |= LB_VALIDATION_INVALID_KEY_SIG_PROVIDED;
 					}
 				}
@@ -256,9 +268,12 @@ int validateScript(char* script)
 							strcmp(value.data, "allegro") != 0 &&
 							strcmp(value.data, "presto") != 0)
 						{
-							printf("Code %d: \tLB_VALIDATION_INVALID_TEMPO_PROVIDED at position %d.\n",
+							printf("Error 0x%X: \tINVALID_TEMPO_PROVIDED '%s' at position %d, line %d, column %d.\n",
 								LB_VALIDATION_INVALID_TEMPO_PROVIDED,
-								readPosition);
+								value.data,
+								readPosition,
+								linePosition,
+								columnPosition);
 							validationStatuses |= LB_VALIDATION_INVALID_TEMPO_PROVIDED;
 						}
 					}
@@ -284,9 +299,12 @@ int validateScript(char* script)
 						strcat(filename.data, extension.data);
 						if (!exists(filename.data))
 						{
-							printf("Code %d: \tLB_VALIDATION_INVALID_TIMBRE at position %d.\n",
+							printf("Error 0x%X: \tINVALID_TIMBRE '%s' at position %d, line %d, column %d.\n",
 								LB_VALIDATION_INVALID_TIMBRE,
-								readPosition);
+								value.data,
+								readPosition,
+								linePosition,
+								columnPosition);
 							validationStatuses |= LB_VALIDATION_INVALID_TIMBRE;
 						}
 					}
@@ -299,9 +317,12 @@ int validateScript(char* script)
 						if (strcmp(value.data, "none") != 0 &&
 							strcmp(value.data, "infinity") != 0)
 						{
-							printf("Code %d: \tLB_VALIDATION_INVALID_LOOP_VALUE at position %d.\n",
+							printf("Error 0x%X: \tINVALID_LOOP_VALUE '%s' at position %d, line %d, column %d.\n",
 								LB_VALIDATION_INVALID_LOOP_VALUE,
-								readPosition);
+								value.data,
+								readPosition,
+								linePosition,
+								columnPosition);
 							validationStatuses |= LB_VALIDATION_INVALID_LOOP_VALUE;
 						}
 					}
@@ -317,9 +338,12 @@ int validateScript(char* script)
 						strcmp(value.data, "ff") != 0 &&
 						strcmp(value.data, "fff") != 0)
 					{
-						printf("Code %d: \tLB_VALIDATION_INVALID_DYNAMICS_VALUE at position %d.\n",
+						printf("Error 0x%X: \tINVALID_DYNAMICS_VALUE '%s' at position %d, line %d, column %d.\n",
 							LB_VALIDATION_INVALID_DYNAMICS_VALUE,
-							readPosition);
+							value.data,
+							readPosition,
+							linePosition,
+							columnPosition);
 						validationStatuses |= LB_VALIDATION_INVALID_DYNAMICS_VALUE;
 					}
 				}
@@ -338,17 +362,23 @@ int validateScript(char* script)
 							strcmp(value.data, "right") != 0 &&
 							strcmp(value.data, "far right") != 0)
 						{
-							printf("Code %d: \tLB_VALIDATION_INVALID_PANNING_VALUE at position %d.\n",
+							printf("Error 0x%X: \tINVALID_PANNING_VALUE '%s' at position %d, line %d, column %d.\n",
 								LB_VALIDATION_INVALID_PANNING_VALUE,
-								readPosition);
+								value.data,
+								readPosition,
+								linePosition,
+								columnPosition);
 							validationStatuses |= LB_VALIDATION_INVALID_PANNING_VALUE;
 						}
 					}
 					else if (panning < -1.0 && panning > 1.0)
 					{
-						printf("Code %d: \tLB_VALIDATION_INVALID_PANNING_VALUE at position %d.\n",
+						printf("Error 0x%X: \tINVALID_PANNING_VALUE '%s' at position %d, line %d, column %d.\n",
 							LB_VALIDATION_INVALID_PANNING_VALUE,
-							readPosition);
+							value.data,
+							readPosition,
+							linePosition,
+							columnPosition);
 						validationStatuses |= LB_VALIDATION_INVALID_PANNING_VALUE;
 					}
 				}
@@ -360,18 +390,22 @@ int validateScript(char* script)
 				unclosedTrackScopes--;
 				if (octave < 1 || octave > 7)
 				{
-					printf("Code %d: \tLB_VALIDATION_OCTAVE_SHIFTS_OUT_OF_RANGE at position %d.\n",
+					printf("Error 0x%X: \tOCTAVE_SHIFTS_OUT_OF_RANGE at position %d, line %d, column %d.\n",
 						LB_VALIDATION_OCTAVE_SHIFTS_OUT_OF_RANGE,
-						readPosition);
+						readPosition,
+						linePosition,
+						columnPosition);
 					validationStatuses |= LB_VALIDATION_OCTAVE_SHIFTS_OUT_OF_RANGE;
 				}
 
 				if (previousBarCount != 0)
 					if (currentBarCount != previousBarCount)
 					{
-						printf("Code %d: \tLB_VALIDATION_BAR_COUNTS_DO_NOT_MATCH at position %d.\n",
+						printf("Error 0x%X: \tBAR_COUNTS_DO_NOT_MATCH at position %d, line %d, column %d.\n",
 							LB_VALIDATION_BAR_COUNTS_DO_NOT_MATCH,
-							readPosition);
+							readPosition,
+							linePosition,
+							columnPosition);
 						validationStatuses |= LB_VALIDATION_BAR_COUNTS_DO_NOT_MATCH;
 					}
 
@@ -385,6 +419,16 @@ int validateScript(char* script)
 				octave--;
 				break;
 			default:
+				if (symbol == '\n')
+				{
+					linePosition++;
+					columnPosition = 0;
+				}
+				else if (symbol == '\r')
+				{
+					columnPosition = 0;
+				}
+
 				if (parseState == LB_PARSE_STATE_READING_HEADER)
 				{
 					lb_appendString(&header, script[readPosition]);
@@ -395,9 +439,11 @@ int validateScript(char* script)
 				}
 				else if (parseState == LB_PARSE_STATE_IGNORING_FIRST_SPACE_IN_VALUE)
 				{
-					printf("Code %d: \tLB_VALIDATION_EXPECTED_SPACE_BETWEEN_HEADER_AND_VALUE at position %d.\n",
+					printf("Error 0x%X: \tEXPECTED_SPACE_BETWEEN_HEADER_AND_VALUE at position %d, line %d, column %d.\n",
 						LB_VALIDATION_EXPECTED_SPACE_BETWEEN_HEADER_AND_VALUE,
-						readPosition);
+						readPosition,
+						linePosition,
+						columnPosition);
 					validationStatuses |= LB_VALIDATION_EXPECTED_SPACE_BETWEEN_HEADER_AND_VALUE;
 				}
 				else if (parseState == LB_PARSE_STATE_READING_TRACK_SCOPE)
@@ -457,108 +503,98 @@ int validateScript(char* script)
 		}
 
 		readPosition++;
+		columnPosition++;
 	} while (script[readPosition] != NULL);
 
 	if (timeSigLower == 0 || timeSigUpper == 0)
 	{
-		printf("Code %d: \tLB_VALIDATION_INVALID_TIME_SIG_PROVIDED at position %d.\n",
-			LB_VALIDATION_INVALID_TIME_SIG_PROVIDED,
-			readPosition);
+		printf("Error 0x%X: \tINVALID_TIME_SIG_PROVIDED.\n",
+			LB_VALIDATION_INVALID_TIME_SIG_PROVIDED);
 		validationStatuses |= LB_VALIDATION_INVALID_TIME_SIG_PROVIDED;
 	}
 
 	if (trackScopeCount > MAX_TRACKS)
 	{
-		printf("Code %d: \tLB_VALIDATION_TRACK_SCOPE_COUNT_EXCEEDS_MAXIMUM at position %d.\n",
-			LB_VALIDATION_TRACK_SCOPE_COUNT_EXCEEDS_MAXIMUM,
-			readPosition);
+		printf("Error 0x%X: \tTRACK_SCOPE_COUNT_EXCEEDS_MAXIMUM.\n",
+			LB_VALIDATION_TRACK_SCOPE_COUNT_EXCEEDS_MAXIMUM);
 		validationStatuses |= LB_VALIDATION_TRACK_SCOPE_COUNT_EXCEEDS_MAXIMUM;
 	}
 
 	else if (trackScopeCount < 1)
 	{
-		printf("Code %d: \tLB_VALIDATION_NO_TRACK_SCOPE_DETECTED at position %d.\n",
-			LB_VALIDATION_NO_TRACK_SCOPE_DETECTED,
-			readPosition);
+		printf("Error 0x%X: \tNO_TRACK_SCOPE_DETECTED.\n",
+			LB_VALIDATION_NO_TRACK_SCOPE_DETECTED);
 		validationStatuses |= LB_VALIDATION_NO_TRACK_SCOPE_DETECTED;
 	}
 
 	if (unclosedTrackScopes > 0)
 	{
-		printf("Code %d: \tLB_VALIDATION_UNCLOSED_TRACK_SCOPE at position %d.\n",
-			LB_VALIDATION_UNCLOSED_TRACK_SCOPE,
-			readPosition);
+		printf("Error 0x%X: \tUNCLOSED_TRACK_SCOPE.\n",
+			LB_VALIDATION_UNCLOSED_TRACK_SCOPE);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_TRACK_SCOPE;
 	}
 
 	else if (unclosedTrackScopes < 0)
 	{
-		printf("Code %d: \tLB_VALIDATION_EXTRA_TRACK_SCOPE_CLOSED_BRACKET at position %d.\n",
-			LB_VALIDATION_EXTRA_TRACK_SCOPE_CLOSED_BRACKET,
-			readPosition);
+		printf("Error 0x%X: \tEXTRA_TRACK_SCOPE_CLOSED_BRACKET.\n",
+			LB_VALIDATION_EXTRA_TRACK_SCOPE_CLOSED_BRACKET);
 		validationStatuses |= LB_VALIDATION_EXTRA_TRACK_SCOPE_CLOSED_BRACKET;
 	}
 
 
 	if (unclosedHeaders > 0)
 	{
-		printf("Code %d: \tLB_VALIDATION_UNCLOSED_HEADER_TAG at position %d.\n",
-			LB_VALIDATION_UNCLOSED_HEADER_TAG,
-			readPosition);
+		printf("Error 0x%X: \tUNCLOSED_HEADER_TAG.\n",
+			LB_VALIDATION_UNCLOSED_HEADER_TAG);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_HEADER_TAG;
 	}
 
 	else if (unclosedHeaders < 0)
 	{
-		printf("Code %d: \tLB_VALIDATION_EXTRA_HEADER_TAG_CLOSED_BRACKET at position %d.\n",
-			LB_VALIDATION_EXTRA_HEADER_TAG_CLOSED_BRACKET,
-			readPosition);
+		printf("Error 0x%X: \tEXTRA_HEADER_TAG_CLOSED_BRACKET.\n",
+			LB_VALIDATION_EXTRA_HEADER_TAG_CLOSED_BRACKET);
 		validationStatuses |= LB_VALIDATION_EXTRA_HEADER_TAG_CLOSED_BRACKET;
 	}
 
 
 	if (slurIsUnclosed)
 	{
-		printf("Code %d: \tLB_VALIDATION_UNCLOSED_SLUR at position %d.\n",
-			LB_VALIDATION_UNCLOSED_SLUR,
-			readPosition);
+		printf("Error 0x%X: \tUNCLOSED_SLUR.\n",
+			LB_VALIDATION_UNCLOSED_SLUR);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_SLUR;
 	}
 
 
 	if (tupletIsUnclosed)
 	{
-		printf("Code %d: \tLB_VALIDATION_UNCLOSED_TUPLET at position %d.\n",
-			LB_VALIDATION_UNCLOSED_TUPLET,
-			readPosition);
+		printf("Error 0x%X: \tUNCLOSED_TUPLET.\n",
+			LB_VALIDATION_UNCLOSED_TUPLET);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_TUPLET;
 	}
 
 
 	if (unclosedCrescendos > 0)
 	{
-		printf("Code %d: \tLB_VALIDATION_UNCLOSED_CRESCENDO at position %d.\n",
-			LB_VALIDATION_UNCLOSED_CRESCENDO,
-			readPosition);
+		printf("Error 0x%X: \tUNCLOSED_CRESCENDO.\n",
+			LB_VALIDATION_UNCLOSED_CRESCENDO);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_CRESCENDO;
 	}
 
 
 	if (unclosedDiminuendos > 0)
 	{
-		printf("Code %d: \tLB_VALIDATION_UNCLOSED_DIMINUENDO at position %d.\n",
-			LB_VALIDATION_UNCLOSED_DIMINUENDO,
-			readPosition);
+		printf("Error 0x%X: \tUNCLOSED_DIMINUENDO.\n",
+			LB_VALIDATION_UNCLOSED_DIMINUENDO);
 		validationStatuses |= LB_VALIDATION_UNCLOSED_DIMINUENDO;
 	}
 
 	if (validationStatuses == LB_VALIDATION_ALL_OK)
 	{
-		printf("Code %d: ALL_OK, Successfully passed validation.\n", LB_VALIDATION_ALL_OK);
+		printf("No Errors: ALL_OK, Successfully passed validation.\n", LB_VALIDATION_ALL_OK);
 	}
 	else
 	{
-		printf("^Errors detected in parsing script.");
+		printf("\n^Errors detected in parsing script.\n");
 	}
 
 	lb_freeString(&header);
