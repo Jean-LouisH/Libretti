@@ -185,8 +185,8 @@ extern "C"
 	/*Appends a file streamed in signed 16-bits.*/
 	LIBRETTI_API void lb_appendBinaryS16ToFile(lb_BinaryS16* binary, const char* filename);
 
-	/*Decodes an audio struct to a PCM stream and encodes it in WAV file format.*/
-	LIBRETTI_API void lb_exportAudioToWAV(lb_Audio* audio, const char* name);
+	/*Decodes an audio struct to a PCM stream.*/
+	LIBRETTI_API lb_BinaryS16 lb_getSpectrumData(lb_Audio* audio);
 
 	/*Deletes runtime memory allocation.*/
 	LIBRETTI_API void lb_freeRuntime(lb_Runtime* runtime);

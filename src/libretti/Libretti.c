@@ -470,37 +470,38 @@ void lb_appendBinaryS16ToFile(lb_BinaryS16* binary, const char* filename)
 	appendBinaryS16ToFile(binary, (char*)filename);
 }
 
-void lb_exportAudioToWAV(lb_Audio* audio, const char* name)
+lb_BinaryS16 lb_getSpectrumData(lb_Audio* audio)
 {
-	lb_Runtime* exportRuntime = lb_createRuntime();
-	lb_NoteWaves* exportNoteWaves = lb_createNoteWaves();
-	lb_BinaryS16 exportBinary;
+	lb_Runtime* runtime = lb_createRuntime();
+	lb_NoteWaves* noteWaves = lb_createNoteWaves();
+	lb_BinaryS16 spectrum;
 
 	int maxNoteCount = 0;
 
+	/* For now, with only single track support,
+	 * get the longest track, which is likely where the 
+	 * melody is located. */
 	for (int i = 0; i < audio->trackCount; i++)
 		if (audio->tracks[i].noteCount > maxNoteCount)
 			maxNoteCount = audio->tracks[i].noteCount;
 
 	int streamLength = maxNoteCount * SAMPLE_SIZE;
-	exportBinary.data = calloc(streamLength, sizeof(int16_t));
+	spectrum.data = calloc(streamLength, sizeof(int16_t));
 
 	/*Building the export binary stream*/
-	while (!(exportRuntime->playStates & LB_RUNTIME_STATE_PLAYED_AT_LEAST_ONCE))
+	while (!(runtime->playStates & LB_RUNTIME_STATE_PLAYED_AT_LEAST_ONCE))
 	{
 		int streamPosition = 0;
-		lb_updateNoteWavesFromAudio(exportNoteWaves, audio, exportRuntime);
+		lb_updateNoteWavesFromAudio(noteWaves, audio, runtime);
 		for (int i = 0; i < SAMPLE_SIZE; i++)
 		{
-			exportBinary.data[streamPosition] += exportNoteWaves->streams[0][i];
+			spectrum.data[streamPosition] += noteWaves->streams[0][i];
 			streamPosition++;
 		}
-		exportRuntime->currentPlayTime += 17.0 / 1000.0;
+		runtime->currentPlayTime += 17.0 / 1000.0;
 	}
 
-
-	/*Exporting to WAV file*/
-
+	return spectrum;
 }
 
 void lb_freeRuntime(lb_Runtime* runtime)
