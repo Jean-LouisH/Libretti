@@ -9,17 +9,17 @@
 * Copyright (c) 2017-2021 Jean-Louis Haywood. All rights reserved.
 */
 
-#ifndef Runtime_h
-#define Runtime_h
+#ifndef Playback_h
+#define Playback_h
 
 #include <stdint.h>
 #include "UserEffectsOverride.h"
 #include <SDL_audio.h>
 
-enum states
+enum States
 {
-	LB_RUNTIME_STATE_IS_PLAYING = 1 << 0,
-	LB_RUNTIME_STATE_PLAYED_AT_LEAST_ONCE = 1 << 1
+	LB_PLAYBACK_STATE_IS_PLAYING = 1 << 0,
+	LB_PLAYBACK_STATE_PLAYED_AT_LEAST_ONCE = 1 << 1
 };
 
 typedef struct
@@ -30,6 +30,6 @@ typedef struct
 	uint8_t playStates;
 	uint16_t currentLoopCount;
 	lb_UserEffectsOverride userEffectsOverride;
-}lb_Runtime;
+}lb_Playback;
 
-#endif /*Runtime_h*/
+#endif /*Playback_h*/

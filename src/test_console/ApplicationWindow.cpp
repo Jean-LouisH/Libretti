@@ -65,7 +65,7 @@ bool ApplicationWindow::handleEvents(lb_Libretti* libretti)
 			}
 			else if (SDLEvents.key.keysym.sym == SDLK_p)
 			{
-				if (libretti->runtime->playStates & LB_RUNTIME_STATE_IS_PLAYING)
+				if (libretti->playback->playStates & LB_PLAYBACK_STATE_IS_PLAYING)
 				{
 					lb_pause(libretti);
 				}

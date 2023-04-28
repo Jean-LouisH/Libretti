@@ -11,7 +11,6 @@
 #define Contants_h
 
 #define MAX_TRACKS 24
-#define MAX_LIBRETTIS 16
 
 #define CHANNELS 6	//front-left, front-right, center, low-freq, rear-left, rear-right
 #define MAX_FPS 60

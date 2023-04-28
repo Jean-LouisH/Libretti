@@ -9,8 +9,8 @@
 * Copyright (c) 2017-2021 Jean-Louis Haywood. All rights reserved.
 */
 
-#ifndef Audio_h
-#define Audio_h
+#ifndef Composition_h
+#define Composition_h
 
 #include "Constants.h"
 #include "Events.h"
@@ -32,6 +32,6 @@ typedef struct
 	char artist[32];
 	uint8_t keySignature;
 	uint8_t timeSignature[2]; //[0] = numerator, [1] = denominator
-}lb_Audio;
+}lb_Composition;
 
-#endif /*Audio_h*/
+#endif /*Composition_h*/

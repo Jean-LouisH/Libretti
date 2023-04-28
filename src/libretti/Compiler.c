@@ -11,12 +11,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-void compileAudioFromScript(lb_Audio* audio, const char* script)
+void compileCompositionFromScript(lb_Composition* audio, const char* script)
 {
 	if (validateScript(script) == LB_VALIDATION_ALL_OK)
 	{
 		allocateMemory(audio, script);
-		buildAudioData(audio, script);
+		buildCompositionData(audio, script);
 	}
 	else
 	{
@@ -24,7 +24,7 @@ void compileAudioFromScript(lb_Audio* audio, const char* script)
 	}
 }
 
-void allocateMemory(lb_Audio* audio, const char* script)
+void allocateMemory(lb_Composition* audio, const char* script)
 {
 	int readPosition = 0;
 	int currentTrack = -1;
@@ -89,7 +89,7 @@ void allocateMemory(lb_Audio* audio, const char* script)
 	lb_freeString(&header);
 }
 
-void buildAudioData(lb_Audio* audio, const char* script)
+void buildCompositionData(lb_Composition* audio, const char* script)
 {
 	uint32_t readPosition = 0;
 	uint32_t currentNote = 0;

@@ -89,12 +89,12 @@ void runCallbackPlay(void* userdata, Uint8* stream, int byteLength)
 			lb_Libretti* libretti = callbackList->librettiList[i];
 
 			if (libretti != NULL &&
-				libretti->audio != NULL &&
+				libretti->composition != NULL &&
 				libretti->noteWaves != NULL &&
-				libretti->runtime != NULL &&
-				libretti->audio->trackCount > 0)
+				libretti->playback != NULL &&
+				libretti->composition->trackCount > 0)
 			{
-				lb_updateNoteWavesFromAudio(libretti->noteWaves, libretti->audio, libretti->runtime);
+				lb_updateNoteWavesFromComposition(libretti->noteWaves, libretti->composition, libretti->playback);
 				interleaveNoteWavesToStream(playbackStream, libretti->noteWaves);
 			}
 		}
