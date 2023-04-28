@@ -42,6 +42,7 @@ extern "C"
 		lb_Audio* audio;
 		lb_NoteWaves* noteWaves;
 		lb_Runtime* runtime;
+		int id;
 	}lb_Libretti;
 
 	/*Allocates and returns a Libretti without adding to callback. */
@@ -67,6 +68,9 @@ extern "C"
 
 	/*Updates the global callback list to playback Libretti simultaneously.*/
 	LIBRETTI_API void lb_addLibrettiToCallback(lb_Libretti* libretti);
+
+	/*Removes an active Libretti from the callback using its ID.*/
+	LIBRETTI_API void lb_removeLibrettiFromCallback(int librettiID);
 
 	/*Allocates and returns a Libretti with the global callback list updated.*/
 	LIBRETTI_API lb_Libretti* lb_createAndAddLibrettiToCallback(const char* filename);

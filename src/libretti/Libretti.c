@@ -9,14 +9,25 @@
 #include "include/CallbackList.h"
 #include "include/WaveformGenerator.h"
 
-static CallbackList* callbackList;
+static CallbackList* g_callbackList = NULL;
+static int g_librettiIDCount = -1;
 
 void lb_initialize()
 {
-	if (callbackList == NULL)
+	if (g_callbackList == NULL)
 	{
-		callbackList = calloc(1, sizeof(CallbackList));
-		initAudioPlayback(callbackList);
+		g_callbackList = calloc(1, sizeof(CallbackList));
+		if (g_callbackList != NULL)
+		{
+			g_librettiIDCount = 0;
+			g_callbackList->capacity = 2;
+			g_callbackList->librettiList = calloc(g_callbackList->capacity, sizeof(lb_Libretti*));
+			initAudioPlayback(g_callbackList);
+		}
+		else
+		{
+			g_librettiIDCount = -1;
+		}
 	}
 }
 
@@ -28,6 +39,11 @@ lb_Libretti* lb_createLibretti(const char* filename)
 		libretti->audio = lb_createAudio(filename);
 		libretti->noteWaves = lb_createNoteWaves();
 		libretti->runtime = lb_createRuntime();
+		if (g_librettiIDCount != -1)
+		{
+			libretti->id = g_librettiIDCount;
+			g_librettiIDCount++;
+		}
 	}
 	return libretti;
 }
@@ -40,6 +56,11 @@ lb_Libretti* lb_createEmptyLibretti()
 		libretti->audio = lb_createEmptyAudio();
 		libretti->noteWaves = lb_createNoteWaves();
 		libretti->runtime = lb_createRuntime();
+		if (g_librettiIDCount != -1)
+		{
+			libretti->id = g_librettiIDCount;
+			g_librettiIDCount++;
+		}
 	}
 	return libretti;
 }
@@ -69,17 +90,60 @@ lb_Runtime* lb_createRuntime()
 
 void lb_addLibrettiToCallback(lb_Libretti* libretti)
 {
-	if (callbackList != NULL)
+	if (g_callbackList != NULL)
 	{
-		libretti->runtime->device = callbackList->device;
+		libretti->runtime->device = g_callbackList->device;
 		libretti->runtime->playStates = 0;
 		libretti->runtime->currentLoopCount = 0;
 		libretti->runtime->userEffectsOverride.outputVolume = 1.0;
 		libretti->runtime->userEffectsOverride.outputPanning = 0.0;
 		lb_reset(libretti);
 		lb_play(libretti);
-		callbackList->librettiList[callbackList->size] = libretti;
-		callbackList->size++;
+
+		/* Expand the CallbackList when it gets full.*/
+		if (g_callbackList->size == g_callbackList->capacity - 1)
+		{
+			int newCapacity = g_callbackList->capacity * 2;
+			g_callbackList->librettiList = realloc(g_callbackList->librettiList, newCapacity * sizeof(lb_Libretti*));
+			if (g_callbackList->librettiList != NULL)
+				g_callbackList->capacity = newCapacity;
+		}
+
+		/* If the capacity expansion were successful, add the Libretti
+		 * to the end of the list.*/
+		if (g_callbackList->size < g_callbackList->capacity - 1)
+		{
+			g_callbackList->librettiList[g_callbackList->size] = libretti;
+			g_callbackList->size++;
+		}
+	}
+}
+
+void lb_removeLibrettiFromCallback(int librettiID)
+{
+	if (g_callbackList != NULL)
+	{
+		if (g_callbackList->librettiList != NULL)
+		{
+			/*Simple linear search implementation since they're not intended
+			 * to be much larger than 10 at a time.*/
+			for (int i = 0; i < g_callbackList->size; i++)
+			{
+				if (g_callbackList->librettiList[i]->id == librettiID)
+				{
+					/* If it's not the last entry, swap and shuffle all the later entries
+					 * to the front of the list.*/
+					for (int j = i; j < g_callbackList->size - 1; j++)
+					{
+						g_callbackList->librettiList[j] = g_callbackList->librettiList[j + 1];
+					}
+
+					g_callbackList->librettiList[g_callbackList->size - 1] = NULL;
+					g_callbackList->size--;
+					break;
+				}
+			}
+		}
 	}
 }
 
@@ -234,11 +298,11 @@ void lb_incrementPlayTime(lb_Libretti* libretti, float deltaTime_s)
 
 void lb_incrementAllPlayTimes(float deltaTime_s)
 {
-	if (callbackList != NULL)
+	if (g_callbackList != NULL)
 	{
-		for (int i = 0; i < callbackList->size; i++)
+		for (int i = 0; i < g_callbackList->size; i++)
 		{
-			lb_Libretti* libretti = callbackList->librettiList[i];
+			lb_Libretti* libretti = g_callbackList->librettiList[i];
 			lb_incrementPlayTime(libretti, deltaTime_s);
 		}
 	}
@@ -352,26 +416,26 @@ void lb_stop(lb_Libretti* libretti)
 
 void lb_playAll()
 {
-	for (int i = 0; i < callbackList->librettiList; i++)
-		lb_play(callbackList->librettiList[i]);
+	for (int i = 0; i < g_callbackList->librettiList; i++)
+		lb_play(g_callbackList->librettiList[i]);
 }
 
 void lb_pauseAll()
 {
-	for (int i = 0; i < callbackList->librettiList; i++)
-		lb_pause(callbackList->librettiList[i]);
+	for (int i = 0; i < g_callbackList->librettiList; i++)
+		lb_pause(g_callbackList->librettiList[i]);
 }
 
 void lb_resetAll()
 {
-	for (int i = 0; i < callbackList->librettiList; i++)
-		lb_reset(callbackList->librettiList[i]);
+	for (int i = 0; i < g_callbackList->librettiList; i++)
+		lb_reset(g_callbackList->librettiList[i]);
 }
 
 void lb_stopAll()
 {
-	for (int i = 0; i < callbackList->librettiList; i++)
-		lb_stop(callbackList->librettiList[i]);
+	for (int i = 0; i < g_callbackList->librettiList; i++)
+		lb_stop(g_callbackList->librettiList[i]);
 }
 
 lb_BinaryS16* lb_getAudioCaptureStreamBuffer()
@@ -443,11 +507,13 @@ void lb_freeRuntime(lb_Runtime* runtime)
 {
 	SDL_CloseAudioDevice(runtime->device);
 	free(runtime);
+	runtime = NULL;
 }
 
 void lb_freeNoteWaves(lb_NoteWaves* noteWaves)
 {
 	free(noteWaves);
+	noteWaves = NULL;
 }
 
 void lb_freeAudio(lb_Audio* audio)
@@ -459,6 +525,7 @@ void lb_freeAudio(lb_Audio* audio)
 	if (audio->lyricsEvents != NULL)
 		free(audio->lyricsEvents);
 	free(audio);
+	audio = NULL;
 }
 
 void lb_freeLibretti(lb_Libretti* libretti)
@@ -470,9 +537,12 @@ void lb_freeLibretti(lb_Libretti* libretti)
 	libretti->noteWaves = NULL;
 	libretti->audio = NULL;
 	free(libretti);
+	libretti = NULL;
 }
 
 void lb_finalize()
 {
-	finalizeAudioPlayback(callbackList);
+	finalizeAudioPlayback(g_callbackList);
+	free(g_callbackList);
+	g_callbackList = NULL;
 }
