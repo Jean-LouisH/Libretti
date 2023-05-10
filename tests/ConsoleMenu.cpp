@@ -8,7 +8,7 @@ void menu(std::string* fileName)
 	std::cout << "\n\t\t\tLibretti Console Test\n\n";
 #ifdef _DEBUG
 	std::vector<std::string> demos;
-	std::string directoryPath = "../../../../../demos/";
+	std::string directoryPath = "../../../../demos/";
 
 	demos.push_back(directoryPath + "Mary Had a Little Lamb.txt");
 	demos.push_back(directoryPath + "Starman Theme.txt");
