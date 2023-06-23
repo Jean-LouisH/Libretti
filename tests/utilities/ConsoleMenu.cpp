@@ -6,9 +6,14 @@ void menu(std::string* fileName)
 {
 	system("cls");
 	std::cout << "\n\t\t\tLibretti Console Test\n\n";
-#ifdef _DEBUG
+
 	std::vector<std::string> demos;
-	std::string directoryPath = "../../../../demos/";
+	std::string directoryPath;
+#ifdef _DEBUG
+	directoryPath = "../../../../demos/";
+#else 
+	directoryPath = "demos/";
+#endif
 
 	demos.push_back(directoryPath + "Mary Had a Little Lamb.txt");
 	demos.push_back(directoryPath + "Starman Theme.txt");
@@ -42,8 +47,4 @@ void menu(std::string* fileName)
 	{
 		*fileName = demos[atoi(fileName->c_str()) - 1];
 	}
-#else
-	std::cout << "Enter filepath to play -> ";
-	std::getline(std::cin, *fileName);
-#endif
 }
