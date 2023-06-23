@@ -10,6 +10,8 @@ It is named after the plural form of the Italian word "[Libretto](https://en.wik
 
 ![MaryHadALittleLamb](docs/MaryHadALittleLamb.png)
 
+[Downloads](https://github.com/Jean-LouisH/Libretti/releases)
+
 ## Documentation
 
 * [Libretti's Scripting Language](https://github.com/Jean-LouisH/Libretti/blob/master/docs/Scripting%20Language%20Specification.txt)
