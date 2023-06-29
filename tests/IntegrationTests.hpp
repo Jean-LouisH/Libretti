@@ -9,6 +9,6 @@ namespace LibrettiTests
 	public:
 		void run();
 	private:
-
+		void intializingAndFinalizing();
 	};
 }

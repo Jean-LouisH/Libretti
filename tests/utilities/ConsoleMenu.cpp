@@ -4,7 +4,7 @@
 
 void menu(std::string* fileName)
 {
-	system("cls");
+	//system("cls");
 	std::cout << "\n\t\t\tLibretti Console Test\n\n";
 
 	std::vector<std::string> demos;

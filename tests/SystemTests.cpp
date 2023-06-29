@@ -16,41 +16,46 @@ void LibrettiTests::SystemTests::run()
 	std::string fileName;
 	bool isRunning = true;
 
-#if !RECORD_TEST
-	ApplicationWindow appWindow = ApplicationWindow("Libretti Playback Tests");
-	SDL_HideWindow(appWindow.getSDLWindow());
-#endif
-	menu(&fileName);
-	SDL_ShowWindow(appWindow.getSDLWindow());
-#if !RECORD_TEST
 	lb_initialize();
-	lb_Libretti* libretti = lb_createAndAddLibrettiToCallback(fileName.c_str());
+
+#if !RECORD_TEST
+	ApplicationWindow appWindow = ApplicationWindow("Libretti Playback Demo");
+	lb_Libretti* libretti = lb_createEmptyLibretti();
+
+	if (libretti != NULL &&
+		libretti->composition != NULL)
+	{
+		/* Loads a console menu for loading demos and tests.
+		The prompt repeats until a valid file is selected. */
+
+		SDL_HideWindow(appWindow.getSDLWindow());
+		while (libretti->composition->validationStatuses != LB_VALIDATION_ALL_OK)
+		{
+			menu(&fileName);
+			lb_compileCompositionFromScriptFile(libretti->composition, fileName.c_str());
+		}
+		SDL_ShowWindow(appWindow.getSDLWindow());
+		lb_addLibrettiToCallback(libretti);
+
+		Oscilloscope::initialize();
+
+		do
+		{
+			isRunning = appWindow.handleEvents(libretti);
+			Oscilloscope::renderWaveforms(appWindow.getSDLWindow(), libretti);
+			lb_incrementAllPlayTimes(appWindow.getFrameTime() / MS_PER_S);
+			appWindow.swapBuffers();
+		} while (isRunning);
+
+		lb_freeLibretti(libretti);
+	}
 #else
+	ApplicationWindow appWindow = ApplicationWindow("Libretti Recording Demo");
 	lb_Binary_s16* binary = lb_captureAudio();
-
-	SDL_Window* window = SDL_CreateWindow(
-		"Libretti Recording Test Console",
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		800,
-		600,
-		0);
-
 	lb_saveBinaryS16ToFile(binary, RECORDING_FILEPATH);
-#endif
-
-	Oscilloscope::initialize();
 
 	do
 	{
-#if !RECORD_TEST
-		isRunning = appWindow.handleEvents(libretti);
-		Oscilloscope::renderWaveforms(appWindow.getSDLWindow(), libretti);
-		lb_incrementAllPlayTimes(appWindow.getFrameTime() / MS_PER_S);
-#endif
-		appWindow.swapBuffers();
-
-#if RECORD_TEST
 		SDL_Event SDLEvents;
 
 		while (SDL_PollEvent(&SDLEvents))
@@ -62,12 +67,8 @@ void LibrettiTests::SystemTests::run()
 				break;
 			}
 		}
-#endif
 	} while (isRunning);
 
-#if !RECORD_TEST
-	lb_freeLibretti(libretti);
-#else
 	SDL_DestroyWindow(window);
 #endif
 	lb_finalize();
