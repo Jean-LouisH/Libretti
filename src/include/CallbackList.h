@@ -13,7 +13,6 @@
 #define CallbackList_h
 
 #include "Libretti.h"
-#include <stdint.h>
 #include <SDL_audio.h>
 
 typedef struct

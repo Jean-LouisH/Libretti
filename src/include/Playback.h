@@ -14,6 +14,7 @@
 
 #include <stdint.h>
 #include "UserEffectsOverride.h"
+#include "Constants.h"
 #include <SDL_audio.h>
 
 enum PlaybackStates

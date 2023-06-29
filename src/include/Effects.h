@@ -12,6 +12,8 @@
 #ifndef Effects_h
 #define Effects_h
 
+#include <stdint.h>
+
 typedef struct
 {
 	float preDelay; //in milliseconds
