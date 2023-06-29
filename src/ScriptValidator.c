@@ -1,4 +1,6 @@
 #include "include/ScriptValidator.h"
+#include "include/Validation.h"
+#include "include/ScriptParseStates.h"
 #include "include/Constants.h"
 #include "include/Strings.h"
 #include "include/File.h"
@@ -616,20 +618,20 @@ int validateScript(char* script)
 
 bool validateSymbol(char symbol, uint8_t parseState)
 {
-	bool valid = false;
+	bool isValid = false;
 
 	if (parseState == LB_PARSE_STATE_READING_NOTHING)
 	{
 		if (symbol == '[' || symbol == '{' ||
 			symbol == ' ' || symbol == '\n' ||
 			symbol == '\r')
-			valid = true;
+			isValid = true;
 	}
 	else if (parseState == LB_PARSE_STATE_READING_TRACK_SCOPE)
 	{
 		if (symbol >= 'A' && symbol <= 'G')
 		{
-			valid = true;
+			isValid = true;
 		}
 		else
 		{
@@ -648,7 +650,7 @@ bool validateSymbol(char symbol, uint8_t parseState)
 			case '>':
 			case 'R':
 			case '}':
-				valid = true;
+				isValid = true;
 			}
 		}
 	}
@@ -656,27 +658,27 @@ bool validateSymbol(char symbol, uint8_t parseState)
 	{
 		if (symbol >= '1' && symbol <= '9')
 		{
-			valid = true;
+			isValid = true;
 		}
 		else
 		{
 			switch (symbol)
 			{
 			case '#': case 'b':	case 'n': case '/':
-				valid = true;
+				isValid = true;
 			}
 		}
 	}
 	else if (parseState == LB_PARSE_STATE_READING_NOTE_ACCIDENTAL)
 	{
 		if (symbol >= '1' && symbol <= '9')
-			valid = true;
+			isValid = true;
 	}
 	else if (parseState == LB_PARSE_STATE_READING_NOTE_DURATION)
 	{
 		if (symbol >= '0' && symbol <= '9')
 		{
-			valid = true;
+			isValid = true;
 		}
 		else
 		{
@@ -686,14 +688,14 @@ bool validateSymbol(char symbol, uint8_t parseState)
 			case '.':
 			case '>':
 			case ' ':
-				valid = true;
+				isValid = true;
 			}
 		}
 	}
 	else
 	{
-		valid = true;
+		isValid = true;
 	}
 
-	return valid;
+	return isValid;
 }

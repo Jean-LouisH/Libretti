@@ -21,6 +21,8 @@
 #include "NoteWaves.h"
 #include "Playback.h"
 
+#include "Validation.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -57,7 +59,7 @@ extern "C"
 	/*Returns an audio struct with a compiled script.*/
 	LIBRETTI_API lb_Composition* lb_createComposition(const char* filename);
 
-	/*Returns an empty audio struct with a compiled script.*/
+	/*Returns an empty audio struct.*/
 	LIBRETTI_API lb_Composition* lb_createEmptyComposition();
 
 	/*Returns an clear, empty note wave stream struct.*/

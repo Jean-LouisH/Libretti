@@ -32,6 +32,7 @@ typedef struct
 	char artist[32];
 	uint8_t keySignature;
 	uint8_t timeSignature[2]; //[0] = numerator, [1] = denominator
+	int validationStatuses;
 }lb_Composition;
 
 #endif /*Composition_h*/

@@ -2,6 +2,7 @@
 #include "include/File.h"
 #include "include/ScriptParseStates.h"
 #include "include/ScriptValidator.h"
+#include "include/Validation.h"
 #include "include/Strings.h"
 #include "include/Timing.h"
 #include "include/Notes.h"
@@ -13,7 +14,9 @@
 
 void compileCompositionFromScript(lb_Composition* composition, const char* script)
 {
-	if (validateScript(script) == LB_VALIDATION_ALL_OK)
+	composition->validationStatuses = validateScript(script);
+
+	if (composition->validationStatuses == LB_VALIDATION_ALL_OK)
 	{
 		allocateMemory(composition, script);
 		buildCompositionData(composition, script);

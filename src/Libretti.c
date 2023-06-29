@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include "include/ScriptValidator.h"
+#include "include/Validation.h"
 #include "include/Compiler.h"
 #include "include/Callback.h"
 #include "include/File.h"
@@ -67,7 +68,7 @@ lb_Libretti* lb_createEmptyLibretti()
 
 lb_Composition* lb_createComposition(const char* filename)
 {
-	lb_Composition* composition = calloc(1, sizeof(lb_Composition));
+	lb_Composition* composition = lb_createEmptyComposition();
 	if (composition != NULL)
 		lb_compileCompositionFromScriptFile(composition, filename);
 	return composition;
@@ -75,7 +76,10 @@ lb_Composition* lb_createComposition(const char* filename)
 
 lb_Composition* lb_createEmptyComposition()
 {
-	return calloc(1, sizeof(lb_Composition));
+	lb_Composition* composition = calloc(1, sizeof(lb_Composition));
+	if (composition != NULL)
+		composition->validationStatuses = LB_VALIDATION_SCRIPT_FILE_NOT_LOADED;
+	return composition;
 }
 
 lb_NoteWaves* lb_createNoteWaves()
@@ -178,6 +182,13 @@ void lb_compileCompositionFromScriptFile(lb_Composition* composition, const char
 	{
 		compileCompositionFromScript(composition, script);
 		free(script);
+	}
+	else
+	{
+		composition->validationStatuses = LB_VALIDATION_SCRIPT_FILE_NOT_LOADED;
+		printf("\n\nError 0x%X: \tLB_VALIDATION_SCRIPT_FILE_NOT_LOADED -> The file '%s' may be missing.\n",
+			LB_VALIDATION_SCRIPT_FILE_NOT_LOADED,
+			filename);
 	}
 }
 
