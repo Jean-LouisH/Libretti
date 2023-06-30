@@ -106,7 +106,7 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 	uint8_t timeSigLower = 0;
 	uint8_t timeSigUpper = 0;
 	uint8_t octave = 0;
-	uint8_t tempo = 0;
+	uint16_t tempo = 0;
 	uint16_t dynamic = 0;
 	int8_t panning = 0;
 	uint8_t timbre = 0;
