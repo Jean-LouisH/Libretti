@@ -168,8 +168,8 @@ int validateScript(char* script)
 					strcmp(header.data, "name") != 0 &&
 					strcmp(header.data, "artist") != 0 &&
 					strcmp(header.data, "lyric") != 0 &&
-					strcmp(header.data, "time sig") != 0 &&
-					strcmp(header.data, "key sig") != 0 &&
+					strcmp(header.data, "time signature") != 0 &&
+					strcmp(header.data, "key signature") != 0 &&
 					strcmp(header.data, "tempo") != 0 &&
 					strcmp(header.data, "timbre") != 0 &&
 					strcmp(header.data, "octave") != 0 &&
@@ -197,7 +197,7 @@ int validateScript(char* script)
 				}
 				break;
 			case ']':
-				if (strcmp(header.data, "time sig") == 0)
+				if (strcmp(header.data, "time signature") == 0)
 				{
 					int valueReadPosition = 0;
 					lb_String upper = lb_newString("");
@@ -221,7 +221,7 @@ int validateScript(char* script)
 					timeSigUpper = atoi(upper.data);
 					timeSigLower = atoi(lower.data);
 				}
-				else if (strcmp(header.data, "key sig") == 0)
+				else if (strcmp(header.data, "key signature") == 0)
 				{
 
 					if (strcmp(value.data, "C major") != 0 &&
@@ -252,12 +252,12 @@ int validateScript(char* script)
 						strcmp(value.data, "D minor") != 0)
 					{
 						printf("Error 0x%X: \tINVALID_KEY_SIG_PROVIDED '%s' at position %d, line %d, column %d.\n",
-							LB_VALIDATION_INVALID_KEY_SIG_PROVIDED,
+							LB_VALIDATION_INVALID_KEY_SIGNATURE_PROVIDED,
 							value.data,
 							readPosition,
 							linePosition,
 							columnPosition);
-						validationStatuses |= LB_VALIDATION_INVALID_KEY_SIG_PROVIDED;
+						validationStatuses |= LB_VALIDATION_INVALID_KEY_SIGNATURE_PROVIDED;
 					}
 				}
 				else if (strcmp(header.data, "tempo") == 0)
@@ -518,8 +518,8 @@ int validateScript(char* script)
 		printf("Error 0x%X: \tINVALID_TIME_SIG_PROVIDED. %d/%d \n",
 			timeSigLower,
 			timeSigUpper,
-			LB_VALIDATION_INVALID_TIME_SIG_PROVIDED);
-		validationStatuses |= LB_VALIDATION_INVALID_TIME_SIG_PROVIDED;
+			LB_VALIDATION_INVALID_TIME_SIGNATURE_PROVIDED);
+		validationStatuses |= LB_VALIDATION_INVALID_TIME_SIGNATURE_PROVIDED;
 	}
 
 	if (trackScopeCount > MAX_TRACKS)

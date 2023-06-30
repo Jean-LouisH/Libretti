@@ -1,0 +1,5 @@
+[name: Accidentals Test][key signature: C major][time signature: 4/4]
+
+{
+
+}

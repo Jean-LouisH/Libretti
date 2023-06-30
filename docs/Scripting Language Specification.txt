@@ -30,8 +30,8 @@ name:
 artist:
 lyric:
 
-time sig: "1/4", "2/4", "3/4", "4/4", etc
-key sig: "a major", "a minor", "b major", "c major", "c minor", etc
+time signature: "1/4", "2/4", "3/4", "4/4", etc
+key signature: "a major", "a minor", "b_major", "c major", "c minor", etc
 tempo: "largo" (50 bpm), "adagio" (70 bpm), "adante" (90 bpm), "moderato" (110 bpm), "allegro" (140 bpm), "presto" (180 bpm), or type the bpm value directly.
 timbre: "square wave", "sine wave", "triangle wave", "sawtooth wave", "pulse 10%", "pulse 25%"
 octave: "1", "2", "3", "4", "5", "6", "7", "8", etc
@@ -57,7 +57,7 @@ pitch blend: "none", [percentage]
 ==============
 Example:
 
-"[name: Mary had a little lamb][artist: Sarah Josepha Hale][key sig: G major][time sig: 4/4][tempo: presto]
+"[name: Mary had a little lamb][artist: Sarah Josepha Hale][key signature: G major][time signature: 4/4][tempo: presto]
 [dynamic: mf][reverb: standard][vibrato: standard]
 
 {

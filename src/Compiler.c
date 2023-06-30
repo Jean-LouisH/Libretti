@@ -264,7 +264,7 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 					valueReadPosition++;
 				}
 			}
-			else if (strcmp(header.data, "key sig") == 0)
+			else if (strcmp(header.data, "key signature") == 0)
 			{
 				if (strcmp(value.data, "C major") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_C_MAJOR;
@@ -319,7 +319,7 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 				else if (strcmp(value.data, "D minor") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_D_MINOR;
 			}
-			else if (strcmp(header.data, "time sig") == 0)
+			else if (strcmp(header.data, "time signature") == 0)
 			{
 				int valueReadPosition = 0;
 				lb_String upper = lb_newString("");

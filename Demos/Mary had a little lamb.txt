@@ -1,4 +1,4 @@
-[name: Mary had a little lamb][artist: Sarah Josepha Hale][key sig: G major][time sig: 4/4][tempo: presto]
+[name: Mary had a little lamb][artist: Sarah Josepha Hale][key signature: G major][time signature: 4/4][tempo: presto]
 [dynamic: mf][reverb: standard][vibrato: standard]
 
 {
