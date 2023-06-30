@@ -394,7 +394,7 @@ int validateScript(char* script)
 				unclosedTrackScopes--;
 				if (octave < 1 || octave > 7)
 				{
-					printf("Error 0x%X: \tOCTAVE_SHIFTS_OUT_OF_RANGE %d at position %d, line %d, column %d.\n",
+					printf("Error 0x%X: \tOCTAVE_SHIFTS_OUT_OF_RANGE %d, instead of 1 to 7 non-inclusive, at position %d, line %d, column %d.\n",
 						LB_VALIDATION_OCTAVE_SHIFTS_OUT_OF_RANGE,
 						octave,
 						readPosition,
