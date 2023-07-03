@@ -1,17 +1,17 @@
-#include "SystemTests.hpp"
-
 #include <Libretti.h>
 #include <SDL.h>
 #include <string>
-#include "utilities/ApplicationWindow.hpp"
-#include "utilities/Oscilloscope.hpp"
-#include "utilities/ConsoleMenu.hpp"
+#include "ApplicationWindow.hpp"
+#include "Oscilloscope.hpp"
+#include "ConsoleMenu.hpp"
+
+#undef main //undo SDLmain definition
 
 #define RECORD_TEST 0
 #define RECORDING_FILEPATH "audio_recording_dump.bin"
 #define MS_PER_S 1000.0
 
-void LibrettiTests::SystemTests::run()
+int main(int argc, char* argv[])
 {
 	std::string fileName;
 	bool isRunning = true;
@@ -73,4 +73,6 @@ void LibrettiTests::SystemTests::run()
 #endif
 	lb_finalize();
 	SDL_Quit();
+
+	return 0;
 }

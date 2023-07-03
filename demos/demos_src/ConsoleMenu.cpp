@@ -4,15 +4,14 @@
 
 void menu(std::string* fileName)
 {
-	//system("cls");
-	std::cout << "\n\t\t\tLibretti Console Test\n\n";
+	std::cout << "\n\t\t\tLibretti Demos\n\n";
 
 	std::vector<std::string> demos;
 	std::string directoryPath;
 #ifdef _DEBUG
-	directoryPath = "../../../../demos/";
+	directoryPath = "../../../../../demos/data/";
 #else 
-	directoryPath = "demos/";
+	directoryPath = "data/";
 #endif
 
 	demos.push_back(directoryPath + "Mary Had a Little Lamb.txt");

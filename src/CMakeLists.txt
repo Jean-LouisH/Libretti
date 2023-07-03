@@ -26,5 +26,5 @@ target_link_libraries (libretti
 add_definitions(-D_LIBRETTI_EXPORTS)
 
 add_custom_command(TARGET libretti POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libretti> ${PROJECT_BINARY_DIR}/tests/libretti.dll
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libretti> ${PROJECT_BINARY_DIR}/demos/demos_src/libretti.dll
 )
