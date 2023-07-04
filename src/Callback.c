@@ -4,7 +4,7 @@
 #include "include/Mixer.h"
 #include <SDL.h>
 
-void initAudioPlayback(CallbackList callbackList[])
+void initializeAudioPlayback(CallbackList callbackList[])
 {
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
@@ -35,7 +35,7 @@ void initAudioPlayback(CallbackList callbackList[])
 	}
 }
 
-void initAudioCapture(lb_BinaryS16* binary)
+void initializeAudioCapture(lb_BinaryS16* binary)
 {
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 	{

@@ -16,8 +16,8 @@
 #include "CallbackList.h"
 #include "Binary.h"
 
-void initAudioPlayback(CallbackList callbackList[]);
-void initAudioCapture(lb_BinaryS16* binary);
+void initializeAudioPlayback(CallbackList callbackList[]);
+void initializeAudioCapture(lb_BinaryS16* binary);
 void runCallbackPlay(void* userdata, Uint8* stream, int byteLength);
 void runCallbackCapture(void* userdata, Uint8* stream, int byteLength);
 void finalizeAudioPlayback(CallbackList callbackList[]);

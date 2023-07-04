@@ -23,7 +23,7 @@ void lb_initialize()
 			g_librettiIDCount = 0;
 			g_callbackList->capacity = 2;
 			g_callbackList->librettiList = calloc(g_callbackList->capacity, sizeof(lb_Libretti*));
-			initAudioPlayback(g_callbackList);
+			initializeAudioPlayback(g_callbackList);
 		}
 		else
 		{
@@ -456,7 +456,7 @@ lb_BinaryS16* lb_getAudioCaptureStreamBuffer()
 	{
 		binary->size = SAMPLE_SIZE;
 		binary->data = calloc(SAMPLE_SIZE, sizeof * binary->data);
-		initAudioCapture(binary);
+		initializeAudioCapture(binary);
 	}
 	return binary;
 }
