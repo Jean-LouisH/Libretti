@@ -11,6 +11,8 @@ endif()
 
 project ("libretti")
 
+enable_testing()
+
 # Include sub-projects.
 add_subdirectory("demos/demos_src")
 add_subdirectory("src")
