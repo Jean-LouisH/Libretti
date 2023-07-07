@@ -13,8 +13,9 @@
 #define Playback_h
 
 #include <stdint.h>
-#include "UserEffectsOverride.h"
 #include "Constants.h"
+#include "Waveform.h"
+#include "Effects.h"
 #include <SDL_audio.h>
 
 enum PlaybackStates
@@ -30,7 +31,9 @@ typedef struct
 	SDL_AudioDeviceID device;
 	uint8_t playStates;
 	uint16_t currentLoopCount;
-	lb_UserEffectsOverride userEffectsOverride;
+	lb_Waveform waveform;
+	lb_Effects effectsOverride;
+	float outputVolume;
 }lb_Playback;
 
 #endif /*Playback_h*/

@@ -13,9 +13,9 @@
 #define Mixer_h
 
 #include "SDL_stdinc.h"
-#include "Waveform.h"
+#include "Playback.h"
 
 /*Copies the note waves and assign audio values to the 5.1 surround channel array.*/
-void interleaveWaveformToStream(Sint16 outputStream[], lb_Waveform* waveform);
+void interleaveWaveformToStream(Sint16 outputStream[], lb_Playback* playback);
 
 #endif /*Mixer_h*/

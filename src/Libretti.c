@@ -38,7 +38,6 @@ lb_Libretti* lb_createLibretti(const char* filename)
 	if (libretti != NULL)
 	{
 		libretti->composition = lb_createComposition(filename);
-		libretti->waveform = lb_createWaveform();
 		libretti->playback = lb_createPlayback();
 		if (g_librettiIDCount != -1)
 		{
@@ -55,7 +54,6 @@ lb_Libretti* lb_createEmptyLibretti()
 	if (libretti != NULL)
 	{
 		libretti->composition = lb_createEmptyComposition();
-		libretti->waveform = lb_createWaveform();
 		libretti->playback = lb_createPlayback();
 		if (g_librettiIDCount != -1)
 		{
@@ -82,11 +80,6 @@ lb_Composition* lb_createEmptyComposition()
 	return composition;
 }
 
-lb_Waveform* lb_createWaveform()
-{
-	return calloc(1, sizeof(lb_Waveform));
-}
-
 lb_Playback* lb_createPlayback()
 {
 	return calloc(1, sizeof(lb_Playback));
@@ -99,8 +92,7 @@ void lb_addLibrettiToCallback(lb_Libretti* libretti)
 		libretti->playback->device = g_callbackList->device;
 		libretti->playback->playStates = 0;
 		libretti->playback->currentLoopCount = 0;
-		libretti->playback->userEffectsOverride.outputVolume = 1.0;
-		libretti->playback->userEffectsOverride.outputPanning = 0.0;
+		libretti->playback->outputVolume = 1.0;
 		lb_reset(libretti);
 		lb_play(libretti);
 
@@ -192,12 +184,12 @@ void lb_compileCompositionFromScriptFile(lb_Composition* composition, const char
 	}
 }
 
-void lb_updateWaveformFromComposition(lb_Waveform* waveform, lb_Composition* composition, lb_Playback* playback)
+void lb_updateWaveformFromComposition(lb_Playback* playback, lb_Composition* composition)
 {
 	lb_Note* currentNotes = malloc(composition->trackCount * (sizeof *currentNotes));
 	lb_updateNotesFromComposition(currentNotes, composition, playback);
-	waveform->count = composition->trackCount;
-	lb_updateWaveformFromNotes(waveform, currentNotes, composition->trackCount);
+	playback->waveform.count = composition->trackCount;
+	lb_updateWaveformFromNotes(&playback->waveform, currentNotes, composition->trackCount);
 	free(currentNotes);
 }
 
@@ -484,7 +476,6 @@ void lb_appendBinaryS16ToFile(lb_BinaryS16* binary, const char* filename)
 lb_BinaryS16 lb_getSpectrumData(lb_Composition* composition)
 {
 	lb_Playback* playback = lb_createPlayback();
-	lb_Waveform* waveform = lb_createWaveform();
 	lb_BinaryS16 spectrum;
 
 	int maxNoteCount = 0;
@@ -503,10 +494,10 @@ lb_BinaryS16 lb_getSpectrumData(lb_Composition* composition)
 	while (!(playback->playStates & LB_PLAYBACK_STATE_PLAYED_AT_LEAST_ONCE))
 	{
 		int streamPosition = 0;
-		lb_updateWaveformFromComposition(waveform, composition, playback);
+		lb_updateWaveformFromComposition(playback, composition);
 		for (int i = 0; i < SAMPLE_SIZE; i++)
 		{
-			spectrum.data[streamPosition] += waveform->streams[0][i];
+			spectrum.data[streamPosition] += playback->waveform.streams[0][i];
 			streamPosition++;
 		}
 		playback->currentPlayTime += 17.0 / 1000.0;
@@ -543,10 +534,8 @@ void lb_freeComposition(lb_Composition* composition)
 void lb_freeLibretti(lb_Libretti* libretti)
 {
 	lb_freePlayback(libretti->playback);
-	lb_freeWaveform(libretti->waveform);
 	lb_freeComposition(libretti->composition);
 	libretti->playback = NULL;
-	libretti->waveform = NULL;
 	libretti->composition = NULL;
 	free(libretti);
 	libretti = NULL;
