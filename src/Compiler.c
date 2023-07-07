@@ -118,6 +118,7 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 	bool isReadingCrescendo = false;
 	bool isReadingDiminuendo = false;
 	bool hasFractionalDuration = false;
+	bool hasDottedDuration = false;
 
 	lb_Note note;
 	lb_Effects effects;
@@ -201,6 +202,7 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 					note.articulation = LB_ARTICULATION_SLUR;
 				else
 					note.articulation = LB_ARTICULATION_NORMAL;
+
 				note.cue = cue;
 				note.panning = panning;
 				note.sample = sample;
@@ -212,6 +214,8 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 
 				if (hasFractionalDuration)
 					duration = 1.0 / atoi(durationString.data);
+				else if (hasDottedDuration)
+					;
 				else
 					duration = atoi(durationString.data);
 
@@ -624,6 +628,7 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 				(script[readPosition] >= '1' && script[readPosition] <= '9'))
 			{
 				hasFractionalDuration = false;
+				hasDottedDuration = false;
 				parseState = LB_PARSE_STATE_READING_NOTE_DURATION;
 				lb_appendString(&durationString, script[readPosition]);
 			}
@@ -635,25 +640,14 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 			}
 			else if (parseState == LB_PARSE_STATE_READING_NOTE_DURATION && script[readPosition] == '.')
 			{
+				hasDottedDuration = true;
+
 				if (hasFractionalDuration)
 					duration = 1.0 / atoi(durationString.data);
 				else
 					duration = atoi(durationString.data);
 
 				duration += duration / 2.0;
-
-				lb_clearString(&durationString);
-
-				if (tupletIsOpened)
-					duration = (duration * 2.0) / 3.0;
-
-				double secondsPerBeat = 60.0 / (double)tempo;
-				double beatLength = 4.0 / (double)timeSigLower;
-				secondsPerBeat /= beatLength;
-				duration *= secondsPerBeat;
-				currentTime_s += duration;
-				parseState = LB_PARSE_STATE_READING_TRACK_SCOPE;
-				currentNote++;
 			}
 			else if (parseState == LB_PARSE_STATE_READING_NOTE_DURATION &&
 				(script[readPosition] >= '0' && script[readPosition] <= '9'))
