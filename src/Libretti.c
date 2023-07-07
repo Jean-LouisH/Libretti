@@ -513,12 +513,6 @@ void lb_freePlayback(lb_Playback* playback)
 	playback = NULL;
 }
 
-void lb_freeWaveform(lb_Waveform* waveform)
-{
-	free(waveform);
-	waveform = NULL;
-}
-
 void lb_freeComposition(lb_Composition* composition)
 {
 	if (composition->tracks->noteEvents != NULL)
