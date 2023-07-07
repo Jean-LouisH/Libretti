@@ -14,8 +14,25 @@ void Oscilloscope::initialize()
 void Oscilloscope::renderWaveforms(SDL_Window* window, lb_Libretti* libretti)
 {
 	lb_NoteWaves* noteWaves = libretti->noteWaves;
-	const double scale = 1.0 + (1.0 / 5.0);
+	const double horizontalScale = 1.0 + (1.0 / 5.0);
+	const double verticalScale = 0.7;
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	float maxAmplitude = 0;
+
+	/* Scale the ampltidue of the notes to the highest
+	   ampltidue in the whole composition.*/
+	for (int i = 0; i < libretti->composition->trackCount; i++)
+	{
+		for (int j = 0; j < libretti->composition->tracks[i].noteCount; j++)
+		{
+			float amplitude = libretti->composition->tracks[i].noteEvents[j].note.dynamic;
+			if (amplitude > maxAmplitude)
+			{
+				maxAmplitude = amplitude;
+			}
+		}
+	}
 
 	for (int i = 0; i < noteWaves->count; i++)
 	{
@@ -49,15 +66,6 @@ void Oscilloscope::renderWaveforms(SDL_Window* window, lb_Libretti* libretti)
 			}
 			else
 			{
-				double maxAmplitude = 0;
-				for (int k = 0; k < noteWaves->count; k++)
-				{
-					if (noteWaves->metaData[k].dynamic > maxAmplitude)
-					{
-						maxAmplitude = noteWaves->metaData[k].dynamic;
-					}
-				}
-
 				double count = double(noteWaves->count);
 
 				/* This math function defines the y centre of the individual stream by its
@@ -67,8 +75,8 @@ void Oscilloscope::renderWaveforms(SDL_Window* window, lb_Libretti* libretti)
 
 				/* y is defined to be the centre of the individual stream + the ratio of its
 				* instantaneous value over the highest amplitude among the streams.*/
-				double y = centre + ((0.7 / count) * (double(noteWaves->streams[i][j]) / maxAmplitude)) - 1.0;
-				double x = ((double(j - xTriggerOffset) / SAMPLE_SIZE) * 2 * scale) - 1.0;
+				double y = centre + ((verticalScale / count) * (double(noteWaves->streams[i][j]) / maxAmplitude)) - 1.0;
+				double x = ((double(j - xTriggerOffset) / SAMPLE_SIZE) * 2 * horizontalScale) - 1.0;
 
 				glVertex2f(x, y);
 			}
