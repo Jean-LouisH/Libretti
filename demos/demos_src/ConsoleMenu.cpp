@@ -46,4 +46,6 @@ void menu(std::string* fileName)
 	{
 		*fileName = demos[atoi(fileName->c_str()) - 1];
 	}
+
+	printf("\nOn the window, press 'ESC' to quit, 'p' to pause or play, 's' to stop, 'r' to reset, 'l' to load another demo.\n");
 }
