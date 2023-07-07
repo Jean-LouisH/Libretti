@@ -678,37 +678,125 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 
 void tuneByKeySignature(uint8_t keySignature, char* noteChar)
 {
-	if (keySignature != LB_KEY_SIGNATURE_C_MAJOR && keySignature != LB_KEY_SIGNATURE_A_MINOR)
+
+	if (keySignature == LB_KEY_SIGNATURE_C_MAJOR || keySignature == LB_KEY_SIGNATURE_A_MINOR)
+	{
+		;
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_G_MAJOR || keySignature == LB_KEY_SIGNATURE_E_MINOR)
 	{
 		switch (*noteChar)
 		{
-			case 'F': 
-				*noteChar = 'f'; 
-				break;
-			case 'C':
-				if (keySignature != LB_KEY_SIGNATURE_G_MAJOR)
-					*noteChar = 'c';
-				break;
-			case 'G':
-				if (keySignature != LB_KEY_SIGNATURE_G_MAJOR && keySignature != LB_KEY_SIGNATURE_D_MAJOR)
-					*noteChar = 'g';
-				break;
-			case 'D':
-				if (keySignature != LB_KEY_SIGNATURE_G_MAJOR && keySignature != LB_KEY_SIGNATURE_D_MAJOR &&
-					keySignature != LB_KEY_SIGNATURE_A_MAJOR)
-					*noteChar = 'e';
-				break;
-			case 'A':
-				if (keySignature != LB_KEY_SIGNATURE_G_MAJOR && keySignature != LB_KEY_SIGNATURE_D_MAJOR &&
-					keySignature != LB_KEY_SIGNATURE_A_MAJOR && keySignature != LB_KEY_SIGNATURE_E_MAJOR)
-					*noteChar = 'b';
-				break;
-			case 'E':
-				if (keySignature != LB_KEY_SIGNATURE_G_MAJOR && keySignature != LB_KEY_SIGNATURE_D_MAJOR &&
-					keySignature != LB_KEY_SIGNATURE_A_MAJOR && keySignature != LB_KEY_SIGNATURE_E_MAJOR &&
-					keySignature != LB_KEY_SIGNATURE_B_MAJOR)
-					*noteChar = 'F';
-				break;
+			case 'F': *noteChar = 'f'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_D_MAJOR || keySignature == LB_KEY_SIGNATURE_B_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'F': *noteChar = 'f'; break;
+			case 'C': *noteChar = 'c'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_A_MAJOR || keySignature == LB_KEY_SIGNATURE_Fs_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'F': *noteChar = 'f'; break;
+			case 'C': *noteChar = 'c'; break;
+			case 'G': *noteChar = 'g'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_E_MAJOR || keySignature == LB_KEY_SIGNATURE_Cs_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'F': *noteChar = 'f'; break;
+			case 'C': *noteChar = 'c'; break;
+			case 'G': *noteChar = 'g'; break;
+			case 'D': *noteChar = 'e'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_B_MAJOR || keySignature == LB_KEY_SIGNATURE_Cb_MAJOR &&
+		keySignature == LB_KEY_SIGNATURE_Gs_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'F': *noteChar = 'f'; break;
+			case 'C': *noteChar = 'c'; break;
+			case 'G': *noteChar = 'g'; break;
+			case 'D': *noteChar = 'e'; break;
+			case 'A': *noteChar = 'b'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_Fs_MAJOR || keySignature == LB_KEY_SIGNATURE_Ds_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'F': *noteChar = 'f'; break;
+			case 'C': *noteChar = 'c'; break;
+			case 'G': *noteChar = 'g'; break;
+			case 'D': *noteChar = 'e'; break;
+			case 'A': *noteChar = 'b'; break;
+			case 'E': *noteChar = 'F'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_Gb_MAJOR || keySignature == LB_KEY_SIGNATURE_Eb_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'B': *noteChar = 'b'; break;
+			case 'E': *noteChar = 'e'; break;
+			case 'A': *noteChar = 'g'; break;
+			case 'D': *noteChar = 'c'; break;
+			case 'G': *noteChar = 'f'; break;
+			case 'C': *noteChar = 'B'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_Db_MAJOR || keySignature == LB_KEY_SIGNATURE_Cs_MAJOR &&
+		keySignature == LB_KEY_SIGNATURE_Bb_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'B': *noteChar = 'b'; break;
+			case 'E': *noteChar = 'e'; break;
+			case 'A': *noteChar = 'g'; break;
+			case 'D': *noteChar = 'c'; break;
+			case 'G': *noteChar = 'f'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_Ab_MAJOR || keySignature == LB_KEY_SIGNATURE_F_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'B': *noteChar = 'b'; break;
+			case 'E': *noteChar = 'e'; break;
+			case 'A': *noteChar = 'g'; break;
+			case 'D': *noteChar = 'c'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_Eb_MAJOR || keySignature == LB_KEY_SIGNATURE_C_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'B': *noteChar = 'b'; break;
+			case 'E': *noteChar = 'e'; break;
+			case 'A': *noteChar = 'g'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_Bb_MAJOR || keySignature == LB_KEY_SIGNATURE_G_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'B': *noteChar = 'b'; break;
+			case 'E': *noteChar = 'e'; break;
+		}
+	}
+	else if (keySignature == LB_KEY_SIGNATURE_F_MAJOR || keySignature == LB_KEY_SIGNATURE_D_MINOR)
+	{
+		switch (*noteChar)
+		{
+			case 'B': *noteChar = 'b'; break;
 		}
 	}
 }
