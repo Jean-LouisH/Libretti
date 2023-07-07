@@ -18,7 +18,7 @@
 #include "Composition.h"
 #include "Binary.h"
 #include "Notes.h"
-#include "NoteWaves.h"
+#include "Waveform.h"
 #include "Playback.h"
 
 #include "Validation.h"
@@ -42,7 +42,7 @@ extern "C"
 	typedef struct
 	{
 		lb_Composition* composition;
-		lb_NoteWaves* noteWaves;
+		lb_Waveform* waveform;
 		lb_Playback* playback;
 		int id;
 	}lb_Libretti;
@@ -63,7 +63,7 @@ extern "C"
 	LIBRETTI_API lb_Composition* lb_createEmptyComposition();
 
 	/*Returns an clear, empty note wave stream struct.*/
-	LIBRETTI_API lb_NoteWaves* lb_createNoteWaves();
+	LIBRETTI_API lb_Waveform* lb_createWaveform();
 
 	/*Returns playback data with resetted time and device index for SDL audio.*/
 	LIBRETTI_API lb_Playback* lb_createPlayback();
@@ -87,13 +87,13 @@ extern "C"
 	LIBRETTI_API void lb_compileCompositionFromScriptFile(lb_Composition* composition, const char* filename);
 
 	/*Updates existing note waves from audio at a given playback.*/
-	LIBRETTI_API void lb_updateNoteWavesFromComposition(lb_NoteWaves* noteWaves, lb_Composition* composition, lb_Playback* playback);
+	LIBRETTI_API void lb_updateWaveformFromComposition(lb_Waveform* waveform, lb_Composition* composition, lb_Playback* playback);
 
 	/*Extract as many simultaneous notes that matches the audio track count, at a given playback.*/
 	LIBRETTI_API void lb_updateNotesFromComposition(lb_Note currentNotes[], lb_Composition* composition, lb_Playback* playback);
 
 	/*Updates note waves with a PCM representation of the encoded notes.*/
-	LIBRETTI_API void lb_updateNoteWavesFromNotes(lb_NoteWaves* noteWaves, lb_Note currentNotes[], uint8_t trackCount);
+	LIBRETTI_API void lb_updateWaveformFromNotes(lb_Waveform* waveform, lb_Note currentNotes[], uint8_t trackCount);
 
 	/*Updates the Libretti's playback with a delta in seconds.*/
 	LIBRETTI_API void lb_incrementPlayTime(lb_Libretti* libretti, float deltaTime_s);
@@ -194,7 +194,7 @@ extern "C"
 	LIBRETTI_API void lb_freePlayback(lb_Playback* playback);
 
 	/*Deletes note wave memory allocation.*/
-	LIBRETTI_API void lb_freeNoteWaves(lb_NoteWaves* noteWaves);
+	LIBRETTI_API void lb_freeWaveform(lb_Waveform* waveform);
 
 	/*Deletes audio memory allocation.*/
 	LIBRETTI_API void lb_freeComposition(lb_Composition* composition);

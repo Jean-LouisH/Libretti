@@ -14,8 +14,8 @@
 
 #include <stdint.h>
 #include "Notes.h"
-#include "NoteWaves.h"
+#include "Waveform.h"
 
-void generateNoteWaves(lb_NoteWaves* noteWaves, lb_Note currentNotes[]);
+void generateWaveform(lb_Waveform* waveform, lb_Note currentNotes[]);
 
 #endif /*WaveformGenerator_h*/

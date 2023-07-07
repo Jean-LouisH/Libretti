@@ -90,12 +90,12 @@ void runCallbackPlay(void* userdata, Uint8* stream, int byteLength)
 
 			if (libretti != NULL &&
 				libretti->composition != NULL &&
-				libretti->noteWaves != NULL &&
+				libretti->waveform != NULL &&
 				libretti->playback != NULL &&
 				libretti->composition->trackCount > 0)
 			{
-				lb_updateNoteWavesFromComposition(libretti->noteWaves, libretti->composition, libretti->playback);
-				interleaveNoteWavesToStream(playbackStream, libretti->noteWaves);
+				lb_updateWaveformFromComposition(libretti->waveform, libretti->composition, libretti->playback);
+				interleaveWaveformToStream(playbackStream, libretti->waveform);
 			}
 		}
 	}
