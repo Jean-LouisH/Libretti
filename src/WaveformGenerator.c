@@ -1,6 +1,7 @@
 #include "include/WaveformGenerator.h"
 #include <stdbool.h>
 #include <math.h>
+#include "Constants.h"
 
 void generateWaveform(lb_Waveform* waveform, lb_Note currentNotes[])
 {
@@ -14,7 +15,7 @@ void generateWaveform(lb_Waveform* waveform, lb_Note currentNotes[])
 		{
 			double frequency = waveform->metaData[i].key;
 			double time = (timesteps[i] / SAMPLE_FREQUENCY);
-			double period = (1.0 / waveform->metaData[i].key);
+			double period = (1.0 / frequency);
 			double amplitude = waveform->metaData[i].dynamic;
 
 			switch (waveform->metaData[i].timbre)
@@ -42,6 +43,9 @@ void generateWaveform(lb_Waveform* waveform, lb_Note currentNotes[])
 				case LB_TIMBRE_NOISE:
 					waveform->streams[i][n] = (double)((bool)(frequency) * 
 						(rand() % (int)(2 * amplitude) + (int)(-amplitude)));
+					break;
+				case LB_TIMBRE_SAMPLE:
+					waveform->streams[i][n] = amplitude * (waveform->metaData[i].sample[(int)(frequency * time * SAMPLE_SIZE) % SAMPLE_SIZE]) / (pow(2.0, (8.0 * sizeof(int16_t) - 2)) - 1) ;
 					break;
 			}
 

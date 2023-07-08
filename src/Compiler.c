@@ -112,7 +112,6 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 	uint8_t timbre = 0;
 	uint16_t cue = 0;
 	double duration = 0.0;
-	lb_BinaryS16 sample = { NULL, 0 };
 	bool tupletIsOpened = false;
 	bool slurIsOpened = false;
 	bool isReadingCrescendo = false;
@@ -205,7 +204,6 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 
 				note.cue = cue;
 				note.panning = panning;
-				note.sample = sample;
 				note.timbre = timbre;
 				note.effects = effects;
 
@@ -463,20 +461,27 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 					timbre = LB_TIMBRE_PULSE_25;
 				else if (strcmp(value.data, "noise") == 0)
 					timbre = LB_TIMBRE_NOISE;
-				else if (strcmp(value.data, "metallic") == 0)
-					timbre = LB_TIMBRE_METALLIC;
 				else
 				{
 #ifdef _DEBUG
-					lb_String filename = lb_newString("../Libretti/Samples/");
+					lb_String filename = lb_newString("../../../../../demos/data/samples/");
 #else
-					lb_String filename = lb_newString("Samples/");
+					lb_String filename = lb_newString("data/samples/");
 #endif
 					lb_String extension = lb_newString(".pcm");
 					timbre = LB_TIMBRE_SAMPLE;
 					strcat(filename.data, value.data);
 					strcat(filename.data, extension.data);
-					sample = loadBinaryS16FromFile(filename.data);
+					lb_BinaryS16 binary = loadBinaryS16FromFile(filename.data);
+					float sampleProgressDelta = (float)binary.size / (float)SAMPLE_SIZE;
+					float currentSampleProgress = 0.0;
+
+					for (int i = 0; i < SAMPLE_SIZE; i++)
+					{
+						note.sample[i] = binary.data[(int)currentSampleProgress];
+						currentSampleProgress += sampleProgressDelta;
+					}
+
 					lb_freeString(&filename);
 					lb_freeString(&extension);
 				}

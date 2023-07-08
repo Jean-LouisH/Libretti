@@ -29,6 +29,7 @@ void menu(std::string* fileName)
 	demos.push_back(directoryPath + "tests/Multichannel Test.txt");
 	demos.push_back(directoryPath + "tests/Octave Test.txt");
 	demos.push_back(directoryPath + "tests/Panning Test.txt");
+	demos.push_back(directoryPath + "tests/Sample Timbre Test.txt");
 	demos.push_back(directoryPath + "tests/Slur Test.txt");
 	demos.push_back(directoryPath + "tests/Staccato Test.txt");
 	demos.push_back(directoryPath + "tests/Timbre Test.txt");

@@ -290,13 +290,12 @@ int validateScript(char* script)
 						strcmp(value.data, "sawtooth wave") != 0 &&
 						strcmp(value.data, "pulse 10") != 0 &&
 						strcmp(value.data, "pulse 25") != 0 &&
-						strcmp(value.data, "noise") != 0 &&
-						strcmp(value.data, "metallic") != 0)
+						strcmp(value.data, "noise") != 0)
 					{
 #ifdef _DEBUG
-						lb_String filename = lb_newString("../Libretti/Samples/");
+						lb_String filename = lb_newString("../../../../../demos/data/samples/");
 #else
-						lb_String filename = lb_newString("Samples/");
+						lb_String filename = lb_newString("data/samples/");
 #endif
 						lb_String extension = lb_newString(".pcm");
 						strcat(filename.data, value.data);
