@@ -11,6 +11,7 @@
 #define Contants_h
 
 #define MAX_TRACKS 24
+#define LYRICS_LENGTH 128
 
 #define CHANNELS 6	//front-left, front-right, center, low-freq, rear-left, rear-right
 #define MAX_FPS 60

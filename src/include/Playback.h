@@ -32,6 +32,7 @@ typedef struct
 	uint8_t playStates;
 	uint16_t currentLoopCount;
 	lb_Waveform waveform;
+	char currentLyrics[128];
 	lb_Effects effectsOverride;
 	float outputVolume;
 }lb_Playback;

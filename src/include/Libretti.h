@@ -83,7 +83,7 @@ extern "C"
 	LIBRETTI_API void lb_compileCompositionFromScriptFile(lb_Composition* composition, const char* filename);
 
 	/*Updates existing note waves from audio at a given playback.*/
-	LIBRETTI_API void lb_updateWaveformFromComposition(lb_Playback* playback, lb_Composition* composition);
+	LIBRETTI_API void lb_updatePlayback(lb_Playback* playback, lb_Composition* composition);
 
 	/*Extract as many simultaneous notes that matches the audio track count, at a given playback.*/
 	LIBRETTI_API void lb_updateNotesFromComposition(lb_Note currentNotes[], lb_Composition* composition, lb_Playback* playback);

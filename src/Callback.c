@@ -93,7 +93,7 @@ void runCallbackPlay(void* userdata, Uint8* stream, int byteLength)
 				libretti->playback != NULL &&
 				libretti->composition->trackCount > 0)
 			{
-				lb_updateWaveformFromComposition(libretti->playback, libretti->composition);
+				lb_updatePlayback(libretti->playback, libretti->composition);
 				interleaveWaveformToStream(playbackStream, libretti->playback);
 			}
 		}

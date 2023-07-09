@@ -184,12 +184,22 @@ void lb_compileCompositionFromScriptFile(lb_Composition* composition, const char
 	}
 }
 
-void lb_updateWaveformFromComposition(lb_Playback* playback, lb_Composition* composition)
+void lb_updatePlayback(lb_Playback* playback, lb_Composition* composition)
 {
-	lb_Note* currentNotes = malloc(composition->trackCount * (sizeof *currentNotes));
+	lb_Note* currentNotes = malloc(composition->trackCount * (sizeof * currentNotes));
 	lb_updateNotesFromComposition(currentNotes, composition, playback);
 	playback->waveform.count = composition->trackCount;
 	lb_updateWaveformFromNotes(&playback->waveform, currentNotes, composition->trackCount);
+
+	for (int i = 0; i < LYRICS_LENGTH; i++)
+		playback->currentLyrics[i] = '\0';
+
+	/* Find the current lyrics. */
+	for (int i = 0; i < composition->lyricsEventCount; i++)
+		if (playback->currentPlayTime > composition->lyricsEvents[i].startTime)
+			for (int j = 0; j < LYRICS_LENGTH; j++)
+				playback->currentLyrics[j] = composition->lyricsEvents[i].lyrics[j];
+
 	free(currentNotes);
 }
 
@@ -494,7 +504,7 @@ lb_BinaryS16 lb_getSpectrumData(lb_Composition* composition)
 	while (!(playback->playStates & LB_PLAYBACK_STATE_PLAYED_AT_LEAST_ONCE))
 	{
 		int streamPosition = 0;
-		lb_updateWaveformFromComposition(playback, composition);
+		lb_updatePlayback(playback, composition);
 		for (int i = 0; i < SAMPLE_SIZE; i++)
 		{
 			spectrum.data[streamPosition] += playback->waveform.streams[0][i];
