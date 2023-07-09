@@ -119,6 +119,11 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 	bool hasFractionalDuration = false;
 	bool hasDottedDuration = false;
 
+	bool isInCrescendoState = false;
+	bool isInDiminuendoState = false;
+	uint32_t gradualDynamicsNoteIndices[256] = {0};
+	uint16_t gradualDynamicsNoteCount = 0;
+
 	lb_Note note;
 	lb_Effects effects;
 	effects.echo.decay = 0.0;
@@ -161,13 +166,33 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 			slurIsOpened = !slurIsOpened;
 			break;
 		case '<':
+			if (isReadingCrescendo)
+			{
+				isInCrescendoState = !isInCrescendoState;
+
+				if (isInCrescendoState)
+					gradualDynamicsNoteCount = 0;
+			}
+
 			isReadingCrescendo = !isReadingCrescendo;
 			break;
 		case '>':
 			if (parseState == LB_PARSE_STATE_READING_NOTE_DURATION)
+			{
 				parseState = LB_PARSE_STATE_READING_DYNAMIC_ACCENT;
+			}
 			else
+			{
+				if (isReadingDiminuendo)
+				{
+					isInDiminuendoState = !isInDiminuendoState;
+
+					if (isInDiminuendoState)
+						gradualDynamicsNoteCount = 0;
+				}
+
 				isReadingDiminuendo = !isReadingDiminuendo;
+			}
 			break;
 		case '*':
 			if (parseState == LB_PARSE_STATE_READING_NOTE_DURATION)
@@ -209,6 +234,12 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 
 				composition->tracks[currentTrack].noteEvents[currentNote].note = note;
 				composition->tracks[currentTrack].noteEvents[currentNote].startTime = currentTime_s;
+
+				if (isInCrescendoState || isInDiminuendoState)
+				{
+					gradualDynamicsNoteIndices[gradualDynamicsNoteCount] = currentNote;
+					gradualDynamicsNoteCount++;
+				}
 
 				if (hasFractionalDuration)
 					duration = 1.0 / atoi(durationString.data);
@@ -379,6 +410,8 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 			}
 			else if (strcmp(header.data, "dynamic") == 0)
 			{
+				uint16_t previousDynamic = dynamic;
+
 				if (strcmp(value.data, "ppp") == 0)
 					dynamic = LB_DYNAMIC_PPP;
 				else if (strcmp(value.data, "pp") == 0)
@@ -395,6 +428,21 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 					dynamic = LB_DYNAMIC_FF;
 				else if (strcmp(value.data, "fff") == 0)
 					dynamic = LB_DYNAMIC_FFF;
+
+
+				if (!isInCrescendoState && !isInDiminuendoState)
+				{
+					for (int i = 0; i < gradualDynamicsNoteCount; i++)
+					{
+						uint32_t noteIndex = gradualDynamicsNoteIndices[i];
+						float gradualDynamicDelta = (float)(dynamic - previousDynamic) / (float)gradualDynamicsNoteCount;
+						uint16_t gradualDynamic = (uint16_t)((float)previousDynamic + (gradualDynamicDelta * i));
+						composition->tracks[currentTrack].noteEvents[noteIndex].note.dynamic = gradualDynamic;
+					}
+
+					gradualDynamicsNoteCount = 0;
+				}
+
 			}
 			else if (strcmp(header.data, "reverb") == 0)
 			{
