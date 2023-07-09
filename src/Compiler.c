@@ -280,7 +280,7 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 					composition->keySignature = LB_KEY_SIGNATURE_E_MAJOR;
 				else if (strcmp(value.data, "B major") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_B_MAJOR;
-				else if (strcmp(value.data, "Fs major") == 0)
+				else if (strcmp(value.data, "F# major") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_Fs_MAJOR;
 				else if (strcmp(value.data, "Gb major") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_Gb_MAJOR;
@@ -294,19 +294,23 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 					composition->keySignature = LB_KEY_SIGNATURE_Bb_MAJOR;
 				else if (strcmp(value.data, "F major") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_F_MAJOR;
+				else if (strcmp(value.data, "Cb major") == 0)
+					composition->keySignature = LB_KEY_SIGNATURE_Cb_MAJOR;
+				else if (strcmp(value.data, "C# major") == 0)
+					composition->keySignature = LB_KEY_SIGNATURE_Cs_MAJOR;
 				else if (strcmp(value.data, "A minor") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_A_MINOR;
 				else if (strcmp(value.data, "E minor") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_E_MINOR;
 				else if (strcmp(value.data, "B minor") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_B_MINOR;
-				else if (strcmp(value.data, "Fs minor") == 0)
+				else if (strcmp(value.data, "F# minor") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_Fs_MINOR;
-				else if (strcmp(value.data, "Cs minor") == 0)
+				else if (strcmp(value.data, "C# minor") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_Cs_MINOR;
-				else if (strcmp(value.data, "Gs minor") == 0)
+				else if (strcmp(value.data, "G# minor") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_Gs_MINOR;
-				else if (strcmp(value.data, "Ds minor") == 0)
+				else if (strcmp(value.data, "D# minor") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_Ds_MINOR;
 				else if (strcmp(value.data, "Eb minor") == 0)
 					composition->keySignature = LB_KEY_SIGNATURE_Eb_MINOR;

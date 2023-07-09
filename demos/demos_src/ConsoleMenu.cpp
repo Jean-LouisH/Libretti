@@ -17,9 +17,6 @@ void menu(std::string* fileName)
 	demos.push_back(directoryPath + "Mary Had a Little Lamb.txt");
 	demos.push_back(directoryPath + "Starman Theme.txt");
 
-	demos.push_back(directoryPath + "tests/C Major Scale.txt");
-	demos.push_back(directoryPath + "tests/C Minor Scale.txt");
-	demos.push_back(directoryPath + "tests/D Major Scale.txt");
 	demos.push_back(directoryPath + "tests/Accidentals Test.txt");
 	demos.push_back(directoryPath + "tests/Crescendo Test.txt");
 	demos.push_back(directoryPath + "tests/Diminuendo Test.txt");
@@ -35,6 +32,35 @@ void menu(std::string* fileName)
 	demos.push_back(directoryPath + "tests/Timbre Test.txt");
 	demos.push_back(directoryPath + "tests/Trill Test.txt");
 	demos.push_back(directoryPath + "tests/Varying Tempo Test.txt");
+
+	demos.push_back(directoryPath + "scales/A Major Scale.txt");
+	demos.push_back(directoryPath + "scales/A Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/Ab Major Scale.txt");
+	demos.push_back(directoryPath + "scales/B Major Scale.txt");
+	demos.push_back(directoryPath + "scales/B Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/Bb Major Scale.txt");
+	demos.push_back(directoryPath + "scales/Bb Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/C Major Scale.txt");
+	demos.push_back(directoryPath + "scales/C Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/C# Major Scale.txt");
+	demos.push_back(directoryPath + "scales/C# Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/Cb Major Scale.txt");
+	demos.push_back(directoryPath + "scales/D Major Scale.txt");
+	demos.push_back(directoryPath + "scales/D Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/D# Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/Db Major Scale.txt");
+	demos.push_back(directoryPath + "scales/E Major Scale.txt");
+	demos.push_back(directoryPath + "scales/E Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/Eb Major Scale.txt");
+	demos.push_back(directoryPath + "scales/Eb Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/F Major Scale.txt");
+	demos.push_back(directoryPath + "scales/F Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/F# Major Scale.txt");
+	demos.push_back(directoryPath + "scales/F# Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/G Major Scale.txt");
+	demos.push_back(directoryPath + "scales/G Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/G# Minor Scale.txt");
+	demos.push_back(directoryPath + "scales/Gb Major Scale.txt");
 
 	std::cout << "Demos\n----\n";
 	for (int i = 0; i < demos.size(); i++)
