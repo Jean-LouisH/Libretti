@@ -769,7 +769,7 @@ void tuneByKeySignature(uint8_t keySignature, char* noteChar)
 			case 'D': *noteChar = 'e'; break;
 		}
 	}
-	else if (keySignature == LB_KEY_SIGNATURE_B_MAJOR || keySignature == LB_KEY_SIGNATURE_Cb_MAJOR &&
+	else if (keySignature == LB_KEY_SIGNATURE_B_MAJOR || keySignature == LB_KEY_SIGNATURE_Cb_MAJOR ||
 		keySignature == LB_KEY_SIGNATURE_Gs_MINOR)
 	{
 		switch (*noteChar)
@@ -805,7 +805,7 @@ void tuneByKeySignature(uint8_t keySignature, char* noteChar)
 			case 'C': *noteChar = 'B'; break;
 		}
 	}
-	else if (keySignature == LB_KEY_SIGNATURE_Db_MAJOR || keySignature == LB_KEY_SIGNATURE_Cs_MAJOR &&
+	else if (keySignature == LB_KEY_SIGNATURE_Db_MAJOR || keySignature == LB_KEY_SIGNATURE_Cs_MAJOR ||
 		keySignature == LB_KEY_SIGNATURE_Bb_MINOR)
 	{
 		switch (*noteChar)

@@ -3,5 +3,5 @@
 {
 [panning: mono][octave: 5]
 
-[loop: infinity] [timbre: square wave] C2 |  [timbre: sine wave] C2 |  [timbre: triangle wave] C2 |  [timbre: sawtooth wave] C2 |  [timbre: pulse 10] C2 |  [timbre: pulse 25] C2 |  [timbre: noise] C2 |  [timbre: metallic] C2 | 
+[loop: infinity] [timbre: square wave] C2 |  [timbre: sine wave] C2 |  [timbre: triangle wave] C2 |  [timbre: sawtooth wave] C2 |  [timbre: pulse 10] C2 |  [timbre: pulse 25] C2 |  [timbre: noise] C2 |
 }

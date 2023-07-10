@@ -1,4 +1,4 @@
-[name: C Minor Scale][key signature: C minor ][time signature: 4/4][dynamic: mf][tempo: presto]
+[name: C Minor Scale][key signature: C minor][time signature: 4/4][dynamic: mf][tempo: presto]
 
 {
 [panning: mono][timbre: square wave][octave: 5]

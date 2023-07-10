@@ -1,4 +1,4 @@
-[name: Bb Minor Scale][key signature: B minor][time signature: 4/4][dynamic: mf][tempo: presto]
+[name: Bb Minor Scale][key signature: Bb minor][time signature: 4/4][dynamic: mf][tempo: presto]
 
 {
 [panning: mono][timbre: square wave][octave: 5]
