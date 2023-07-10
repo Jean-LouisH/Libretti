@@ -526,13 +526,14 @@ void buildCompositionData(lb_Composition* composition, const char* script)
 					strcat(filename.data, extension.data);
 					lb_BinaryS16 binary = loadBinaryS16FromFile(filename.data);
 					float sampleProgressDelta = (float)binary.size / (float)SAMPLE_SIZE;
-					float currentSampleProgress = 0.0;
+
+					int16_t debugBinaryData[2048] = { 0 };
+
+					for (int i = 0; i < binary.size; i++)
+						debugBinaryData[i] = binary.data[i];
 
 					for (int i = 0; i < SAMPLE_SIZE; i++)
-					{
-						note.sample[i] = binary.data[(int)currentSampleProgress];
-						currentSampleProgress += sampleProgressDelta;
-					}
+						note.sample[i] = binary.data[(int)(sampleProgressDelta * i)];
 
 					lb_freeString(&filename);
 					lb_freeString(&extension);

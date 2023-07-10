@@ -45,7 +45,7 @@ void generateWaveform(lb_Waveform* waveform, lb_Note currentNotes[])
 						(rand() % (int)(2 * amplitude) + (int)(-amplitude)));
 					break;
 				case LB_TIMBRE_SAMPLE:
-					waveform->streams[i][n] = amplitude * (waveform->metaData[i].sample[(int)(frequency * time * SAMPLE_SIZE) % SAMPLE_SIZE]) / (pow(2.0, (8.0 * sizeof(int16_t) - 2)) - 1) ;
+					waveform->streams[i][n] = amplitude * (waveform->metaData[i].sample[(int)(frequency * time * SAMPLE_SIZE) % SAMPLE_SIZE]) / (pow(2.0, (8.0 * sizeof(int16_t) - 1)) - 1) ;
 					break;
 			}
 
