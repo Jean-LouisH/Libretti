@@ -89,7 +89,7 @@ void lb_addLibrettiToCallback(lb_Libretti* libretti)
 {
 	if (g_callbackList != NULL)
 	{
-		libretti->playback->device = g_callbackList->device;
+		libretti->playback->audioDeviceID = g_callbackList->audioDeviceID;
 		libretti->playback->playStates = 0;
 		libretti->playback->currentLoopCount = 0;
 		libretti->playback->outputVolume = 1.0;
@@ -188,8 +188,8 @@ void lb_updatePlayback(lb_Playback* playback, lb_Composition* composition)
 {
 	lb_Note* currentNotes = malloc(composition->trackCount * (sizeof * currentNotes));
 	lb_updateNotesFromComposition(currentNotes, composition, playback);
-	playback->waveform.count = composition->trackCount;
-	lb_updateWaveformFromNotes(&playback->waveform, currentNotes, composition->trackCount);
+	playback->currentWaveforms.count = composition->trackCount;
+	lb_updateWaveformFromNotes(&playback->currentWaveforms, currentNotes, composition->trackCount);
 
 	for (int i = 0; i < LYRICS_LENGTH; i++)
 		playback->currentLyrics[i] = '\0';
@@ -265,7 +265,7 @@ void lb_updateNotesFromComposition(lb_Note currentNotes[], lb_Composition* compo
 					else
 					{
 						playback->playStates &= ~LB_PLAYBACK_STATE_IS_PLAYING;
-						SDL_PauseAudioDevice(playback->device, true);
+						SDL_PauseAudioDevice(playback->audioDeviceID, true);
 					}
 				}	
 			}
@@ -298,9 +298,9 @@ void lb_updateNotesFromComposition(lb_Note currentNotes[], lb_Composition* compo
 	}
 }
 
-void lb_updateWaveformFromNotes(lb_Waveform* waveform, lb_Note currentNotes[], uint8_t trackCount)
+void lb_updateWaveformFromNotes(lb_Waveforms* waveforms, lb_Note currentNotes[], uint8_t trackCount)
 {
-	generateWaveform(waveform, currentNotes);
+	generateWaveform(waveforms, currentNotes);
 }
 
 void lb_incrementPlayTime(lb_Libretti* libretti, float deltaTime_s)
@@ -330,7 +330,7 @@ void lb_load(lb_Libretti* libretti, const char* filename)
 void lb_play(lb_Libretti* libretti)
 {
 	libretti->playback->playStates |= LB_PLAYBACK_STATE_IS_PLAYING;
-	SDL_PauseAudioDevice(libretti->playback->device, false);
+	SDL_PauseAudioDevice(libretti->playback->audioDeviceID, false);
 }
 
 lb_Libretti* lb_play_note_for(
@@ -411,7 +411,7 @@ lb_Libretti* lb_play_simple_note(
 void lb_pause(lb_Libretti* libretti)
 {
 	libretti->playback->playStates &= ~LB_PLAYBACK_STATE_IS_PLAYING;
-	SDL_PauseAudioDevice(libretti->playback->device, true);
+	SDL_PauseAudioDevice(libretti->playback->audioDeviceID, true);
 }
 
 void lb_reset(lb_Libretti* libretti)
@@ -507,7 +507,7 @@ lb_BinaryS16 lb_getSpectrumData(lb_Composition* composition)
 		lb_updatePlayback(playback, composition);
 		for (int i = 0; i < SAMPLE_SIZE; i++)
 		{
-			spectrum.data[streamPosition] += playback->waveform.streams[0][i];
+			spectrum.data[streamPosition] += playback->currentWaveforms.streams[0][i];
 			streamPosition++;
 		}
 		playback->currentPlayTime += 17.0 / 1000.0;
@@ -518,7 +518,7 @@ lb_BinaryS16 lb_getSpectrumData(lb_Composition* composition)
 
 void lb_freePlayback(lb_Playback* playback)
 {
-	SDL_CloseAudioDevice(playback->device);
+	SDL_CloseAudioDevice(playback->audioDeviceID);
 	free(playback);
 	playback = NULL;
 }

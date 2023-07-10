@@ -6,7 +6,7 @@
 *
 * Defines entire songs or sound effects in memory.
 *
-* Copyright (c) 2017-2021 Jean-Louis Haywood. All rights reserved.
+* Copyright (c) 2017 Jean-Louis Haywood. All rights reserved.
 */
 
 #ifndef Composition_h

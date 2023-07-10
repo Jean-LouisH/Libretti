@@ -6,7 +6,7 @@
 *
 * Contains structs with control parameters for effects.
 *
-* Copyright (c) 2017-2021 Jean-Louis Haywood. All rights reserved.
+* Copyright (c) 2017 Jean-Louis Haywood. All rights reserved.
 */
 
 #ifndef Effects_h

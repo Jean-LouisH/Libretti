@@ -6,11 +6,11 @@
 *
 * Raw audio samples from individual notes.
 *
-* Copyright (c) 2017-2021 Jean-Louis Haywood. All rights reserved.
+* Copyright (c) 2017 Jean-Louis Haywood. All rights reserved.
 */
 
-#ifndef Waveform_h
-#define Waveform_h
+#ifndef Waveforms_h
+#define Waveforms_h
 
 #include <stdint.h>
 #include "SDL_stdinc.h"
@@ -20,8 +20,8 @@
 typedef struct
 {
 	Sint16 streams[MAX_TRACKS][SAMPLE_SIZE];
-	lb_Note metaData[MAX_TRACKS];
+	lb_Note noteMetaData[MAX_TRACKS];
 	uint8_t count;
-}lb_Waveform;
+}lb_Waveforms;
 
-#endif /*Waveform_h*/
+#endif /*Waveforms_h*/

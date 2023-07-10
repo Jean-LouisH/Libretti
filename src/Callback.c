@@ -31,7 +31,7 @@ void initializeAudioPlayback(CallbackList callbackList[])
 			NULL);
 
 		SDL_PauseAudioDevice(device, 0);
-		callbackList->device = device;
+		callbackList->audioDeviceID = device;
 	}
 }
 
@@ -123,8 +123,8 @@ void runCallbackCapture(void* userdata, Uint8* stream, int byteLength)
 
 void finalizeAudioPlayback(CallbackList callbackList[])
 {
-	SDL_PauseAudioDevice(callbackList->device, 1);
-	SDL_CloseAudioDevice(callbackList->device);
+	SDL_PauseAudioDevice(callbackList->audioDeviceID, 1);
+	SDL_CloseAudioDevice(callbackList->audioDeviceID);
 	SDL_CloseAudio();
-	callbackList->device = 0;
+	callbackList->audioDeviceID = 0;
 }

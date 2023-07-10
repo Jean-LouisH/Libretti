@@ -4,10 +4,10 @@
 *
 * Libretti
 *
-* Structures the compiler, and waveform generator
+* Structures the compiler, and waveforms generator
 * procedures by default for simplicity.
 *
-* Copyright (c) 2017-2021 Jean-Louis Haywood. All rights reserved.
+* Copyright (c) 2017 Jean-Louis Haywood. All rights reserved.
 */
 
 #ifndef Libretti_h
@@ -18,7 +18,7 @@
 #include "Composition.h"
 #include "Binary.h"
 #include "Notes.h"
-#include "Waveform.h"
+#include "Waveforms.h"
 #include "Playback.h"
 
 #include "Validation.h"
@@ -55,10 +55,10 @@ extern "C"
 	/*Allocates and returns an empty Libretti without adding to callback. */
 	LIBRETTI_API lb_Libretti* lb_createEmptyLibretti();
 
-	/*Returns an audio struct with a compiled script.*/
+	/*Returns an composition struct with a compiled script.*/
 	LIBRETTI_API lb_Composition* lb_createComposition(const char* filename);
 
-	/*Returns an empty audio struct.*/
+	/*Returns an empty composition struct.*/
 	LIBRETTI_API lb_Composition* lb_createEmptyComposition();
 
 	/*Returns playback data with resetted time and device index for SDL audio.*/
@@ -79,17 +79,17 @@ extern "C"
 	/*Loads script and validates it against the language specification, returns validation codes.*/
 	LIBRETTI_API int lb_validateScriptFile(const char* filename);
 
-	/*Updates existing audio with compiled script.*/
+	/*Updates existing composition with compiled script.*/
 	LIBRETTI_API void lb_compileCompositionFromScriptFile(lb_Composition* composition, const char* filename);
 
-	/*Updates existing note waves from audio at a given playback.*/
+	/*Updates playback from composition according to the update playback time.*/
 	LIBRETTI_API void lb_updatePlayback(lb_Playback* playback, lb_Composition* composition);
 
-	/*Extract as many simultaneous notes that matches the audio track count, at a given playback.*/
+	/*Extract as many simultaneous notes that matches the composition track count, at a given playback.*/
 	LIBRETTI_API void lb_updateNotesFromComposition(lb_Note currentNotes[], lb_Composition* composition, lb_Playback* playback);
 
 	/*Updates note waves with a PCM representation of the encoded notes.*/
-	LIBRETTI_API void lb_updateWaveformFromNotes(lb_Waveform* waveform, lb_Note currentNotes[], uint8_t trackCount);
+	LIBRETTI_API void lb_updateWaveformFromNotes(lb_Waveforms* waveforms, lb_Note currentNotes[], uint8_t trackCount);
 
 	/*Updates the Libretti's playback with a delta in seconds.*/
 	LIBRETTI_API void lb_incrementPlayTime(lb_Libretti* libretti, float deltaTime_s);

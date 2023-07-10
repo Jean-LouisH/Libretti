@@ -13,7 +13,7 @@ void Oscilloscope::initialize()
 
 void Oscilloscope::renderWaveforms(SDL_Window* window, lb_Libretti* libretti)
 {
-	lb_Waveform waveform = libretti->playback->waveform;
+	lb_Waveforms waveforms = libretti->playback->currentWaveforms;
 	const double horizontalScale = 1.0 + (1.0 / 5.0);
 	const double verticalScale = 0.7;
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -34,7 +34,7 @@ void Oscilloscope::renderWaveforms(SDL_Window* window, lb_Libretti* libretti)
 		}
 	}
 
-	for (int i = 0; i < waveform.count; i++)
+	for (int i = 0; i < waveforms.count; i++)
 	{
 		/*OpenGL compatibility profile fixed-functions are
 		sufficient for this simple test oscilloscope.*/
@@ -49,9 +49,9 @@ void Oscilloscope::renderWaveforms(SDL_Window* window, lb_Libretti* libretti)
 			if (j > 0 && !startTrigger)
 			{
 				Sint16 valueRange = 200;
-				Sint16 targetValue = waveform.metaData[i].dynamic;
-				Sint16 sampleA = waveform.streams[i][j - 1];
-				Sint16 sampleB = waveform.streams[i][j];
+				Sint16 targetValue = waveforms.noteMetaData[i].dynamic;
+				Sint16 sampleA = waveforms.streams[i][j - 1];
+				Sint16 sampleB = waveforms.streams[i][j];
 
 				Sint16 lower = sampleB - (valueRange / 2);
 				Sint16 upper = sampleB + (valueRange / 2);
@@ -66,7 +66,7 @@ void Oscilloscope::renderWaveforms(SDL_Window* window, lb_Libretti* libretti)
 			}
 			else
 			{
-				double count = double(waveform.count);
+				double count = double(waveforms.count);
 
 				/* This math function defines the y centre of the individual stream by its
 				* count number "i". The value "2" is the top of window, and as "i" increases,
@@ -75,7 +75,7 @@ void Oscilloscope::renderWaveforms(SDL_Window* window, lb_Libretti* libretti)
 
 				/* y is defined to be the centre of the individual stream + the ratio of its
 				* instantaneous value over the highest amplitude among the streams.*/
-				double y = centre + ((verticalScale / count) * (double(waveform.streams[i][j]) / maxAmplitude)) - 1.0;
+				double y = centre + ((verticalScale / count) * (double(waveforms.streams[i][j]) / maxAmplitude)) - 1.0;
 				double x = ((double(j - xTriggerOffset) / SAMPLE_SIZE) * 2 * horizontalScale) - 1.0;
 
 				glVertex2f(x, y);

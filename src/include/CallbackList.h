@@ -6,7 +6,7 @@
 *
 * Contains references to all actively played Libretti structs.
 *
-* Copyright (c) 2017-2021 Jean-Louis Haywood. All rights reserved.
+* Copyright (c) 2017 Jean-Louis Haywood. All rights reserved.
 */
 
 #ifndef CallbackList_h
@@ -18,7 +18,7 @@
 typedef struct
 {
 	lb_Libretti** librettiList;
-	SDL_AudioDeviceID device;
+	SDL_AudioDeviceID audioDeviceID;
 	int size;
 	int capacity;
 }CallbackList;

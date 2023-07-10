@@ -6,7 +6,7 @@
 *
 * Provides note waves from notes.
 *
-* Copyright (c) 2017-2021 Jean-Louis Haywood. All rights reserved.
+* Copyright (c) 2017 Jean-Louis Haywood. All rights reserved.
 */
 
 #ifndef WaveformGenerator_h
@@ -14,8 +14,8 @@
 
 #include <stdint.h>
 #include "Notes.h"
-#include "Waveform.h"
+#include "Waveforms.h"
 
-void generateWaveform(lb_Waveform* waveform, lb_Note currentNotes[]);
+void generateWaveform(lb_Waveforms* waveforms, lb_Note currentNotes[]);
 
 #endif /*WaveformGenerator_h*/

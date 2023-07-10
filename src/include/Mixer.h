@@ -6,7 +6,7 @@
 *
 * Applies effects to the note wave streams before sending to the audio device.
 *
-* Copyright (c) 2017-2021 Jean-Louis Haywood. All rights reserved.
+* Copyright (c) 2017 Jean-Louis Haywood. All rights reserved.
 */
 
 #ifndef Mixer_h
