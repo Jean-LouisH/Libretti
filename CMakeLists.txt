@@ -18,4 +18,4 @@ add_subdirectory("demos/demos_src")
 add_subdirectory("src")
 add_subdirectory("thirdparty")
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT demos_src)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT libretti_demos)
