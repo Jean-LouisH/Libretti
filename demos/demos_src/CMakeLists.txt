@@ -19,7 +19,6 @@ add_definitions(/bigobj)
 endif ()
 
 target_include_directories(libretti_demos PRIVATE
-		../../thirdparty/SDL2/include
 		../../src/include
 		../../thirdparty/glad/include
 		.
@@ -28,8 +27,6 @@ target_include_directories(libretti_demos PRIVATE
 target_link_libraries (libretti_demos
 		libretti
 		glad
-		SDL2
-
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

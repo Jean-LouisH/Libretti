@@ -14,29 +14,27 @@ endif()
 file(GLOB_RECURSE libretti_sources "[a-zA-Z]*.c")
 file(GLOB_RECURSE libretti_headers "include/[a-zA-Z]*.h")
 
-add_library(libretti SHARED
+add_library(libretti STATIC
 	  ${libretti_sources}
 	  ${libretti_headers})
 
 
-add_dependencies(libretti
-	SDL2
-)
+find_package(SDL2 REQUIRED)
 
 if (WIN32)
 add_definitions(/bigobj)
 endif ()
 
 target_include_directories(libretti PUBLIC
-		../thirdparty/SDL2/include
 		./include
 )
 
 target_link_libraries (libretti
-	SDL2
+	SDL2::SDL2
 )
 
-add_definitions(-D_LIBRETTI_EXPORTS)
+#add_definitions(-D_LIBRETTI_EXPORTS)
+add_definitions(-D_LIBRETTI_EXPORTS_BUILD)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 add_definitions(-D_DEBUG)
