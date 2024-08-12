@@ -7,4 +7,3 @@ project("glad")
 
 # Include sub-projects.
 add_subdirectory("glad")
-add_subdirectory("SDL2")
