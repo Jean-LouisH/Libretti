@@ -1,39 +1,21 @@
 {
+    "version": "0.2.0",
     "configurations": [
         {
-            "type": "cmake",
+            "type": "lldb",
             "request": "launch",
-            "name": "Debug portfile(s)",
-            "cmakeDebugType": "external",
-            "pipeName": "\\\\.\\pipe\\vcpkg_ext_portfile_dbg",
-            "preLaunchTask": "Debug vcpkg commands"
-        },
-        {
-            "name": "C/C++: gcc build and debug active file",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${fileDirname}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "description": "Set Disassembly Flavor to Intel",
-                    "text": "-gdb-set disassembly-flavor intel",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "C/C++: gcc build active file",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "name": "Debug Engine (Linux/LLDB)",
+            // This points to the executable CMake just built
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [], 
+            //"cwd": "${workspaceFolder}/assets", // Sets the 'working directory' to your assets folder
+            "stopOnEntry": false,
+            "preLaunchTask": "CMake: build", // Automatically builds your code before debugging
+            "console": "integratedTerminal",
+            "sourceLanguages": ["cpp"],
+            "env": {
+                "LD_LIBRARY_PATH": "${env:LD_LIBRARY_PATH}:${workspaceFolder}/build/bin"
+            }
         }
-    ],
-    "version": "2.0.0"
+    ]
 }
