@@ -1,10 +1,10 @@
-#include "oscilloscope.hpp"
-#include <SDL.h>
 #include <glad/glad.h>
-#include <string>
+#include "oscilloscope.hpp"
 
-void Oscilloscope::initialize()
+void Oscilloscope::initialize(SDL_Window* window, SDL_GLContext context)
 {
+	SDL_GL_MakeCurrent(window, context);
+
 	if ((!glad_load_gl_loader((GLADloadproc)SDL_GL_GetProcAddress)))
 	{
 		printf("GLAD failed to initialize.");
@@ -44,7 +44,7 @@ void Oscilloscope::render_waveforms(SDL_Window* window, lb_Libretti* libretti)
 		bool start_trigger = false;
 		int x_trigger_offset = 0;
 
-		for (int j = 0; j < SAMPLE_SIZE; j++)
+		for (int j = 0; j < DEFAULT_STREAM_SAMPLE_SIZE; j++)
 		{
 			if (j > 0 && !start_trigger)
 			{
@@ -76,7 +76,7 @@ void Oscilloscope::render_waveforms(SDL_Window* window, lb_Libretti* libretti)
 				/* y is defined to be the centre of the individual stream + the ratio of its
 				* instantaneous value over the highest amplitude among the streams.*/
 				double y = centre + ((vertical_scale / count) * (double(waveforms.streams[i][j]) / max_amplitude)) - 1.0;
-				double x = ((double(j - x_trigger_offset) / SAMPLE_SIZE) * 2 * horizontal_scale) - 1.0;
+				double x = ((double(j - x_trigger_offset) / DEFAULT_STREAM_SAMPLE_SIZE) * 2 * horizontal_scale) - 1.0;
 
 				gl_vertex2f(x, y);
 			}

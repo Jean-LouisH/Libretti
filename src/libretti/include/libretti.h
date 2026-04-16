@@ -20,6 +20,7 @@
 #include "notes.h"
 #include "waveforms.h"
 #include "playback.h"
+#include "audio_clip.h"
 
 #include "validation.h"
 
@@ -113,7 +114,9 @@ LIBRETTI_API void lb_append_binary_u8_to_file(lb_BinaryU8* binary, const char* f
 LIBRETTI_API void lb_append_binary_s16_to_file(lb_BinaryS16* binary, const char* filename);
 
 /*Decodes an audio struct to a PCM stream.*/
-LIBRETTI_API lb_BinaryS16 lb_get_spectrum_data(lb_Composition* audio);
+LIBRETTI_API lb_AudioClip lb_synthesize_audio_clip(lb_Libretti* libretti, uint32_t sample_rate, uint8_t channel_count);
+
+LIBRETTI_API bool lb_save_audio_clip_to_wav_file(lb_AudioClip* audio_clip, const char* filename);
 
 /*Deletes playback memory allocation.*/
 LIBRETTI_API void lb_free_playback(lb_Playback* playback);

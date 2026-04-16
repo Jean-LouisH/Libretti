@@ -1,11 +1,11 @@
-#include "include/compiler.h"
-#include "include/file.h"
-#include "include/script_parse_states.h"
-#include "include/script_validator.h"
-#include "include/validation.h"
-#include "include/strings.h"
-#include "include/timing.h"
-#include "include/notes.h"
+#include "compiler.h"
+#include "file.h"
+#include "script_parse_states.h"
+#include "script_validator.h"
+#include "validation.h"
+#include "strings.h"
+#include "timing.h"
+#include "notes.h"
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
@@ -526,14 +526,14 @@ void build_composition_data(lb_Composition* composition, const char* script)
 					strcat(filename.data, value.data);
 					strcat(filename.data, extension.data);
 					lb_BinaryS16 binary = load_binary_s16_from_file(filename.data);
-					float sample_progress_delta = (float)binary.size / (float)SAMPLE_SIZE;
+					float sample_progress_delta = (float)binary.size / (float)DEFAULT_STREAM_SAMPLE_SIZE;
 
 					int16_t debug_binary_data[2048] = { 0 };
 
 					for (int i = 0; i < binary.size; i++)
 						debug_binary_data[i] = binary.data[i];
 
-					for (int i = 0; i < SAMPLE_SIZE; i++)
+					for (int i = 0; i < DEFAULT_STREAM_SAMPLE_SIZE; i++)
 						note.sample[i] = binary.data[(int)(sample_progress_delta * i)];
 
 					lb_free_string(&filename);

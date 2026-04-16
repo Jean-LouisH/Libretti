@@ -17,11 +17,11 @@ extern "C" {
 #define MAX_TRACKS 24
 #define LYRICS_LENGTH 128
 
-#define CHANNELS 6	//front-left, front-right, center, low-freq, rear-left, rear-right
-#define MAX_FPS 60
-#define SAMPLE_FREQUENCY 44100
-#define SAMPLES_PER_FRAME (SAMPLE_FREQUENCY / MAX_FPS)
-#define SAMPLE_SIZE (SAMPLES_PER_FRAME > 1024 ? 2048 : 1024) //Ensures that the buffer has more than enough spaced reserved.
+#define DEFAULT_STREAM_CHANNEL_COUNT 6	//front-left, front-right, center, low-freq, rear-left, rear-right
+#define DEFAULT_STREAM_MAX_FPS 60
+#define DEFAULT_STREAM_SAMPLE_FREQUENCY 44100
+#define DEFAULT_STREAM_SAMPLES_PER_FRAME (DEFAULT_STREAM_SAMPLE_FREQUENCY / DEFAULT_STREAM_MAX_FPS)
+#define DEFAULT_STREAM_SAMPLE_SIZE (DEFAULT_STREAM_SAMPLES_PER_FRAME > 1024 ? 2048 : 1024) //Ensures that the buffer has more than enough spaced reserved.
 
 enum KeySignature
 {

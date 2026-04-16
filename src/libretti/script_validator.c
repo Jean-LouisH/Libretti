@@ -1,9 +1,9 @@
-#include "include/script_validator.h"
-#include "include/validation.h"
-#include "include/script_parse_states.h"
-#include "include/constants.h"
-#include "include/strings.h"
-#include "include/file.h"
+#include "script_validator.h"
+#include "validation.h"
+#include "script_parse_states.h"
+#include "constants.h"
+#include "strings.h"
+#include "file.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>

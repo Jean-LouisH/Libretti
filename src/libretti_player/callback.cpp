@@ -1,5 +1,6 @@
 #include "callback.hpp" 
 #include "callback_list.hpp"
+#include "constants.h"
 #include <file.h>
 #include <mixer.h>
 #include <SDL.h>
@@ -210,8 +211,8 @@ lb_BinaryS16* get_audio_capture_stream_buffer()
 	lb_BinaryS16* binary = (lb_BinaryS16*)calloc(1, sizeof *binary);
 	if (binary != 0)
 	{
-		binary->size = SAMPLE_SIZE;
-		binary->data = (int16_t*)calloc(SAMPLE_SIZE, sizeof * binary->data);
+		binary->size = DEFAULT_STREAM_SAMPLE_SIZE;
+		binary->data = (int16_t*)calloc(DEFAULT_STREAM_SAMPLE_SIZE, sizeof * binary->data);
 		initialize_audio_capture(binary);
 	}
 	return binary;
@@ -229,10 +230,10 @@ void initialize_audio_playback(CallbackList callback_list[])
 		SDL_AudioSpec obtained;
 
 		SDL_memset(&desired, 0, sizeof(desired));
-		desired.freq = SAMPLE_FREQUENCY;
+		desired.freq = DEFAULT_STREAM_SAMPLE_FREQUENCY;
 		desired.format = AUDIO_S16SYS;
-		desired.channels = CHANNELS;
-		desired.samples = SAMPLE_SIZE;
+		desired.channels = DEFAULT_STREAM_CHANNEL_COUNT;
+		desired.samples = DEFAULT_STREAM_SAMPLE_SIZE;
 		desired.callback = (SDL_AudioCallback)run_callback_play;
 		desired.userdata = callback_list;
 
@@ -260,10 +261,10 @@ void initialize_audio_capture(lb_BinaryS16* binary)
 		SDL_AudioSpec obtained;
 
 		SDL_memset(&desired, 0, sizeof(desired));
-		desired.freq = SAMPLE_FREQUENCY;
+		desired.freq = DEFAULT_STREAM_SAMPLE_FREQUENCY;
 		desired.format = AUDIO_S16SYS;
 		desired.channels = 1;
-		desired.samples = SAMPLE_SIZE;
+		desired.samples = DEFAULT_STREAM_SAMPLE_SIZE;
 		desired.callback = (SDL_AudioCallback)run_callback_capture;
 		desired.userdata = binary;
 
@@ -287,7 +288,7 @@ void run_callback_play(void* userdata, Uint8* stream, int byte_length)
 	int double_byte_length = byte_length / sizeof(Sint16);
 	CallbackList* callback_list = (CallbackList*)userdata;
 
-	Sint16 debug_stream[SAMPLE_SIZE * 6] = { 0 };
+	Sint16 debug_stream[DEFAULT_STREAM_SAMPLE_SIZE * 6] = { 0 };
 
 	/*Clears stream after accumulating channels*/
 	for (int i = 0; i < double_byte_length; i++)
@@ -307,7 +308,7 @@ void run_callback_play(void* userdata, Uint8* stream, int byte_length)
 				libretti->composition->track_count > 0)
 			{
 				lb_update_playback(libretti->playback, libretti->composition);
-				interleave_waveform_to_stream((int16_t*)playback_stream, libretti->playback);
+				interleave_waveform_to_stream((int16_t*)playback_stream, libretti->playback, DEFAULT_STREAM_CHANNEL_COUNT, DEFAULT_STREAM_SAMPLE_SIZE);
 			}
 		}
 	}
@@ -322,7 +323,7 @@ void run_callback_capture(void* userdata, Uint8* stream, int byte_length)
 	int double_byte_length = byte_length / sizeof(Sint16);
 	lb_BinaryS16* binary = (lb_BinaryS16*)userdata;
 
-	int16_t debug[SAMPLE_SIZE];
+	int16_t debug[DEFAULT_STREAM_SAMPLE_SIZE];
 
 	for (int i = 0; i < binary->size; i++)
 		binary->data[i] = capture_stream[i];

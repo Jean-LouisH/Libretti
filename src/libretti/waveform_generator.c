@@ -1,8 +1,8 @@
-#include "include/waveform_generator.h"
+#include "waveform_generator.h"
 #include <stdbool.h>
 #include <math.h>
 #include <stdlib.h>
-#include "include/constants.h"
+#include "constants.h"
 
 void generate_waveform(lb_Waveforms* waveforms, lb_Note current_notes[])
 {
@@ -12,10 +12,10 @@ void generate_waveform(lb_Waveforms* waveforms, lb_Note current_notes[])
 	{
 		waveforms->note_meta_data[i] = current_notes[i];
 
-		for (int n = 0; n < SAMPLE_SIZE; n++)
+		for (int n = 0; n < DEFAULT_STREAM_SAMPLE_SIZE; n++)
 		{
 			double frequency = waveforms->note_meta_data[i].key;
-			double time = (timesteps[i] / SAMPLE_FREQUENCY);
+			double time = (timesteps[i] / DEFAULT_STREAM_SAMPLE_FREQUENCY);
 			double period = (1.0 / frequency);
 			double amplitude = waveforms->note_meta_data[i].dynamic;
 
@@ -46,7 +46,7 @@ void generate_waveform(lb_Waveforms* waveforms, lb_Note current_notes[])
 						(rand() % (int)(2 * amplitude) + (int)(-amplitude)));
 					break;
 				case LB_TIMBRE_SAMPLE:
-					waveforms->streams[i][n] = amplitude * (waveforms->note_meta_data[i].sample[(int)(frequency * time * SAMPLE_SIZE) % SAMPLE_SIZE]) / (pow(2.0, (8.0 * sizeof(int16_t) - 1)) - 1) ;
+					waveforms->streams[i][n] = amplitude * (waveforms->note_meta_data[i].sample[(int)(frequency * time * DEFAULT_STREAM_SAMPLE_SIZE) % DEFAULT_STREAM_SAMPLE_SIZE]) / (pow(2.0, (8.0 * sizeof(int16_t) - 1)) - 1) ;
 					break;
 			}
 

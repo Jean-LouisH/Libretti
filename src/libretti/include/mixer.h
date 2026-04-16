@@ -20,7 +20,7 @@ extern "C" {
 #include <stdint.h>
 
 /*Copies the note waves and assign audio values to the 5.1 surround channel array.*/
-void interleave_waveform_to_stream(int16_t* output_stream, lb_Playback* playback);
+void interleave_waveform_to_stream(int16_t* output_stream, lb_Playback* playback, uint8_t channel_count, uint32_t stream_sample_size);
 
 #ifdef __cplusplus
 }

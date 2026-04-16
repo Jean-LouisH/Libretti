@@ -1,10 +1,10 @@
 #include <libretti.h>
-#include <SDL.h>
 #include <string>
 #include "application_window.hpp"
 #include "oscilloscope.hpp"
 #include "console_menu.hpp"
 #include "callback.hpp"
+#include <SDL.h>
 
 #undef main //undo SDLmain definition
 
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 		SDL_ShowWindow(app_window.get_sdl_window());
 		add_libretti_to_callback(libretti);
 
-		Oscilloscope::initialize();
+		Oscilloscope::initialize(app_window.get_sdl_window(), app_window.context);
 
 		do
 		{

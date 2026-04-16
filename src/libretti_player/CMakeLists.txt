@@ -10,8 +10,6 @@ file(GLOB_RECURSE libretti_player_headers "[a-zA-Z]*.hpp")
 
 add_definitions(-DLIBRETTI_DEMOS_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/../libretti/data/demos/")
 
-find_package(SDL2 REQUIRED)
-
 add_executable(libretti_player
 	  ${libretti_player_sources}
 	  ${libretti_player_headers})
@@ -30,10 +28,12 @@ target_include_directories(libretti_player PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
+find_package(SDL2 REQUIRED)
+
 target_link_libraries (libretti_player
 		libretti
-		SDL2::SDL2
 		glad
+		SDL2::SDL2
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

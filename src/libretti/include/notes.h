@@ -29,7 +29,7 @@ typedef struct
 	uint8_t timbre;
 	uint8_t articulation;
 	uint16_t cue;
-	int16_t sample[SAMPLE_SIZE];
+	int16_t sample[DEFAULT_STREAM_SAMPLE_SIZE];
 	lb_Effects effects;
 }lb_Note;
 

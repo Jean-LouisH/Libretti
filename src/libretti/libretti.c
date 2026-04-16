@@ -1,14 +1,19 @@
-#include "include/libretti.h"
+#include "libretti.h"
 
 #include <math.h>
-#include "include/script_validator.h"
-#include "include/validation.h"
-#include "include/compiler.h"
-#include "include/file.h"
-#include "include/waveform_generator.h"
+#include "playback.h"
+#include "script_validator.h"
+#include "validation.h"
+#include "compiler.h"
+#include "file.h"
+#include "waveform_generator.h"
+#include "mixer.h"
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#define DR_WAV_IMPLEMENTATION
+#include "dr_wav.h"
 
 static int g_libretti_id_count = -1;
 
@@ -62,7 +67,9 @@ lb_Composition* lb_create_empty_composition()
 
 lb_Playback* lb_create_playback()
 {
-	return calloc(1, sizeof(lb_Playback));
+	lb_Playback* playback = calloc(1, sizeof(lb_Playback));
+	playback->output_volume = 1.0;
+	return playback;
 }
 
 int lb_validate_script_file(const char* filename)
@@ -263,37 +270,98 @@ void lb_append_binary_s16_to_file(lb_BinaryS16* binary, const char* filename)
 	append_binary_s16_to_file(binary, (char*)filename);
 }
 
-lb_BinaryS16 lb_get_spectrum_data(lb_Composition* composition)
+lb_AudioClip lb_synthesize_audio_clip(lb_Libretti* libretti, uint32_t sample_rate, uint8_t channel_count)
 {
-	lb_Playback* playback = lb_create_playback();
-	lb_BinaryS16 spectrum;
+	lb_AudioClip audio_clip = { 0 };
 
-	int max_note_count = 0;
-
-	/* For now, with only single track support,
-	 * get the longest track, which is likely where the 
-	 * melody is located. */
-	for (int i = 0; i < composition->track_count; i++)
-		if (composition->tracks[i].note_count > max_note_count)
-			max_note_count = composition->tracks[i].note_count;
-
-	int stream_length = max_note_count * SAMPLE_SIZE;
-	spectrum.data = calloc(stream_length, sizeof(int16_t));
-
-	/*Building the export binary stream*/
-	while (!(playback->play_states & LB_PLAYBACK_STATE_PLAYED_AT_LEAST_ONCE))
+	if (libretti != 0 &&
+		libretti->composition != 0 &&
+		libretti->playback != 0 &&
+		libretti->composition->track_count > 0)
 	{
-		int stream_position = 0;
-		lb_update_playback(playback, composition);
-		for (int i = 0; i < SAMPLE_SIZE; i++)
+		audio_clip.sample_rate = sample_rate;
+		audio_clip.channel_count = channel_count;
+		audio_clip.bytes_per_sample = sizeof(int16_t);
+		audio_clip.samples_per_channel = (uint32_t)(libretti->composition->time_length * sample_rate);
+		audio_clip.playback_length = libretti->composition->time_length;
+
+		uint32_t total_samples = audio_clip.samples_per_channel * audio_clip.channel_count;
+		audio_clip.size = total_samples * sizeof(int16_t);
+		audio_clip.data = (int16_t*)calloc(total_samples, sizeof(int16_t));
+
+		if (!audio_clip.data)
+			return audio_clip;
+
+		int stream_length = DEFAULT_STREAM_SAMPLE_SIZE * channel_count;
+		int16_t* output_stream = (int16_t*)calloc(stream_length, sizeof(int16_t));
+
+		/*Building the export binary stream*/
+		while (!(libretti->playback->play_states & LB_PLAYBACK_STATE_PLAYED_AT_LEAST_ONCE))
 		{
-			spectrum.data[stream_position] += playback->current_waveforms.streams[0][i];
-			stream_position++;
+			for (int i = 0; i < stream_length; i++)
+				output_stream[i] = 0;
+
+			int audio_clip_stream_position = (int)(libretti->playback->current_play_time * sample_rate) * channel_count;
+			lb_update_playback(libretti->playback, libretti->composition);
+			interleave_waveform_to_stream(output_stream, libretti->playback, channel_count, DEFAULT_STREAM_SAMPLE_SIZE);
+
+			for (int i = 0; i < stream_length; i++) 
+			{
+				uint32_t index = audio_clip_stream_position + i;
+				if (index < total_samples) 
+				{
+					audio_clip.data[index] = output_stream[i];
+				}
+			}
+
+			libretti->playback->current_play_time += (float)DEFAULT_STREAM_SAMPLES_PER_FRAME / sample_rate;
 		}
-		playback->current_play_time += 17.0 / 1000.0;
+
+		free(output_stream);
 	}
 
-	return spectrum;
+	return audio_clip;
+}
+
+bool lb_save_audio_clip_to_wav_file(lb_AudioClip* audio_clip, const char* filename)
+{
+    if (!filename || !audio_clip || !audio_clip->data) {
+        fprintf(stderr, "[Error] Invalid arguments passed to save_clip_to_wav.\n");
+        return false;
+    }
+
+    if (audio_clip->channel_count == 0 || audio_clip->sample_rate == 0) {
+        fprintf(stderr, "[Error] Clip has invalid metadata (Channels: %d, Rate: %u).\n", 
+                audio_clip->channel_count, audio_clip->sample_rate);
+        return false;
+    }
+
+    drwav_data_format format;
+    format.container = drwav_container_riff;     
+    format.format = DR_WAVE_FORMAT_PCM;          
+    format.channels = audio_clip->channel_count;
+    format.sampleRate = audio_clip->sample_rate;
+    format.bitsPerSample = sizeof(int16_t) * 8;                   
+
+    
+    drwav wav;
+    if (!drwav_init_file_write(&wav, filename, &format, NULL)) {
+        fprintf(stderr, "[Error] Failed to open file '%s' for writing. Check permissions or path.\n", filename);
+        return false;
+    }
+
+    drwav_uint64 framesWritten = drwav_write_pcm_frames(&wav, audio_clip->samples_per_channel, audio_clip->data);
+
+    drwav_uninit(&wav);
+
+    if (framesWritten != audio_clip->samples_per_channel) {
+        fprintf(stderr, "[Error] Disk I/O error: Expected to write %u frames, but only wrote %llu.\n", 
+                audio_clip->samples_per_channel, framesWritten);
+        return false;
+    }
+
+    printf("[Success] Audio clip saved to: %s\n", filename);
+    return true;
 }
 
 void lb_free_playback(lb_Playback* playback)
@@ -316,10 +384,13 @@ void lb_free_composition(lb_Composition* composition)
 
 void lb_free_libretti(lb_Libretti* libretti)
 {
-	lb_free_playback(libretti->playback);
-	lb_free_composition(libretti->composition);
-	libretti->playback = 0;
-	libretti->composition = 0;
-	free(libretti);
+	if (libretti != 0)
+	{
+		lb_free_playback(libretti->playback);
+		lb_free_composition(libretti->composition);
+		libretti->playback = 0;
+		libretti->composition = 0;
+		free(libretti);
+	}
 	libretti = 0;
 }

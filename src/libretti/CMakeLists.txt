@@ -18,6 +18,7 @@ endif ()
 
 target_include_directories(libretti PRIVATE
 		./include
+		./thirdparty/dr_wav
 		.
 )
 

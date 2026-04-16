@@ -9,11 +9,12 @@ class ApplicationWindow
 {
 private:
 	SDL_Window* window;
-	SDL_GLContext context;
 	Timing time;
 	int window_width;
 	int window_height;
 public:
+	SDL_GLContext context;
+	
 	ApplicationWindow(std::string app_name);
 	~ApplicationWindow();
 	bool handle_events(lb_Libretti* libretti);

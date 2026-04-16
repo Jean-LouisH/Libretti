@@ -22,7 +22,7 @@ extern "C" {
 
 typedef struct
 {
-	int16_t streams[MAX_TRACKS][SAMPLE_SIZE];
+	int16_t streams[MAX_TRACKS][DEFAULT_STREAM_SAMPLE_SIZE];
 	lb_Note note_meta_data[MAX_TRACKS];
 	uint8_t count;
 }lb_Waveforms;
