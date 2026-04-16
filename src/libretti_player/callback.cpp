@@ -307,8 +307,8 @@ void run_callback_play(void* userdata, Uint8* stream, int byte_length)
 				libretti->playback != 0 &&
 				libretti->composition->track_count > 0)
 			{
-				lb_update_playback(libretti->playback, libretti->composition);
-				interleave_waveform_to_stream((int16_t*)playback_stream, libretti->playback, DEFAULT_STREAM_CHANNEL_COUNT, DEFAULT_STREAM_SAMPLE_SIZE);
+				lb_update_playback(libretti->playback, libretti->composition, DEFAULT_STREAM_SAMPLE_FREQUENCY);
+				interleave_waveform_to_stream((int16_t*)playback_stream, libretti->playback, DEFAULT_STREAM_CHANNEL_COUNT);
 			}
 		}
 	}

@@ -75,13 +75,13 @@ LIBRETTI_API int lb_validate_script_file(const char* filename);
 LIBRETTI_API void lb_compile_composition_from_script_file(lb_Composition* composition, const char* filename);
 
 /*Updates playback from composition according to the update playback time.*/
-LIBRETTI_API void lb_update_playback(lb_Playback* playback, lb_Composition* composition);
+LIBRETTI_API void lb_update_playback(lb_Playback* playback, lb_Composition* composition, int sample_rate);
 
 /*Extract as many simultaneous notes that matches the composition track count, at a given playback.*/
 LIBRETTI_API void lb_update_notes_from_composition(lb_Note current_notes[], lb_Composition* composition, lb_Playback* playback);
 
 /*Updates note waves with a PCM representation of the encoded notes.*/
-LIBRETTI_API void lb_update_waveform_from_notes(lb_Waveforms* waveforms, lb_Note current_notes[], uint8_t track_count);
+LIBRETTI_API void lb_update_waveform_from_notes(lb_Waveforms* waveforms, lb_Note current_notes[], int sample_rate);
 
 /*Updates the Libretti's playback with a delta in seconds.*/
 LIBRETTI_API void lb_increment_play_time(lb_Libretti* libretti, float delta_time);

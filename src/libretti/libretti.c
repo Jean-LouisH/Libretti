@@ -97,12 +97,12 @@ void lb_compile_composition_from_script_file(lb_Composition* composition, const 
 	}
 }
 
-void lb_update_playback(lb_Playback* playback, lb_Composition* composition)
+void lb_update_playback(lb_Playback* playback, lb_Composition* composition, int sample_rate)
 {
 	lb_Note* current_notes = malloc(composition->track_count * (sizeof * current_notes));
 	lb_update_notes_from_composition(current_notes, composition, playback);
 	playback->current_waveforms.count = composition->track_count;
-	lb_update_waveform_from_notes(&playback->current_waveforms, current_notes, composition->track_count);
+	lb_update_waveform_from_notes(&playback->current_waveforms, current_notes, sample_rate);
 
 	for (int i = 0; i < LYRICS_LENGTH; i++)
 		playback->current_lyrics[i] = '\0';
@@ -210,9 +210,9 @@ void lb_update_notes_from_composition(lb_Note current_notes[], lb_Composition* c
 	}
 }
 
-void lb_update_waveform_from_notes(lb_Waveforms* waveforms, lb_Note current_notes[], uint8_t track_count)
+void lb_update_waveform_from_notes(lb_Waveforms* waveforms, lb_Note current_notes[], int sample_rate)
 {
-	generate_waveform(waveforms, current_notes);
+	generate_waveform(waveforms, current_notes, sample_rate);
 }
 
 void lb_increment_play_time(lb_Libretti* libretti, float delta_time)
@@ -295,15 +295,17 @@ lb_AudioClip lb_synthesize_audio_clip(lb_Libretti* libretti, uint32_t sample_rat
 		int stream_length = DEFAULT_STREAM_SAMPLE_SIZE * channel_count;
 		int16_t* output_stream = (int16_t*)calloc(stream_length, sizeof(int16_t));
 
+		uint32_t total_samples_written = 0;
+
 		/*Building the export binary stream*/
 		while (!(libretti->playback->play_states & LB_PLAYBACK_STATE_PLAYED_AT_LEAST_ONCE))
 		{
 			for (int i = 0; i < stream_length; i++)
 				output_stream[i] = 0;
 
-			int audio_clip_stream_position = (int)(libretti->playback->current_play_time * sample_rate) * channel_count;
-			lb_update_playback(libretti->playback, libretti->composition);
-			interleave_waveform_to_stream(output_stream, libretti->playback, channel_count, DEFAULT_STREAM_SAMPLE_SIZE);
+			int audio_clip_stream_position = total_samples_written;;
+			lb_update_playback(libretti->playback, libretti->composition, sample_rate);
+			interleave_waveform_to_stream(output_stream, libretti->playback, channel_count);
 
 			for (int i = 0; i < stream_length; i++) 
 			{
@@ -314,7 +316,8 @@ lb_AudioClip lb_synthesize_audio_clip(lb_Libretti* libretti, uint32_t sample_rat
 				}
 			}
 
-			libretti->playback->current_play_time += (float)DEFAULT_STREAM_SAMPLES_PER_FRAME / sample_rate;
+			total_samples_written += stream_length;
+			libretti->playback->current_play_time = (float)total_samples_written / (sample_rate * channel_count);
 		}
 
 		free(output_stream);

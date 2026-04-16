@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "constants.h"
 
-void generate_waveform(lb_Waveforms* waveforms, lb_Note current_notes[])
+void generate_waveform(lb_Waveforms* waveforms, lb_Note current_notes[], int sample_rate)
 {
 	static double timesteps[MAX_TRACKS];
 
@@ -15,7 +15,7 @@ void generate_waveform(lb_Waveforms* waveforms, lb_Note current_notes[])
 		for (int n = 0; n < DEFAULT_STREAM_SAMPLE_SIZE; n++)
 		{
 			double frequency = waveforms->note_meta_data[i].key;
-			double time = (timesteps[i] / DEFAULT_STREAM_SAMPLE_FREQUENCY);
+			double time = (timesteps[i] / (double)sample_rate);
 			double period = (1.0 / frequency);
 			double amplitude = waveforms->note_meta_data[i].dynamic;
 

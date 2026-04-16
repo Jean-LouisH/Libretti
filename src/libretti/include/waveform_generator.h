@@ -20,7 +20,7 @@ extern "C" {
 #include "notes.h"
 #include "waveforms.h"
 
-void generate_waveform(lb_Waveforms* waveforms, lb_Note current_notes[]);
+void generate_waveform(lb_Waveforms* waveforms, lb_Note current_notes[], int sample_rate);
 
 #ifdef __cplusplus
 }

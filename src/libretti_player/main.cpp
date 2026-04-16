@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 		SDL_ShowWindow(app_window.get_sdl_window());
 		add_libretti_to_callback(libretti);
 
-		Oscilloscope::initialize(app_window.get_sdl_window(), app_window.context);
+		Oscilloscope::initialize();
 
 		do
 		{

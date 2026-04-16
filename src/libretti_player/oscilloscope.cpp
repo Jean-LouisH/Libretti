@@ -1,10 +1,8 @@
 #include <glad/glad.h>
 #include "oscilloscope.hpp"
 
-void Oscilloscope::initialize(SDL_Window* window, SDL_GLContext context)
+void Oscilloscope::initialize()
 {
-	SDL_GL_MakeCurrent(window, context);
-
 	if ((!glad_load_gl_loader((GLADloadproc)SDL_GL_GetProcAddress)))
 	{
 		printf("GLAD failed to initialize.");
