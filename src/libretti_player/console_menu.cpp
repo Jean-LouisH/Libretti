@@ -66,7 +66,7 @@ void menu(std::string* file_name)
 	std::cout << "Demos\n----\n";
 	for (int i = 0; i < demos.size(); i++)
 		std::cout << i + 1 << ". " << demos.at(i) << "\n";
-	std::cout << "\n_enter demo number, or filepath to play -> ";
+	std::cout << "\nEnter demo number, or filepath to play -> ";
 
 	std::getline(std::cin, *file_name);
 
@@ -75,5 +75,5 @@ void menu(std::string* file_name)
 		*file_name = demos[atoi(file_name->c_str()) - 1];
 	}
 
-	printf("\n_on the window, press 'ESC' to quit, 'p' to pause or play, 's' to stop, 'r' to reset, 'l' to load another demo.\n");
+	printf("\nOn the window, press 'ESC' to quit, 'p' to pause or play, 's' to stop, 'r' to reset, 'l' to load another demo.\n");
 }

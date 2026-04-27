@@ -3,7 +3,7 @@
 
 void Oscilloscope::initialize()
 {
-	if ((!glad_load_gl_loader((GLADloadproc)SDL_GL_GetProcAddress)))
+	if ((!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)))
 	{
 		printf("GLAD failed to initialize.");
 	}
@@ -14,7 +14,7 @@ void Oscilloscope::render_waveforms(SDL_Window* window, lb_Libretti* libretti)
 	lb_Waveforms waveforms = libretti->playback->current_waveforms;
 	const double horizontal_scale = 1.0 + (1.0 / 5.0);
 	const double vertical_scale = 0.7;
-	gl_clear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	float max_amplitude = 0;
 
@@ -36,8 +36,8 @@ void Oscilloscope::render_waveforms(SDL_Window* window, lb_Libretti* libretti)
 	{
 		/*OpenGL compatibility profile fixed-functions are
 		sufficient for this simple test oscilloscope.*/
-		gl_begin(GL_LINE_STRIP);
-		gl_color4ub(255, 255, 255, 255);
+		glBegin(GL_LINE_STRIP);
+		glColor4ub(255, 255, 255, 255);
 
 		bool start_trigger = false;
 		int x_trigger_offset = 0;
@@ -76,9 +76,9 @@ void Oscilloscope::render_waveforms(SDL_Window* window, lb_Libretti* libretti)
 				double y = centre + ((vertical_scale / count) * (double(waveforms.streams[i][j]) / max_amplitude)) - 1.0;
 				double x = ((double(j - x_trigger_offset) / DEFAULT_STREAM_SAMPLE_SIZE) * 2 * horizontal_scale) - 1.0;
 
-				gl_vertex2f(x, y);
+				glVertex2f(x, y);
 			}
 		}
-		gl_end();
+		glEnd();
 	}
 }

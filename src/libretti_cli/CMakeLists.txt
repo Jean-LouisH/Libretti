@@ -13,9 +13,31 @@ add_executable(libretti_cli
 add_dependencies(libretti_cli
 	libretti)
 
-if (WIN32)
-add_definitions(/bigobj)
+if (MSVC)
+	add_definitions(/bigobj)
+else ()
+	if (MINGW)
+		target_compile_options(libretti_cli PRIVATE "-Wa,-mbig-obj")
+	endif ()
 endif ()
+
+
+if(MINGW AND CMAKE_CROSSCOMPILING)
+	set(MINGW_BIN "/usr/x86_64-w64-mingw32/sys-root/mingw/bin")
+
+	set(MINGW_RUNTIME_DEPS
+		"${MINGW_BIN}/libgcc_s_seh-1.dll"
+		"${MINGW_BIN}/libwinpthread-1.dll"
+		"${MINGW_BIN}/libstdc++-6.dll"
+	)
+
+	add_custom_command(TARGET libretti_cli POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		${MINGW_RUNTIME_DEPS}
+		${PROJECT_BINARY_DIR}
+		COMMENT "Deploying Windows/MinGW Runtime DLLs..."
+	)
+endif()
 
 target_include_directories(libretti_cli PRIVATE
 		"${CMAKE_CURRENT_SOURCE_DIR}/../libretti/include"

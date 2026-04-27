@@ -2,26 +2,35 @@
     "version": 3,
     "configurePresets": [
         {
-            "name": "windows-base",
+            "name": "all-binary-base",
             "hidden": true,
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "installDir": "${sourceDir}/out/install/${presetName}",
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
                 "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-            },
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Windows"
             }
         },
         {
-            "name": "x64-debug",
-            "displayName": "x64 Debug",
-            "inherits": "windows-base",
+            "name": "windows-mingw-base",
+            "hidden": true,
+            "inherits": "all-binary-base",
+            "cacheVariables": {
+            "CMAKE_SYSTEM_NAME": "Windows",
+            "VCPKG_TARGET_TRIPLET": "x64-mingw-static",
+            "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/toolchains/mingw.cmake",
+
+            "CMAKE_C_COMPILER": "/usr/bin/x86_64-w64-mingw32-gcc",
+            "CMAKE_CXX_COMPILER": "/usr/bin/x86_64-w64-mingw32-g++",
+            "CMAKE_RC_COMPILER": "/usr/bin/x86_64-w64-mingw32-windres"
+            }
+
+        },
+                {
+            "name": "windows-mingw-debug",
+            "displayName": "Windows (MinGW) Debug",
+            "inherits": "windows-mingw-base",
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
@@ -31,19 +40,34 @@
             }
         },
         {
-            "name": "x64-release",
-            "displayName": "x64 Release",
-            "inherits": "x64-debug",
+            "name": "windows-mingw-release",
+            "displayName": "Windows (MinGW) Release",
+            "inherits": "windows-mingw-debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_CXX_FLAGS_RELEASE": "-O2 -msse2"
             }
         },
         {
-            "name": "x86-debug",
-            "displayName": "x86 Debug",
-            "inherits": "windows-base",
+            "name": "windows-msvc-base",
+            "hidden": true,
+            "inherits": "all-binary-base",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "windows-msvc-debug",
+            "displayName": "Windows (MSVC) Debug",
+            "inherits": "windows-msvc-base",
             "architecture": {
-                "value": "x86",
+                "value": "x64",
                 "strategy": "external"
             },
             "cacheVariables": {
@@ -51,36 +75,91 @@
             }
         },
         {
-            "name": "x86-release",
-            "displayName": "x86 Release",
-            "inherits": "x86-debug",
+            "name": "windows-msvc-release",
+            "displayName": "Windows (MSVC) Release",
+            "inherits": "windows-msvc-debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_CXX_FLAGS_RELEASE": "/O2 /GL /arch:SSE2 /favor:blend"
             }
         },
         {
+            "name": "linux-base",
+            "hidden": true,
+            "inherits": "all-binary-base"
+        },
+        {
             "name": "linux-debug",
-            "displayName": "Linux Debug x86_64: GCC 12.2.0 x86_64-linux-gnu",
-            "description": "Using compilers: C = /usr/bin/gcc, CXX = /usr/bin/g++",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "displayName": "Linux Debug x86_64",
+            "inherits": "linux-base",
+            "description": "Using compilers: C = /usr/bin/clang, CXX = /usr/bin/clang++",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-                "CMAKE_C_COMPILER": "/usr/bin/gcc",
-                "CMAKE_CXX_COMPILER": "/usr/bin/g++",
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "/usr/bin/clang",
+                "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
             }
         },
         {
             "name": "linux-release",
-            "displayName": "Linux Release x86_64: GCC 12.2.0 x86_64-linux-gnu",
+            "displayName": "Linux Release x86_64",
+            "inherits": "linux-debug",
             "description": "Using compilers: C = /usr/bin/gcc, CXX = /usr/bin/g++",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_C_COMPILER": "/usr/bin/gcc",
                 "CMAKE_CXX_COMPILER": "/usr/bin/g++",
+                "CMAKE_CXX_FLAGS_RELEASE": "-O2 -march=core2 -flto"
+            }
+        },
+        {
+            "name": "emscripten-base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "VCPKG_TARGET_TRIPLET": "wasm32-emscripten",
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{EMSDK_ROOT}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+            },
+            "environment": {
+                "EMSDK": "$env{EMSDK_ROOT}",
+                "EM_CONFIG": "$env{EMSDK_ROOT}/.emscripten"
+            }
+        },
+        {
+            "name": "emscripten-debug",
+            "displayName": "Emscripten Debug",
+            "inherits": "emscripten-base",
+            "description": "Build with Emscripten for WebAssembly (Debug)",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "emscripten-release",
+            "displayName": "Emscripten Release",
+            "description": "Build with Emscripten for WebAssembly (Release)",
+            "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "build-emscripten-debug",
+            "configurePreset": "emscripten-debug",
+            "description": "Build for Emscripten Debug"
+        },
+        {
+            "name": "build-emscripten-release",
+            "configurePreset": "emscripten-release",
+            "description": "Build for Emscripten Release"
         }
     ]
 }

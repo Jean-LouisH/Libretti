@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 
 #if !RECORD_TEST
 	ApplicationWindow app_window = ApplicationWindow("Libretti Playback Demo");
+	Oscilloscope::initialize();
 	lb_Libretti* libretti = lb_create_empty_libretti();
 
 	if (libretti != NULL &&
@@ -37,8 +38,6 @@ int main(int argc, char* argv[])
 		}
 		SDL_ShowWindow(app_window.get_sdl_window());
 		add_libretti_to_callback(libretti);
-
-		Oscilloscope::initialize();
 
 		do
 		{
