@@ -17,6 +17,8 @@ void menu(std::string* file_name)
 
 	demos.push_back(directory_path + "Mary Had a Little Lamb.txt");
 	demos.push_back(directory_path + "Starman Theme.txt");
+	demos.push_back(directory_path + "Ode to Joy.txt");
+	demos.push_back(directory_path + "Harder Better Faster Stronger.txt");
 
 	demos.push_back(directory_path + "tests/Accidentals Test.txt");
 	demos.push_back(directory_path + "tests/Crescendo Test.txt");
